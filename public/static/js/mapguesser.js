@@ -53,10 +53,6 @@ var googleLink;
 function initialize() {
     panorama = new google.maps.StreetViewPanorama(document.getElementById('panorama'), {
         position: realPosition,
-        pov: {
-            heading: 34,
-            pitch: 10
-        },
         disableDefaultUI: true,
         linksControl: true,
         showRoadLabels: false
