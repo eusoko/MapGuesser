@@ -15,20 +15,19 @@ class GuessController extends BaseController
         // demo map
         $mapId = 1;
 
+        $stmt = $mysql->prepare('SELECT bound_south_lat, bound_west_lng, bound_north_lat, bound_east_lng FROM maps WHERE id=?');
+        $stmt->bind_param("i", $mapId);
+        $stmt->execute();
+        $map = $stmt->get_result()->fetch_assoc();
+
         // using RAND() for the time being, could be changed in the future
         $stmt = $mysql->prepare('SELECT lat, lng FROM places WHERE map_id=? ORDER BY RAND() LIMIT 1');
         $stmt->bind_param("i", $mapId);
         $stmt->execute();
+        $place = $stmt->get_result()->fetch_assoc();
 
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-
-        $realPosition = new Position($row['lat'], $row['lng']);
-
-        // demo bounds
-        $bounds = new Bounds($realPosition);
-        $bounds->extend(new Position(48.07683,7.35758));
-        $bounds->extend(new Position(47.57496, 19.08077));
+        $realPosition = new Position($place['lat'], $place['lng']);
+        $bounds = Bounds::createDirectly($map['bound_south_lat'], $map['bound_west_lng'], $map['bound_north_lat'], $map['bound_east_lng']);
 
         $this->variables = compact('realPosition', 'bounds');
     }
