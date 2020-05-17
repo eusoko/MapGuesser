@@ -1,4 +1,4 @@
-<?php namespace MapGuesser\Geo;
+<?php namespace MapGuesser\Util\Geo;
 
 class Position
 {
