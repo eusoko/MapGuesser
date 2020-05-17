@@ -10,13 +10,27 @@ class Bounds
 
     private bool $initialized = false;
 
-    public function __construct(Position $position = null)
+    public static function createWithPosition(Position $position) : Bounds
     {
-        if ($position === null) {
-            return;
-        }
+        $instance = new static();
 
-        $this->initialize($position);
+        $instance->initialize($position);
+
+        return $instance;
+    }
+
+    public static function createDirectly(float $southLat, $westLng, $northLat, $eastLng) : Bounds
+    {
+        $instance = new static();
+
+        $instance->southLat = $southLat;
+        $instance->westLng = $westLng;
+        $instance->northLat = $northLat;
+        $instance->eastLng = $eastLng;
+
+        $instance->initialized = true;
+
+        return $instance;
     }
 
     public function extend(Position $position): void
