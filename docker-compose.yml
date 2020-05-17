@@ -1,0 +1,22 @@
+version: '3'
+services:
+    app:
+        build: ./docker
+        ports:
+            - 80:80
+        volumes:
+            - .:/var/www/mapguesser
+        links:
+            - 'mariadb'
+    mariadb:
+        image: mariadb:10.1
+        volumes:
+            - mysql:/var/lib/mysql
+        environment:
+            #TZ: Europe/Budapest
+            MYSQL_ROOT_PASSWORD: 'root'
+            MYSQL_DATABASE: 'mapguesser'
+            MYSQL_USER: 'mapguesser'
+            MYSQL_PASSWORD: 'mapguesser'
+volumes:
+    mysql:

@@ -1,0 +1,75 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+#panorama {
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+}
+
+#guess {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    width: 250px;
+    height: 150px;
+    opacity: 0.5;
+    z-index: 2;
+    transition-property: width, height, opacity;
+    transition-duration: 0.1s;
+    transition-delay: 0.8s;
+}
+
+#guess:hover {
+    width: 500px;
+    height: 350px;
+    opacity: 1.0;
+    transition-delay: 0s;
+}
+
+#guess #guessMap {
+    height: 115px;
+    width: 100%;
+    transition-property: height;
+    transition-duration: 0.1s;
+    transition-delay: 0.8s;
+    border-radius: 3px;
+}
+
+#guess:hover #guessMap {
+    height: 315px;
+    transition-delay: 0s;
+}
+
+#guessButtonContainer {
+    margin-top: 5px;
+    height: 30px;
+}
+
+#guessButton {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #5e77aa;
+    border: none;
+    border-radius: 3px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+#guessButton:hover, #guessButton:focus {
+    background-color: #29457f;
+    outline: none;
+}
+
+#guessButton:disabled {
+    cursor: no-drop;
+    color: #dddddd;
+    background-color: #808080;
+    opacity: 0.7;
+}
