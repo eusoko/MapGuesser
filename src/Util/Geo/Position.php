@@ -21,11 +21,16 @@ class Position
         return $this->lng;
     }
 
-    public function toJson(): string
+    public function toArray(): array
     {
-        return json_encode([
+        return [
             'lat' => $this->lat,
             'lng' => $this->lng,
-        ]);
+        ];
+    }
+
+    public function toJson(): string
+    {
+        return json_encode($this->toArray());
     }
 }
