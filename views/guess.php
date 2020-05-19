@@ -14,7 +14,6 @@
         </div>
     </div>
     <script>
-        var realPosition = <?= $realPosition->toJson() ?>;
         var guessMapBounds = <?= $bounds->toJson() ?>;
     </script>
     <script src="static/js/mapguesser.js" async defer></script>
