@@ -10,7 +10,7 @@ class Bounds
 
     private bool $initialized = false;
 
-    public static function createWithPosition(Position $position) : Bounds
+    public static function createWithPosition(Position $position): Bounds
     {
         $instance = new static();
 
@@ -19,7 +19,7 @@ class Bounds
         return $instance;
     }
 
-    public static function createDirectly(float $southLat, $westLng, $northLat, $eastLng) : Bounds
+    public static function createDirectly(float $southLat, $westLng, $northLat, $eastLng): Bounds
     {
         $instance = new static();
 
