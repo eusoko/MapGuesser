@@ -75,7 +75,7 @@ button:disabled {
     transition-delay: 0s;
 }
 
-#guess #guessMap {
+#guess > #guessMap {
     height: 115px;
     width: 100%;
     transition-property: height;
@@ -84,7 +84,7 @@ button:disabled {
     border-radius: 3px;
 }
 
-#guess:hover #guessMap {
+#guess:hover > #guessMap {
     height: 315px;
     transition-delay: 0s;
 }
@@ -122,12 +122,33 @@ button:disabled {
 #resultInfo {
     height: 30%;
     width: 100%;
-    padding: 20px;
+    padding: 10px 20px;
     text-align: center;
     box-sizing: border-box;
 }
 
+#resultInfo > div {
+    height: 25%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 #resultInfo p {
-    margin-bottom: 20px;
     font-size: 24px;
+}
+
+#scoreBarBase {
+    height: 20px;
+    width: 60%;
+    margin: 0 auto;
+    background-color: #eeeeee;
+    border-radius: 3px;
+}
+
+#scoreBar {
+    height: 100%;
+    transition-property: width;
+    transition-duration: 1.0s;
 }

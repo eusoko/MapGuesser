@@ -2,6 +2,8 @@
 
 class Bounds
 {
+    const ONE_DEGREE_OF_LATITUDE_IN_METER = 111132.954;
+
     private float $southLat;
     private float $westLng;
 
@@ -19,7 +21,7 @@ class Bounds
         return $instance;
     }
 
-    public static function createDirectly(float $southLat, $westLng, $northLat, $eastLng): Bounds
+    public static function createDirectly(float $southLat, float $westLng, float $northLat, float $eastLng): Bounds
     {
         $instance = new static();
 
@@ -59,6 +61,18 @@ class Bounds
         if ($lng > $this->eastLng) {
             $this->eastLng = $lng;
         }
+    }
+
+    public function calculateApproximateArea(): float
+    {
+        $dLat = $this->northLat - $this->southLat;
+        $dLng = $this->eastLng - $this->westLng;
+
+        $m = $dLat * static::ONE_DEGREE_OF_LATITUDE_IN_METER;
+        $a = $dLng * static::ONE_DEGREE_OF_LATITUDE_IN_METER * cos(deg2rad($this->northLat));
+        $c = $dLng * static::ONE_DEGREE_OF_LATITUDE_IN_METER * cos(deg2rad($this->southLat));
+
+        return $m * ($a + $c) / 2;
     }
 
     public function toJson(): string
