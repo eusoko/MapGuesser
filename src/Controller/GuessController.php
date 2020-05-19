@@ -2,13 +2,13 @@
 
 use MapGuesser\Util\Geo\Bounds;
 use MapGuesser\Util\Geo\Position;
+use MapGuesser\View\HtmlView;
+use MapGuesser\View\ViewBase;
 use mysqli;
 
-class GuessController extends BaseController
+class GuessController implements ControllerInterface
 {
-    protected string $view = 'guess';
-
-    protected function operate() : void
+    public function run(): ViewBase
     {
         $mysql = new mysqli($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME']);
 
@@ -29,6 +29,7 @@ class GuessController extends BaseController
         $realPosition = new Position($place['lat'], $place['lng']);
         $bounds = Bounds::createDirectly($map['bound_south_lat'], $map['bound_west_lng'], $map['bound_north_lat'], $map['bound_east_lng']);
 
-        $this->variables = compact('realPosition', 'bounds');
+        $data = compact('bounds');
+        return new HtmlView('guess', $data);
     }
 }
