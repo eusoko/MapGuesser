@@ -8,9 +8,16 @@ switch($url) {
     case '/':
         $controller = new MapGuesser\Controller\GuessController();
         break;
+    case '/getNewPosition.json':
+        $controller = new MapGuesser\Controller\GetNewPosition();
+        break;
     default:
         echo 'Error 404';
         die;
 }
 
-echo $controller->render();
+$view = $controller->run();
+
+header('Content-Type: ' . $view->getContentType() . '; charset=UTF-8');
+
+echo $view->render();
