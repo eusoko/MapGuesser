@@ -17,11 +17,22 @@
     <div id="result">
         <div id="resultMap"></div>
         <div id="resultInfo">
-            <p>You were <span id="distance" class="bold"></span> close.</p>
-            <button id="continueButton">Continue</button>
+            <div>
+                <p>You were <span id="distance" class="bold"></span> close.</p>
+            </div>
+            <div>
+                <p>You earned <span id="score" class="bold"></span> points.</p>
+            </div>
+            <div>
+                <div id="scoreBarBase"><div id="scoreBar"></div></div>
+            </div>
+            <div>
+                <button id="continueButton">Continue</button>
+            </div>
         </div>
     </div>
     <script>
+        var mapArea = <?= $bounds->calculateApproximateArea() ?>;
         var guessMapBounds = <?= $bounds->toJson() ?>;
     </script>
     <script src="static/js/mapguesser.js" async defer></script>
