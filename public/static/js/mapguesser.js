@@ -11,15 +11,14 @@ var Util = {
         var lat2 = Math.deg2rad(position2.lat);
         var lng2 = Math.deg2rad(position2.lng);
 
-        var latDelta = lat2 - lat1;
-        var lonDelta = lng2 - lng1;
+        var angleCos = Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) +
+            Math.sin(lat1) * Math.sin(lat2);
 
-        var angle = 2 * Math.asin(
-            Math.sqrt(
-                Math.pow(Math.sin(latDelta / 2), 2) +
-                Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(lonDelta / 2), 2)
-            )
-        );
+        if (angleCos > 1.0) {
+            angleCos = 1.0;
+        }
+
+        var angle = Math.acos(angleCos);
 
         return angle * Util.EARTH_RADIUS_IN_METER;
     },
