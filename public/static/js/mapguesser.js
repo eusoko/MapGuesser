@@ -5,6 +5,8 @@ Math.deg2rad = function (deg) {
 var Util = {
     EARTH_RADIUS_IN_METER: 6371000,
 
+    MAX_SCORE: 1000,
+
     calculateDistance: function (position1, position2) {
         var lat1 = Math.deg2rad(position1.lat);
         var lng1 = Math.deg2rad(position1.lng);
@@ -33,6 +35,27 @@ var Util = {
         } else {
             return Number.parseFloat(distance / 1000).toFixed(0) + ' km';
         }
+    },
+
+    calculateScore: function (distance) {
+        var goodness = 1.0 - distance / Math.sqrt(mapArea);
+
+        return Math.pow(this.MAX_SCORE, goodness);
+    },
+
+    calculateScoreBarProperties: function (score) {
+        var percent = Math.round((score / this.MAX_SCORE) * 100);
+
+        var color;
+        if (percent >= 90) {
+            color = '#11ca00';
+        } else if (percent >= 10) {
+            color = '#ea9000';
+        } else {
+            color = '#ca1100';
+        }
+
+        return { width: percent + '%', backgroundColor: color };
     }
 };
 
@@ -189,9 +212,20 @@ document.getElementById('guessButton').onclick = function () {
     });
 
     document.getElementById('distance').innerHTML = Util.printDistanceForHuman(distance);
+
+    var score = Util.calculateScore(distance);
+    var scoreBarProperties = Util.calculateScoreBarProperties(score);
+
+    document.getElementById('score').innerHTML = Number.parseFloat(score).toFixed(0);
+
+    var scoreBar = document.getElementById('scoreBar');
+    scoreBar.style.backgroundColor = scoreBarProperties.backgroundColor;
+    scoreBar.style.width = scoreBarProperties.width;
 }
 
 document.getElementById('continueButton').onclick = function () {
+    document.getElementById('scoreBar').style.width = '0';
+
     resultMarkers.real.setMap(null);
     resultMarkers.real = null;
     resultMarkers.guess.setMap(null);
