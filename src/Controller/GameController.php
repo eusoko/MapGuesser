@@ -6,7 +6,7 @@ use MapGuesser\View\HtmlView;
 use MapGuesser\View\ViewBase;
 use mysqli;
 
-class GuessController implements ControllerInterface
+class GameController implements ControllerInterface
 {
     public function run(): ViewBase
     {
@@ -30,6 +30,6 @@ class GuessController implements ControllerInterface
         $bounds = Bounds::createDirectly($map['bound_south_lat'], $map['bound_west_lng'], $map['bound_north_lat'], $map['bound_east_lng']);
 
         $data = compact('bounds');
-        return new HtmlView('guess', $data);
+        return new HtmlView('game', $data);
     }
 }
