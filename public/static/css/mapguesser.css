@@ -48,6 +48,18 @@ button:disabled {
     opacity: 0.7;
 }
 
+#loading {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    top: 50%;
+    left: 50%;
+    margin-top: -20px;
+    margin-left: -20px;
+    z-index: 2;
+    visibility: visible;
+}
+
 #panorama {
     height: 100%;
     width: 100%;
@@ -151,5 +163,5 @@ button:disabled {
     height: 100%;
     width: 0;
     transition-property: width;
-    transition-duration: 1.0s;
+    transition-duration: 2.0s;
 }
