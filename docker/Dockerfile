@@ -4,7 +4,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Install Apache, PHP and further necessary packages
 RUN apt update
-RUN apt install -y curl git apache2 \
+RUN apt install -y curl git mariadb-client apache2 \
     php-apcu php-xdebug php7.4-cli php7.4-fpm php7.4-mbstring php7.4-mysql php7.4-zip
 
 # Configure Apache with PHP
