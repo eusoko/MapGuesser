@@ -13,7 +13,6 @@ services:
         volumes:
             - mysql:/var/lib/mysql
         environment:
-            #TZ: Europe/Budapest
             MYSQL_ROOT_PASSWORD: 'root'
             MYSQL_DATABASE: 'mapguesser'
             MYSQL_USER: 'mapguesser'
