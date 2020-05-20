@@ -162,6 +162,7 @@ function loadPano(data, status) {
         return;
     }
 
+    panorama.setPov({heading: 0, pitch: 0, zoom: 1});
     panorama.setPano(data.location.pano);
 }
 
