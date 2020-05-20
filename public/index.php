@@ -3,6 +3,7 @@
 require '../main.php';
 
 // very basic routing
+$host = $_SERVER["REQUEST_SCHEME"] . '://' . $_SERVER["SERVER_NAME"];
 $url = $_SERVER['REQUEST_URI'];
 switch($url) {
     case '/game':
@@ -11,6 +12,9 @@ switch($url) {
     case '/getNewPosition.json':
         $controller = new MapGuesser\Controller\GetNewPosition();
         break;
+    case '/':
+        header('Location: ' . $host  . '/game', true, 302);
+        die;
     default:
         echo 'Error 404';
         die;
