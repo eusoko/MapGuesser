@@ -14,9 +14,15 @@ class GetNewPosition implements ControllerInterface
         // demo map
         $mapId = 1;
 
-        // using RAND() for the time being, could be changed in the future
-        $stmt = $mysql->prepare('SELECT lat, lng FROM places WHERE map_id=? ORDER BY RAND() LIMIT 1');
+        $stmt = $mysql->prepare('SELECT COUNT(*) AS num FROM places WHERE map_id=?');
         $stmt->bind_param("i", $mapId);
+        $stmt->execute();
+        $numberOfPlaces = $stmt->get_result()->fetch_assoc()['num'];
+
+        $randomOffset = random_int(0, $numberOfPlaces-1);
+
+        $stmt = $mysql->prepare('SELECT lat, lng FROM places WHERE map_id=? ORDER BY id LIMIT 1 OFFSET ?');
+        $stmt->bind_param("ii", $mapId, $randomOffset);
         $stmt->execute();
         $place = $stmt->get_result()->fetch_assoc();
 
