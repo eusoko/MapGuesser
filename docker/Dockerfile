@@ -4,12 +4,8 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Install Apache, PHP and further necessary packages
 RUN apt update
-RUN apt install -y curl git apache2 \
+RUN apt install -y curl git mariadb-client apache2 \
     php-apcu php-xdebug php7.4-cli php7.4-fpm php7.4-mbstring php7.4-mysql php7.4-zip
-
-# Configure tzdata
-#RUN ln -fs /usr/share/zoneinfo/Europe/Budapest /etc/localtime
-#RUN dpkg-reconfigure --frontend noninteractive tzdata
 
 # Configure Apache with PHP
 RUN mkdir -p /run/php
@@ -23,6 +19,12 @@ RUN echo "xdebug.remote_connect_back = 1" >> /etc/php/7.4/mods-available/xdebug.
 # Install Composer
 COPY scripts/install-composer.sh install-composer.sh
 RUN ./install-composer.sh
+
+# Install Node.js and required packages
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+RUN apt install -y nodejs
+RUN npm install -g uglify-js
+RUN npm install -g clean-css-cli
 
 EXPOSE 80
 VOLUME /var/www/mapguesser

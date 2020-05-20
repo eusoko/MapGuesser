@@ -1,7 +1,63 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+}
+
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+}
+
+p, button {
+    font-family: 'Roboto', sans-serif;
+}
+
+p {
+    font-weight: 300;
+    font-size: 12px;
+}
+
+.bold {
+    font-weight: 500;
+}
+
+button {
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    color: #ffffff;
+    background-color: #5e77aa;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 3px;
+}
+
+button:hover, button:focus {
+    background-color: #29457f;
+    outline: none;
+}
+
+button:disabled {
+    cursor: no-drop;
+    color: #dddddd;
+    background-color: #808080;
+    opacity: 0.7;
+}
+
+#loading {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    top: 50%;
+    left: 50%;
+    margin-top: -20px;
+    margin-left: -20px;
+    z-index: 2;
+    visibility: visible;
 }
 
 #panorama {
@@ -18,6 +74,7 @@ html, body {
     height: 150px;
     opacity: 0.5;
     z-index: 2;
+    visibility: visible;
     transition-property: width, height, opacity;
     transition-duration: 0.1s;
     transition-delay: 0.8s;
@@ -26,11 +83,11 @@ html, body {
 #guess:hover {
     width: 500px;
     height: 350px;
-    opacity: 1.0;
+    opacity: 0.95;
     transition-delay: 0s;
 }
 
-#guess #guessMap {
+#guess > #guessMap {
     height: 115px;
     width: 100%;
     transition-property: height;
@@ -39,7 +96,7 @@ html, body {
     border-radius: 3px;
 }
 
-#guess:hover #guessMap {
+#guess:hover > #guessMap {
     height: 315px;
     transition-delay: 0s;
 }
@@ -50,26 +107,61 @@ html, body {
 }
 
 #guessButton {
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #5e77aa;
-    border: none;
-    border-radius: 3px;
+    padding: 0;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
 }
 
-#guessButton:hover, #guessButton:focus {
-    background-color: #29457f;
-    outline: none;
+#result {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    right: 50px;
+    bottom: 50px;
+    opacity: 0.95;
+    z-index: 2;
+    visibility: hidden;
+    background-color: #ffffff;
+    border-radius: 3px;
 }
 
-#guessButton:disabled {
-    cursor: no-drop;
-    color: #dddddd;
-    background-color: #808080;
-    opacity: 0.7;
+#resultMap {
+    height: 70%;
+    width: 100%;
+}
+
+#resultInfo {
+    height: 30%;
+    width: 100%;
+    padding: 10px 20px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+#resultInfo > div {
+    height: 25%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#resultInfo p {
+    font-size: 24px;
+}
+
+#scoreBarBase {
+    height: 20px;
+    width: 60%;
+    margin: 0 auto;
+    background-color: #eeeeee;
+    border-radius: 3px;
+}
+
+#scoreBar {
+    height: 100%;
+    width: 0;
+    transition-property: width;
+    transition-duration: 2.0s;
 }

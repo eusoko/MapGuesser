@@ -2,7 +2,9 @@
 
 require 'vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+const ROOT = __DIR__;
+
+$dotenv = Dotenv\Dotenv::createImmutable(ROOT);
 $dotenv->load();
 
 if (!empty($_ENV['DEV'])) {
