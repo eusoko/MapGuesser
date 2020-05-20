@@ -38,7 +38,7 @@
             document.getElementById('loading').style.visibility = 'hidden';
 
             Core.panorama.setVisible(true);
-            Core.panorama.setPov({ heading: 0, pitch: 0, zoom: 1 });
+            Core.panorama.setPov({ heading: 0, pitch: 0, zoom: 0 });
             Core.panorama.setPano(data.location.pano);
         },
 
