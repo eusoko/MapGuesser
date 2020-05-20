@@ -7,6 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="loading">
+        <img src="static/img/loading.gif">
+    </div>
     <div id="panorama"></div>
     <div id="guess">
         <div id="guessMap"></div>

@@ -11,6 +11,10 @@
         googleLink: null,
 
         getNewPosition: function () {
+            Core.panorama.setVisible(false);
+
+            document.getElementById('loading').style.visibility = 'visible';
+
             var xhr = new XMLHttpRequest();
             xhr.responseType = 'json';
             xhr.onreadystatechange = function () {
@@ -31,6 +35,9 @@
                 return;
             }
 
+            document.getElementById('loading').style.visibility = 'hidden';
+
+            Core.panorama.setVisible(true);
             Core.panorama.setPov({ heading: 0, pitch: 0, zoom: 1 });
             Core.panorama.setPano(data.location.pano);
         },
