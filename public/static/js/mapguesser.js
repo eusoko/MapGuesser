@@ -172,6 +172,16 @@
 
     Core.getNewPosition();
 
+    document.getElementById('showGuessButton').onclick = function () {
+        this.style.visibility = 'hidden';
+        document.getElementById('guess').style.visibility = 'visible';
+    }
+
+    document.getElementById('closeGuessButton').onclick = function () {
+        document.getElementById('showGuessButton').style.visibility = null;
+        document.getElementById('guess').style.visibility = null;
+    }
+
     document.getElementById('guessButton').onclick = function () {
         if (!Core.guessMarker) {
             return;
@@ -231,15 +241,16 @@
     }
 
     document.getElementById('continueButton').onclick = function () {
-        document.getElementById('scoreBar').style.width = '0';
+        document.getElementById('scoreBar').style.width = null;
 
         Core.resultMarkers.real.setMap(null);
         Core.resultMarkers.real = null;
         Core.resultMarkers.guess.setMap(null);
         Core.resultMarkers.guess = null;
 
-        document.getElementById('guess').style.visibility = 'visible';
-        document.getElementById('result').style.visibility = 'hidden';
+        document.getElementById('showGuessButton').style.visibility = null;
+        document.getElementById('guess').style.visibility = null;
+        document.getElementById('result').style.visibility = null;
 
         Core.guessMap.fitBounds(guessMapBounds);
 
