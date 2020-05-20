@@ -149,6 +149,7 @@ button:disabled {
 
 #scoreBar {
     height: 100%;
+    width: 0;
     transition-property: width;
     transition-duration: 1.0s;
 }
