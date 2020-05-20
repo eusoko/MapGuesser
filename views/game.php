@@ -35,7 +35,7 @@
         var mapArea = <?= $bounds->calculateApproximateArea() ?>;
         var guessMapBounds = <?= $bounds->toJson() ?>;
     </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=<?= $_ENV['GOOGLE_MAPS_JS_API_KEY'] ?>"></script>
     <script src="static/js/mapguesser.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=<?= $_ENV['GOOGLE_MAPS_JS_API_KEY'] ?>&callback=initialize"></script>
 </body>
 </html>
