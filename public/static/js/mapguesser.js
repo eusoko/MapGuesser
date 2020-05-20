@@ -42,7 +42,7 @@
         },
 
         calculateScoreBarProperties: function (score) {
-            var percent = Math.round((score / Core.MAX_SCORE) * 100);
+            var percent = Math.ceil((score / Core.MAX_SCORE) * 100);
 
             var color;
             if (percent >= 90) {
