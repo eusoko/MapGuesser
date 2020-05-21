@@ -192,7 +192,7 @@ div.buttonContainer.bottom {
 
 @media screen and (min-width: 600px) {
     #showGuessButtonContainer {
-        visibility: hidden;
+        display: none;
     }
 
     #guess {
