@@ -9,6 +9,7 @@
         guessMarker: null,
         resultMap: null,
         resultMarkers: { guess: null, real: null },
+        resultLine: null,
         googleLink: null,
 
         getNewPosition: function () {
@@ -51,7 +52,7 @@
         calculateScore: function (distance) {
             var goodness = 1.0 - distance / Math.sqrt(mapArea);
 
-            return Math.pow(Core.MAX_SCORE, goodness);
+            return Math.round(Math.pow(Core.MAX_SCORE, goodness));
         },
 
         calculateScoreBarProperties: function (score) {
@@ -181,6 +182,48 @@
         clickableIcons: false,
     });
 
+    Core.resultMarkers.real = new google.maps.Marker({
+        map: Core.resultMap,
+        clickable: true,
+        draggable: false
+    });
+
+    Core.resultMarkers.real.addListener('click', function () {
+        window.open('https://www.google.com/maps/search/?api=1&query=' + this.getPosition().lat() + ',' + this.getPosition().lng(), '_blank');
+    });
+
+    Core.resultMarkers.guess = new google.maps.Marker({
+        map: Core.resultMap,
+        clickable: false,
+        draggable: false,
+        label: {
+            color: '#ffffff',
+            fontFamily: 'Roboto',
+            fontSize: '18px',
+            fontWeight: '500',
+            text: '?'
+        }
+    });
+
+    Core.resultLine = new google.maps.Polyline({
+        map: Core.resultMap,
+        geodesic: true,
+        strokeOpacity: 0,
+        icons: [{
+            icon: {
+                path: 'M 0,-1 0,1',
+                strokeOpacity: 1,
+                strokeWeight: 2,
+                scale: 2
+              },
+            offset: '0',
+            repeat: '10px'
+          }],
+        clickable: false,
+        draggable: false,
+        editable: false
+    });
+
     Core.getNewPosition();
 
     document.getElementById('showGuessButton').onclick = function () {
@@ -215,36 +258,20 @@
 
         Core.resultMap.fitBounds(resultBounds);
 
-        Core.resultMarkers.real = new google.maps.Marker({
-            map: Core.resultMap,
-            position: Core.realPosition,
-            clickable: true,
-            draggable: false
-        });
-        Core.resultMarkers.guess = new google.maps.Marker({
-            map: Core.resultMap,
-            position: guessedPosition,
-            clickable: false,
-            draggable: false,
-            label: {
-                color: '#ffffff',
-                fontFamily: 'Roboto',
-                fontSize: '18px',
-                fontWeight: '500',
-                text: '?'
-            }
-        });
+        Core.resultMarkers.real.setPosition(Core.realPosition);
+        Core.resultMarkers.guess.setPosition(guessedPosition);
 
-        Core.resultMarkers.real.addListener('click', function () {
-            window.open('https://www.google.com/maps/search/?api=1&query=' + Core.realPosition.lat + ',' + Core.realPosition.lng, '_blank');
-        });
+        Core.resultLine.setPath([
+            Core.realPosition,
+            guessedPosition
+        ]);
 
         document.getElementById('distance').innerHTML = Util.printDistanceForHuman(distance);
 
         var score = Core.calculateScore(distance);
         var scoreBarProperties = Core.calculateScoreBarProperties(score);
 
-        document.getElementById('score').innerHTML = Number.parseFloat(score).toFixed(0);
+        document.getElementById('score').innerHTML = score;
 
         var scoreBar = document.getElementById('scoreBar');
         scoreBar.style.backgroundColor = scoreBarProperties.backgroundColor;
@@ -253,11 +280,6 @@
 
     document.getElementById('continueButton').onclick = function () {
         document.getElementById('scoreBar').style.width = null;
-
-        Core.resultMarkers.real.setMap(null);
-        Core.resultMarkers.real = null;
-        Core.resultMarkers.guess.setMap(null);
-        Core.resultMarkers.guess = null;
 
         if (Core.adaptGuess) {
             document.getElementById('guess').classList.remove('adapt');
