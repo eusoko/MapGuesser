@@ -43,7 +43,8 @@
             }
 
             Core.panorama.setVisible(true);
-            Core.panorama.setPov({ heading: 0, pitch: 0, zoom: 0 });
+            Core.panorama.setPov({ heading: 0, pitch: 0 });
+            Core.panorama.setZoom(0);
             Core.panorama.setPano(data.location.pano);
         },
 
