@@ -140,6 +140,7 @@ div.buttonContainer.bottom {
     height: 24px;
     margin: 0 auto;
     background-color: #eeeeee;
+    border-radius: 3px;
 }
 
 #scoreBar {
