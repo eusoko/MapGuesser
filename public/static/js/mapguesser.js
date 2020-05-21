@@ -43,7 +43,8 @@
             }
 
             Core.panorama.setVisible(true);
-            Core.panorama.setPov({ heading: 0, pitch: 0, zoom: 0 });
+            Core.panorama.setPov({ heading: 0, pitch: 0 });
+            Core.panorama.setZoom(0);
             Core.panorama.setPano(data.location.pano);
         },
 
@@ -163,7 +164,8 @@
     Core.panorama = new google.maps.StreetViewPanorama(document.getElementById('panorama'), {
         disableDefaultUI: true,
         linksControl: true,
-        showRoadLabels: false
+        showRoadLabels: false,
+        motionTracking: false
     });
 
     Core.panorama.addListener('position_changed', function () {
