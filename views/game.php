@@ -27,17 +27,21 @@
     <div id="result">
         <div id="resultMap"></div>
         <div id="resultInfo">
-            <div>
+            <div id="distanceInfo">
                 <p>You were <span id="distance" class="bold"></span> close.</p>
+                <p class="bold">Game finished.</p>
             </div>
-            <div>
+            <div id="scoreInfo">
                 <p>You earned <span id="score" class="bold"></span> points.</p>
+                <p>You got <span id="scoreSum" class="bold"></span> points in total.</p>
             </div>
             <div>
                 <div id="scoreBarBase"><div id="scoreBar"></div></div>
             </div>
             <div>
                 <button id="continueButton">Continue</button>
+                <button id="showSummaryButton">Show summary</button>
+                <button id="startNewGameButton">Start new game</button>
             </div>
         </div>
     </div>
