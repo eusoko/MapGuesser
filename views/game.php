@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MapGuesser</title>
     <link href="static/css/mapguesser.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap" rel="stylesheet">
@@ -11,10 +12,16 @@
         <img src="static/img/loading.gif">
     </div>
     <div id="panorama"></div>
+    <div id="showGuessButtonContainer">
+        <button id="showGuessButton" class="block">Show guess map</button>
+    </div>
     <div id="guess">
+        <div id="closeGuessButtonContainer" class="buttonContainer top">
+            <button id="closeGuessButton" class="block gray">Close</button>
+        </div>
         <div id="guessMap"></div>
-        <div id="guessButtonContainer">
-            <button id="guessButton" disabled>Guess</button>
+        <div class="buttonContainer bottom">
+            <button id="guessButton" class="block" disabled>Guess</button>
         </div>
     </div>
     <div id="result">
