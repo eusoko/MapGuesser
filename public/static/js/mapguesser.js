@@ -164,7 +164,8 @@
     Core.panorama = new google.maps.StreetViewPanorama(document.getElementById('panorama'), {
         disableDefaultUI: true,
         linksControl: true,
-        showRoadLabels: false
+        showRoadLabels: false,
+        motionTracking: false
     });
 
     Core.panorama.addListener('position_changed', function () {
