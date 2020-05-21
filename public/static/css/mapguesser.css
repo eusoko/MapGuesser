@@ -66,11 +66,11 @@ div.buttonContainer {
 }
 
 div.buttonContainer.top {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 div.buttonContainer.bottom {
-    margin-top: 5px;
+    margin-top: 10px;
 }
 
 #loading {
@@ -92,7 +92,7 @@ div.buttonContainer.bottom {
 
 #guess {
     position: absolute;
-    bottom: 20px;
+    bottom: 30px;
     right: 20px;
     z-index: 2;
 }
@@ -162,7 +162,7 @@ div.buttonContainer.bottom {
     #showGuessButtonContainer {
         position: absolute;
         left: 20px;
-        bottom: 20px;
+        bottom: 30px;
         right: 20px;
         z-index: 2;
     }
@@ -175,14 +175,14 @@ div.buttonContainer.bottom {
     }
 
     #guessMap {
-        height: calc(100% - 80px);
+        height: calc(100% - 90px);
     }
 
     #result {
         top: 20px;
         left: 20px;
         right: 20px;
-        bottom: 20px;
+        bottom: 30px;
     }
 
     #scoreBarBase {
@@ -197,14 +197,14 @@ div.buttonContainer.bottom {
 
     #guess {
         width: 500px;
-        height: 350px;
+        height: 375px;
         opacity: 0.95;
     }
 
     #guess.adapt {
         top: initial;
         width: 250px;
-        height: 175px;
+        height: 200px;
         opacity: 0.5;
         transition-property: width, height, opacity;
         transition-duration: 0.1s;
@@ -213,7 +213,7 @@ div.buttonContainer.bottom {
 
     #guess.adapt:hover {
         width: 500px;
-        height: 350px;
+        height: 375px;
         opacity: 0.95;
         transition-delay: 0s;
     }
@@ -223,7 +223,7 @@ div.buttonContainer.bottom {
     }
 
     #guessMap {
-        height: calc(100% - 40px);
+        height: calc(100% - 45px);
     }
 
     #result {
@@ -237,7 +237,7 @@ div.buttonContainer.bottom {
         width: 60%;
     }
 
-     @media screen and (max-height: 389px) {
+     @media screen and (max-height: 424px) {
         #guess {
             top: 20px;
             height: initial;
