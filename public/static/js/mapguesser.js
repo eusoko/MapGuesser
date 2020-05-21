@@ -4,6 +4,7 @@
 
         realPosition: null,
         panorama: null,
+        adaptGuess: false,
         guessMap: null,
         guessMarker: null,
         resultMap: null,
@@ -36,6 +37,10 @@
             }
 
             document.getElementById('loading').style.visibility = 'hidden';
+
+            if (Core.adaptGuess) {
+                document.getElementById('guess').classList.add('adapt');
+            }
 
             Core.panorama.setVisible(true);
             Core.panorama.setPov({ heading: 0, pitch: 0, zoom: 0 });
@@ -119,6 +124,10 @@
             }
         }
     };
+
+    if (!('ontouchstart' in document.documentElement)) {
+        Core.adaptGuess = true;
+    }
 
     Core.guessMap = new google.maps.Map(document.getElementById('guessMap'), {
         disableDefaultUI: true,
@@ -247,6 +256,10 @@
         Core.resultMarkers.real = null;
         Core.resultMarkers.guess.setMap(null);
         Core.resultMarkers.guess = null;
+
+        if (Core.adaptGuess) {
+            document.getElementById('guess').classList.remove('adapt');
+        }
 
         document.getElementById('showGuessButton').style.visibility = null;
         document.getElementById('guess').style.visibility = null;

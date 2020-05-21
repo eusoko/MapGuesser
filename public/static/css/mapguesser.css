@@ -194,15 +194,22 @@ div.buttonContainer.bottom {
     }
 
     #guess {
+        width: 500px;
+        height: 350px;
+        opacity: 0.95;
+    }
+
+    #guess.adapt {
+        top: initial;
         width: 250px;
-        height: 150px;
+        height: 175px;
         opacity: 0.5;
         transition-property: width, height, opacity;
         transition-duration: 0.1s;
         transition-delay: 0.8s;
     }
 
-    #guess:hover {
+    #guess.adapt:hover {
         width: 500px;
         height: 350px;
         opacity: 0.95;
@@ -226,5 +233,17 @@ div.buttonContainer.bottom {
 
     #scoreBarBase {
         width: 60%;
+    }
+
+     @media screen and (max-height: 389px) {
+        #guess {
+            top: 20px;
+            height: initial;
+        }
+
+        #guess.adapt:hover {
+            top: 20px;
+            height: initial;
+        }
     }
 }
