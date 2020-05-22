@@ -298,8 +298,10 @@
             }
 
             setTimeout(function () {
-                Core.googleLink.title = 'Google Maps'
-                Core.googleLink.href = 'https://maps.google.com/maps'
+                if (Core.googleLink) {
+                    Core.googleLink.title = 'Google Maps';
+                    Core.googleLink.href = 'https://maps.google.com/maps';
+                }
             }, 1);
         },
 
