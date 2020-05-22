@@ -183,6 +183,7 @@
                 map: Core.map,
                 visible: !hidden,
                 position: realPosition,
+                title: 'Open in Google Maps',
                 zIndex: 2,
                 clickable: true,
                 draggable: false
