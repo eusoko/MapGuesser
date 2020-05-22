@@ -1,34 +1,112 @@
+'use strict';
+
 (function () {
     var Core = {
+        NUMBER_OF_ROUNDS: 5,
         MAX_SCORE: 1000,
 
+        rounds: [],
+        scoreSum: 0,
         realPosition: null,
         panorama: null,
-        adaptGuess: false,
         guessMap: null,
         guessMarker: null,
         resultMap: null,
-        resultMarkers: { guess: null, real: null },
-        resultLine: null,
+        adaptGuess: false,
         googleLink: null,
 
-        getNewPosition: function () {
-            Core.panorama.setVisible(false);
+        initialize: function () {
+            if (sessionStorage.rounds) {
+                var roundsLoaded = JSON.parse(sessionStorage.rounds);
+                for (var i = 0; i < roundsLoaded.length; ++i) {
+                    var round = roundsLoaded[i];
+                    Core.rounds.push({ realPosition: round.realPosition, guessPosition: round.guessPosition, realMarker: null, guessMarker: null, line: null });
+                    if (round.guessPosition) {
+                        Core.addRealGuessPair(round.realPosition, round.guessPosition);
+                    }
+                }
+            }
 
+            if (sessionStorage.scoreSum) {
+                Core.scoreSum = parseInt(sessionStorage.scoreSum);
+            }
+
+            if (Core.rounds.length > 0 && !Core.rounds[Core.rounds.length - 1].guessPosition) {
+                Core.realPosition = Core.rounds[Core.rounds.length - 1].realPosition;
+                Core.loadPositionInfo(Core.realPosition);
+            } else {
+                Core.startNewRound();
+            }
+        },
+
+        startNewGame: function () {
+            for (var i = 0; i < Core.rounds.length; ++i) {
+                var round = Core.rounds[i];
+
+                round.realMarker.setMap(null);
+                round.guessMarker.setMap(null);
+                round.line.setMap(null);
+            }
+
+            Core.rounds = [];
+            Core.scoreSum = 0;
+
+            var distanceInfo = document.getElementById('distanceInfo');
+            distanceInfo.children[0].style.display = null;
+            distanceInfo.children[1].style.display = null;
+            var scoreInfo = document.getElementById('scoreInfo');
+            scoreInfo.children[0].style.display = null;
+            scoreInfo.children[1].style.display = null;
+            document.getElementById('continueButton').style.display = null;
+            document.getElementById('startNewGameButton').style.display = null;
+
+            Core.prepareNewRound();
+        },
+
+        prepareNewRound: function () {
+            document.getElementById('scoreBar').style.width = null;
+
+            if (Core.adaptGuess) {
+                document.getElementById('guess').classList.remove('adapt');
+            }
+
+            document.getElementById('showGuessButton').style.visibility = null;
+            document.getElementById('guess').style.visibility = null;
+            document.getElementById('result').style.visibility = null;
+
+            Core.guessMap.fitBounds(guessMapBounds);
+
+            Core.startNewRound();
+        },
+
+        startNewRound: function () {
+            Core.rounds.push({ realPosition: null, guessPosition: null, realMarker: null, guessMarker: null, line: null });
+
+            Core.panorama.setVisible(false);
             document.getElementById('loading').style.visibility = 'visible';
 
+            Core.getNewPosition();
+        },
+
+        getNewPosition: function () {
             var xhr = new XMLHttpRequest();
             xhr.responseType = 'json';
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     Core.realPosition = this.response.position;
+                    Core.rounds[Core.rounds.length - 1].realPosition = this.response.position;
+                    Core.loadPositionInfo(this.response.position);
 
-                    var sv = new google.maps.StreetViewService();
-                    sv.getPanorama({ location: this.response.position, preference: google.maps.StreetViewPreference.NEAREST }, Core.loadPano);
+                    Core.saveToSession();
                 }
             };
             xhr.open('GET', 'getNewPosition.json', true);
             xhr.send();
+        },
+
+        loadPositionInfo: function (position) {
+            var sv = new google.maps.StreetViewService();
+            sv.getPanorama({ location: position, preference: google.maps.StreetViewPreference.NEAREST }, Core.loadPano);
         },
 
         loadPano: function (data, status) {
@@ -49,14 +127,111 @@
             Core.panorama.setPano(data.location.pano);
         },
 
+        evaluateGuess: function () {
+            var guessPosition = Core.guessMarker.getPosition().toJSON();
+            Core.rounds[Core.rounds.length - 1].guessPosition = guessPosition;
+
+            var distance = Util.calculateDistance(Core.realPosition, guessPosition);
+            var score = Core.calculateScore(distance);
+            Core.scoreSum += score;
+
+            Core.saveToSession();
+
+            Core.guessMarker.setMap(null);
+            Core.guessMarker = null;
+
+            document.getElementById('guess').style.visibility = 'hidden';
+            document.getElementById('result').style.visibility = 'visible';
+
+            Core.addRealGuessPair(Core.realPosition, guessPosition);
+
+            var resultBounds = new google.maps.LatLngBounds();
+            resultBounds.extend(Core.realPosition);
+            resultBounds.extend(guessPosition);
+            Core.resultMap.fitBounds(resultBounds);
+
+            document.getElementById('distance').innerHTML = Util.printDistanceForHuman(distance);
+            document.getElementById('score').innerHTML = score;
+
+            var scoreBarProperties = Core.calculateScoreBarProperties(score, Core.MAX_SCORE);
+            var scoreBar = document.getElementById('scoreBar');
+            scoreBar.style.backgroundColor = scoreBarProperties.backgroundColor;
+            scoreBar.style.width = scoreBarProperties.width;
+
+            if (Core.rounds.length == Core.NUMBER_OF_ROUNDS) {
+                document.getElementById('continueButton').style.display = 'none';
+                document.getElementById('showSummaryButton').style.display = 'block';
+            }
+        },
+
+        addRealGuessPair(realPosition, guessPosition) {
+            if (Core.rounds.length > 1) {
+                var lastRound = Core.rounds[Core.rounds.length - 2];
+
+                lastRound.realMarker.setVisible(false);
+                lastRound.guessMarker.setVisible(false);
+                lastRound.line.setVisible(false);
+            }
+
+            var round = Core.rounds[Core.rounds.length - 1];
+
+            round.realMarker = new google.maps.Marker({
+                map: Core.resultMap,
+                position: realPosition,
+                clickable: true,
+                draggable: false
+            });
+
+            round.realMarker.addListener('click', function () {
+                window.open('https://www.google.com/maps/search/?api=1&query=' + this.getPosition().toUrlValue(), '_blank');
+            });
+
+            round.guessMarker = new google.maps.Marker({
+                map: Core.resultMap,
+                position: guessPosition,
+                clickable: false,
+                draggable: false,
+                label: {
+                    color: '#ffffff',
+                    fontFamily: 'Roboto',
+                    fontSize: '18px',
+                    fontWeight: '500',
+                    text: '?'
+                }
+            });
+
+            round.line = new google.maps.Polyline({
+                map: Core.resultMap,
+                path: [
+                    realPosition,
+                    guessPosition
+                ],
+                geodesic: true,
+                strokeOpacity: 0,
+                icons: [{
+                    icon: {
+                        path: 'M 0,-1 0,1',
+                        strokeOpacity: 1,
+                        strokeWeight: 2,
+                        scale: 2
+                    },
+                    offset: '0',
+                    repeat: '10px'
+                }],
+                clickable: false,
+                draggable: false,
+                editable: false
+            });
+        },
+
         calculateScore: function (distance) {
             var goodness = 1.0 - distance / Math.sqrt(mapArea);
 
             return Math.round(Math.pow(Core.MAX_SCORE, goodness));
         },
 
-        calculateScoreBarProperties: function (score) {
-            var percent = Math.floor((score / Core.MAX_SCORE) * 100);
+        calculateScoreBarProperties: function (score, maxScore) {
+            var percent = Math.floor((score / maxScore) * 100);
 
             var color;
             if (percent >= 90) {
@@ -68,6 +243,39 @@
             }
 
             return { width: percent + '%', backgroundColor: color };
+        },
+
+        showSummary: function () {
+            var distanceInfo = document.getElementById('distanceInfo');
+            distanceInfo.children[0].style.display = 'none';
+            distanceInfo.children[1].style.display = 'block';
+            var scoreInfo = document.getElementById('scoreInfo');
+            scoreInfo.children[0].style.display = 'none';
+            scoreInfo.children[1].style.display = 'block';
+            document.getElementById('showSummaryButton').style.display = null;
+            document.getElementById('startNewGameButton').style.display = 'block';
+
+            var resultBounds = new google.maps.LatLngBounds();
+
+            for (var i = 0; i < Core.rounds.length; ++i) {
+                var round = Core.rounds[i];
+
+                round.realMarker.setVisible(true);
+                round.guessMarker.setVisible(true);
+                round.line.setVisible(true);
+
+                resultBounds.extend(round.realPosition);
+                resultBounds.extend(round.guessPosition);
+            }
+
+            Core.resultMap.fitBounds(resultBounds);
+
+            document.getElementById('scoreSum').innerHTML = Core.scoreSum;
+
+            var scoreBarProperties = Core.calculateScoreBarProperties(Core.scoreSum, Core.NUMBER_OF_ROUNDS * Core.MAX_SCORE);
+            var scoreBar = document.getElementById('scoreBar');
+            scoreBar.style.backgroundColor = scoreBarProperties.backgroundColor;
+            scoreBar.style.width = scoreBarProperties.width;
         },
 
         rewriteGoogleLink: function () {
@@ -86,6 +294,23 @@
                 Core.googleLink.title = 'Google Maps'
                 Core.googleLink.href = 'https://maps.google.com/maps'
             }, 1);
+        },
+
+        saveToSession: function () {
+            if (Core.rounds.length == Core.NUMBER_OF_ROUNDS && Core.rounds[Core.rounds.length - 1].guessPosition) {
+                sessionStorage.removeItem('rounds');
+                sessionStorage.removeItem('scoreSum');
+                return;
+            }
+
+            var roundsToSave = [];
+            for (var i = 0; i < Core.rounds.length; ++i) {
+                var round = Core.rounds[i];
+                roundsToSave.push({ realPosition: round.realPosition, guessPosition: round.guessPosition });
+            }
+
+            sessionStorage.setItem('rounds', JSON.stringify(roundsToSave));
+            sessionStorage.setItem('scoreSum', String(Core.scoreSum));
         }
     };
 
@@ -182,49 +407,7 @@
         clickableIcons: false,
     });
 
-    Core.resultMarkers.real = new google.maps.Marker({
-        map: Core.resultMap,
-        clickable: true,
-        draggable: false
-    });
-
-    Core.resultMarkers.real.addListener('click', function () {
-        window.open('https://www.google.com/maps/search/?api=1&query=' + this.getPosition().lat() + ',' + this.getPosition().lng(), '_blank');
-    });
-
-    Core.resultMarkers.guess = new google.maps.Marker({
-        map: Core.resultMap,
-        clickable: false,
-        draggable: false,
-        label: {
-            color: '#ffffff',
-            fontFamily: 'Roboto',
-            fontSize: '18px',
-            fontWeight: '500',
-            text: '?'
-        }
-    });
-
-    Core.resultLine = new google.maps.Polyline({
-        map: Core.resultMap,
-        geodesic: true,
-        strokeOpacity: 0,
-        icons: [{
-            icon: {
-                path: 'M 0,-1 0,1',
-                strokeOpacity: 1,
-                strokeWeight: 2,
-                scale: 2
-              },
-            offset: '0',
-            repeat: '10px'
-          }],
-        clickable: false,
-        draggable: false,
-        editable: false
-    });
-
-    Core.getNewPosition();
+    Core.initialize();
 
     document.getElementById('showGuessButton').onclick = function () {
         this.style.visibility = 'hidden';
@@ -241,56 +424,20 @@
             return;
         }
 
-        var guessedPosition = Core.guessMarker.getPosition();
-
         this.disabled = true;
-        Core.guessMarker.setMap(null);
-        Core.guessMarker = null;
 
-        var distance = Util.calculateDistance(Core.realPosition, { lat: guessedPosition.lat(), lng: guessedPosition.lng() });
-
-        document.getElementById('guess').style.visibility = 'hidden';
-        document.getElementById('result').style.visibility = 'visible';
-
-        var resultBounds = new google.maps.LatLngBounds();
-        resultBounds.extend(Core.realPosition);
-        resultBounds.extend(guessedPosition);
-
-        Core.resultMap.fitBounds(resultBounds);
-
-        Core.resultMarkers.real.setPosition(Core.realPosition);
-        Core.resultMarkers.guess.setPosition(guessedPosition);
-
-        Core.resultLine.setPath([
-            Core.realPosition,
-            guessedPosition
-        ]);
-
-        document.getElementById('distance').innerHTML = Util.printDistanceForHuman(distance);
-
-        var score = Core.calculateScore(distance);
-        var scoreBarProperties = Core.calculateScoreBarProperties(score);
-
-        document.getElementById('score').innerHTML = score;
-
-        var scoreBar = document.getElementById('scoreBar');
-        scoreBar.style.backgroundColor = scoreBarProperties.backgroundColor;
-        scoreBar.style.width = scoreBarProperties.width;
+        Core.evaluateGuess();
     }
 
     document.getElementById('continueButton').onclick = function () {
-        document.getElementById('scoreBar').style.width = null;
+        Core.prepareNewRound();
+    }
 
-        if (Core.adaptGuess) {
-            document.getElementById('guess').classList.remove('adapt');
-        }
+    document.getElementById('showSummaryButton').onclick = function () {
+        Core.showSummary();
+    }
 
-        document.getElementById('showGuessButton').style.visibility = null;
-        document.getElementById('guess').style.visibility = null;
-        document.getElementById('result').style.visibility = null;
-
-        Core.guessMap.fitBounds(guessMapBounds);
-
-        Core.getNewPosition();
+    document.getElementById('startNewGameButton').onclick = function () {
+        Core.startNewGame();
     }
 })();

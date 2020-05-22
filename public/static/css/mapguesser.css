@@ -138,6 +138,10 @@ div.buttonContainer.bottom {
     font-size: 24px;
 }
 
+#distanceInfo > p:nth-child(2), #scoreInfo > p:nth-child(2) {
+    display: none;
+}
+
 #scoreBarBase {
     height: 24px;
     margin: 0 auto;
@@ -151,6 +155,10 @@ div.buttonContainer.bottom {
     border-radius: 3px;
     transition-property: width;
     transition-duration: 2.0s;
+}
+
+#showSummaryButton, #startNewGameButton {
+    display: none;
 }
 
 @media screen and (max-width: 599px) {

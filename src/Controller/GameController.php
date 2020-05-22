@@ -20,13 +20,6 @@ class GameController implements ControllerInterface
         $stmt->execute();
         $map = $stmt->get_result()->fetch_assoc();
 
-        // using RAND() for the time being, could be changed in the future
-        $stmt = $mysql->prepare('SELECT lat, lng FROM places WHERE map_id=? ORDER BY RAND() LIMIT 1');
-        $stmt->bind_param("i", $mapId);
-        $stmt->execute();
-        $place = $stmt->get_result()->fetch_assoc();
-
-        $realPosition = new Position($place['lat'], $place['lng']);
         $bounds = Bounds::createDirectly($map['bound_south_lat'], $map['bound_west_lng'], $map['bound_north_lat'], $map['bound_east_lng']);
 
         $data = compact('bounds');
