@@ -20,12 +20,9 @@
             <button id="closeGuessButton" class="block gray">Close</button>
         </div>
         <div id="guessMap"></div>
-        <div class="buttonContainer bottom">
+        <div id="guessButtonContainer" class="buttonContainer bottom">
             <button id="guessButton" class="block" disabled>Guess</button>
         </div>
-    </div>
-    <div id="result">
-        <div id="resultMap"></div>
         <div id="resultInfo">
             <div id="distanceInfo">
                 <p>You were <span id="distance" class="bold"></span> close.</p>
@@ -36,7 +33,9 @@
                 <p>You got <span id="scoreSum" class="bold"></span> points in total.</p>
             </div>
             <div>
-                <div id="scoreBarBase"><div id="scoreBar"></div></div>
+                <div id="scoreBarBase">
+                    <div id="scoreBar"></div>
+                </div>
             </div>
             <div>
                 <button id="continueButton">Continue</button>
