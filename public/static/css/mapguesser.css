@@ -21,6 +21,10 @@ p {
     font-size: 12px;
 }
 
+.mono {
+    font-family: 'Roboto Mono', monospace;
+}
+
 .bold {
     font-weight: 500;
 }
@@ -84,6 +88,24 @@ div.buttonContainer.bottom {
     z-index: 3;
 }
 
+#roundInfo {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 8px;
+    background-color: #eeeeee;
+    border: solid 1px #555555;
+    border-radius: 3px;
+    opacity: 0.95;
+    z-index: 2;
+}
+
+#roundInfo p {
+    font-size: 16px;
+}
+
 #panorama {
     height: 100%;
     width: 100%;
@@ -119,6 +141,8 @@ div.buttonContainer.bottom {
     text-align: center;
     box-sizing: border-box;
     background-color: #ffffff;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
     display: none;
 }
 
@@ -177,7 +201,7 @@ div.buttonContainer.bottom {
 
     #guess {
         left: 20px;
-        top: 20px;
+        top: 40px;
         opacity: 0.95;
         visibility: hidden;
     }
@@ -230,7 +254,7 @@ div.buttonContainer.bottom {
     #guess.result {
         width: initial;
         height: initial;
-        top: 50px;
+        top: 40px;
         left: 50px;
         right: 50px;
         bottom: 50px;
@@ -242,12 +266,12 @@ div.buttonContainer.bottom {
 
     @media screen and (max-height: 424px) {
         #guess {
-            top: 20px;
+            top: 40px;
             height: initial;
         }
 
         #guess.adapt:hover {
-            top: 20px;
+            top: 40px;
             height: initial;
         }
     }
