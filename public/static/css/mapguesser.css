@@ -43,7 +43,7 @@ button:enabled:hover, button:enabled:focus {
 }
 
 button:disabled {
-    cursor: no-drop;
+    cursor: not-allowed;
     color: #dddddd;
     opacity: 0.7;
 }
