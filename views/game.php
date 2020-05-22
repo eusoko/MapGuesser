@@ -19,7 +19,7 @@
         <div id="closeGuessButtonContainer" class="buttonContainer top">
             <button id="closeGuessButton" class="block gray">Close</button>
         </div>
-        <div id="guessMap"></div>
+        <div id="map"></div>
         <div id="guessButtonContainer" class="buttonContainer bottom">
             <button id="guessButton" class="block" disabled>Guess</button>
         </div>

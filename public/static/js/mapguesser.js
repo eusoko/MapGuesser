@@ -9,7 +9,7 @@
         scoreSum: 0,
         realPosition: null,
         panorama: null,
-        guessMap: null,
+        map: null,
         guessMarker: null,
         adaptGuess: false,
         googleLink: null,
@@ -77,10 +77,10 @@
             document.getElementById('guess').style.visibility = null;
             document.getElementById('guess').classList.remove('result')
 
-            Core.guessMap.setOptions({
+            Core.map.setOptions({
                 draggableCursor: 'crosshair'
             });
-            Core.guessMap.fitBounds(guessMapBounds);
+            Core.map.fitBounds(guessMapBounds);
 
             Core.startNewRound();
         },
@@ -157,10 +157,10 @@
             resultBounds.extend(Core.realPosition);
             resultBounds.extend(guessPosition);
 
-            Core.guessMap.setOptions({
+            Core.map.setOptions({
                 draggableCursor: 'grab'
             });
-            Core.guessMap.fitBounds(resultBounds);
+            Core.map.fitBounds(resultBounds);
 
             document.getElementById('distance').innerHTML = Util.printDistanceForHuman(distance);
             document.getElementById('score').innerHTML = score;
@@ -180,7 +180,7 @@
             var round = Core.rounds[Core.rounds.length - 1];
 
             round.realMarker = new google.maps.Marker({
-                map: Core.guessMap,
+                map: Core.map,
                 visible: !hidden,
                 position: realPosition,
                 clickable: true,
@@ -192,7 +192,7 @@
             });
 
             round.guessMarker = new google.maps.Marker({
-                map: Core.guessMap,
+                map: Core.map,
                 visible: !hidden,
                 position: guessPosition,
                 clickable: false,
@@ -207,7 +207,7 @@
             });
 
             round.line = new google.maps.Polyline({
-                map: Core.guessMap,
+                map: Core.map,
                 visible: !hidden,
                 path: [
                     realPosition,
@@ -275,7 +275,7 @@
                 resultBounds.extend(round.guessPosition);
             }
 
-            Core.guessMap.fitBounds(resultBounds);
+            Core.map.fitBounds(resultBounds);
 
             document.getElementById('scoreSum').innerHTML = Core.scoreSum;
 
@@ -363,16 +363,16 @@
         Core.adaptGuess = true;
     }
 
-    Core.guessMap = new google.maps.Map(document.getElementById('guessMap'), {
+    Core.map = new google.maps.Map(document.getElementById('map'), {
         disableDefaultUI: true,
         clickableIcons: false,
         draggableCursor: 'crosshair',
         draggingCursor: 'grabbing'
     });
 
-    Core.guessMap.fitBounds(guessMapBounds);
+    Core.map.fitBounds(guessMapBounds);
 
-    Core.guessMap.addListener('click', function (e) {
+    Core.map.addListener('click', function (e) {
         if (Core.rounds[Core.rounds.length - 1].guessPosition) {
             return;
         }
@@ -383,7 +383,7 @@
         }
 
         Core.guessMarker = new google.maps.Marker({
-            map: Core.guessMap,
+            map: Core.map,
             position: e.latLng,
             clickable: false,
             draggable: true,

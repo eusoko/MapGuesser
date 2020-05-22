@@ -101,12 +101,12 @@ div.buttonContainer.bottom {
     display: none;
 }
 
-#guessMap {
+#map {
     width: 100%;
     border-radius: 3px;
 }
 
-#guess.result > #guessMap {
+#guess.result > #map {
     height: 70%;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
@@ -182,7 +182,7 @@ div.buttonContainer.bottom {
         visibility: hidden;
     }
 
-    #guessMap {
+    #map {
         height: calc(100% - 90px);
     }
 
@@ -223,7 +223,7 @@ div.buttonContainer.bottom {
         display: none;
     }
 
-    #guessMap {
+    #map {
         height: calc(100% - 45px);
     }
 
