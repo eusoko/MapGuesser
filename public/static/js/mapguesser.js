@@ -33,8 +33,13 @@
             if (Core.rounds.length > 0 && !Core.rounds[Core.rounds.length - 1].guessPosition) {
                 Core.realPosition = Core.rounds[Core.rounds.length - 1].realPosition;
                 Core.loadPositionInfo(Core.realPosition);
+
+                document.getElementById('currentRound').innerHTML = String(Core.rounds.length) + '/' + String(Core.NUMBER_OF_ROUNDS);
+                document.getElementById('currentScoreSum').innerHTML = String(Core.scoreSum) + '/' + String((Core.rounds.length-1) * Core.MAX_SCORE);
             } else {
                 Core.startNewRound();
+
+                document.getElementById('currentScoreSum').innerHTML = String(0);
             }
         },
 
@@ -60,6 +65,8 @@
             document.getElementById('startNewGameButton').style.display = null;
 
             Core.prepareNewRound();
+
+            document.getElementById('currentScoreSum').innerHTML = String(0);
         },
 
         prepareNewRound: function () {
@@ -90,6 +97,8 @@
 
             Core.panorama.setVisible(false);
             document.getElementById('loading').style.visibility = 'visible';
+
+            document.getElementById('currentRound').innerHTML = String(Core.rounds.length) + '/' + String(Core.NUMBER_OF_ROUNDS);
 
             Core.getNewPosition();
         },
@@ -140,6 +149,8 @@
             var distance = Util.calculateDistance(Core.realPosition, guessPosition);
             var score = Core.calculateScore(distance);
             Core.scoreSum += score;
+
+            document.getElementById('currentScoreSum').innerHTML = String(Core.scoreSum) + '/' + String(Core.rounds.length * Core.MAX_SCORE);
 
             Core.saveToSession();
 
@@ -277,7 +288,7 @@
 
             Core.map.fitBounds(resultBounds);
 
-            document.getElementById('scoreSum').innerHTML = Core.scoreSum;
+            document.getElementById('scoreSum').innerHTML = String(Core.scoreSum);
 
             var scoreBarProperties = Core.calculateScoreBarProperties(Core.scoreSum, Core.NUMBER_OF_ROUNDS * Core.MAX_SCORE);
             var scoreBar = document.getElementById('scoreBar');

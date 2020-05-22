@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MapGuesser</title>
     <link href="static/css/mapguesser.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&family=Roboto+Mono:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="loading">
         <img src="static/img/loading.gif">
+    </div>
+    <div id="roundInfo">
+        <p>Round: <span id="currentRound" class="mono bold"></span> | Score: <span id="currentScoreSum" class="mono bold"></span></p>
     </div>
     <div id="panorama"></div>
     <div id="showGuessButtonContainer">
