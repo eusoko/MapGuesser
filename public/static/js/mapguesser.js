@@ -267,6 +267,13 @@
             for (var i = 0; i < Core.rounds.length; ++i) {
                 var round = Core.rounds[i];
 
+                round.realMarker.setLabel({
+                    color: '#812519',
+                    fontFamily: 'Roboto',
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    text: String(i+1)
+                });
                 round.realMarker.setVisible(true);
                 round.guessMarker.setVisible(true);
                 round.line.setVisible(true);
