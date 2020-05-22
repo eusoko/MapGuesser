@@ -183,6 +183,7 @@
                 map: Core.map,
                 visible: !hidden,
                 position: realPosition,
+                zIndex: 2,
                 clickable: true,
                 draggable: false
             });
@@ -195,6 +196,7 @@
                 map: Core.map,
                 visible: !hidden,
                 position: guessPosition,
+                zIndex: 1,
                 clickable: false,
                 draggable: false,
                 label: {
