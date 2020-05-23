@@ -21,6 +21,10 @@ p {
     font-size: 12px;
 }
 
+.mono {
+    font-family: 'Roboto Mono', monospace;
+}
+
 .bold {
     font-weight: 500;
 }
@@ -43,12 +47,12 @@ button:enabled:hover, button:enabled:focus {
 }
 
 button:disabled {
-    cursor: no-drop;
+    cursor: not-allowed;
     color: #dddddd;
     opacity: 0.7;
 }
 
-button.block {
+button.fullWidth {
     padding: 0;
     width: 100%;
 }
@@ -63,6 +67,10 @@ button.gray:hover, button.gray:focus {
 
 div.buttonContainer {
     height: 35px;
+}
+
+div.buttonContainer > button {
+    margin: 0 auto;
 }
 
 div.buttonContainer.top {
@@ -84,6 +92,24 @@ div.buttonContainer.bottom {
     z-index: 3;
 }
 
+#roundInfo {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 8px;
+    background-color: #eeeeee;
+    border: solid 1px #555555;
+    border-radius: 3px;
+    opacity: 0.95;
+    z-index: 2;
+}
+
+#roundInfo p {
+    font-size: 16px;
+}
+
 #panorama {
     height: 100%;
     width: 100%;
@@ -97,37 +123,46 @@ div.buttonContainer.bottom {
     z-index: 2;
 }
 
-#guessMap {
+#guess > #continueButtonContainer {
+    display: none;
+}
+
+#guess.result > #closeGuessButtonContainer,
+#guess.result > #guessButtonContainer {
+    display: none;
+}
+
+#guess.result > #continueButtonContainer {
+    display: block;
+}
+
+#map {
     width: 100%;
     border-radius: 3px;
 }
 
-#result {
-    position: absolute;
-    opacity: 0.95;
-    z-index: 2;
-    visibility: hidden;
-    background-color: #ffffff;
-    border-radius: 3px;
-}
-
-#resultMap {
-    height: 70%;
-    width: 100%;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
+#guess.result > #map {
+    height: calc(100% - 170px);
 }
 
 #resultInfo {
-    height: 30%;
+    margin-top: 5px;
+    height: 120px;
     width: 100%;
-    padding: 10px 20px;
+    padding: 5px 20px;
     text-align: center;
     box-sizing: border-box;
+    background-color: #ffffff;
+    border-radius: 3px;
+    display: none;
+}
+
+#guess.result > #resultInfo {
+    display: block;
 }
 
 #resultInfo > div {
-    height: 25%;
+    height: 33.33%;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -177,20 +212,13 @@ div.buttonContainer.bottom {
 
     #guess {
         left: 20px;
-        top: 20px;
+        top: 40px;
         opacity: 0.95;
         visibility: hidden;
     }
 
-    #guessMap {
+    #map {
         height: calc(100% - 90px);
-    }
-
-    #result {
-        top: 20px;
-        left: 20px;
-        right: 20px;
-        bottom: 30px;
     }
 
     #scoreBarBase {
@@ -230,12 +258,14 @@ div.buttonContainer.bottom {
         display: none;
     }
 
-    #guessMap {
+    #map {
         height: calc(100% - 45px);
     }
 
-    #result {
-        top: 50px;
+    #guess.result {
+        width: initial;
+        height: initial;
+        top: 40px;
         left: 50px;
         right: 50px;
         bottom: 50px;
@@ -245,15 +275,21 @@ div.buttonContainer.bottom {
         width: 60%;
     }
 
-     @media screen and (max-height: 424px) {
+    @media screen and (max-height: 424px) {
         #guess {
-            top: 20px;
+            top: 40px;
             height: initial;
         }
 
         #guess.adapt:hover {
-            top: 20px;
+            top: 40px;
             height: initial;
+        }
+
+        #guess.result {
+            left: 20px;
+            right: 20px;
+            bottom: 30px;
         }
     }
 }

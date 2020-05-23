@@ -5,27 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MapGuesser</title>
     <link href="static/css/mapguesser.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&family=Roboto+Mono:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="loading">
         <img src="static/img/loading.gif">
     </div>
+    <div id="roundInfo">
+        <p>Round: <span id="currentRound" class="mono bold"></span> | Score: <span id="currentScoreSum" class="mono bold"></span></p>
+    </div>
     <div id="panorama"></div>
     <div id="showGuessButtonContainer">
-        <button id="showGuessButton" class="block">Show guess map</button>
+        <button id="showGuessButton" class="fullWidth">Show guess map</button>
     </div>
     <div id="guess">
         <div id="closeGuessButtonContainer" class="buttonContainer top">
-            <button id="closeGuessButton" class="block gray">Close</button>
+            <button id="closeGuessButton" class="fullWidth gray">Close</button>
         </div>
-        <div id="guessMap"></div>
-        <div class="buttonContainer bottom">
-            <button id="guessButton" class="block" disabled>Guess</button>
+        <div id="map"></div>
+        <div id="guessButtonContainer" class="buttonContainer bottom">
+            <button id="guessButton" class="fullWidth" disabled>Guess</button>
         </div>
-    </div>
-    <div id="result">
-        <div id="resultMap"></div>
         <div id="resultInfo">
             <div id="distanceInfo">
                 <p>You were <span id="distance" class="bold"></span> close.</p>
@@ -36,13 +36,15 @@
                 <p>You got <span id="scoreSum" class="bold"></span> points in total.</p>
             </div>
             <div>
-                <div id="scoreBarBase"><div id="scoreBar"></div></div>
+                <div id="scoreBarBase">
+                    <div id="scoreBar"></div>
+                </div>
             </div>
-            <div>
-                <button id="continueButton">Continue</button>
-                <button id="showSummaryButton">Show summary</button>
-                <button id="startNewGameButton">Start new game</button>
-            </div>
+        </div>
+        <div id="continueButtonContainer" class="buttonContainer bottom">
+            <button id="continueButton" class="fullWidth">Continue</button>
+            <button id="showSummaryButton" class="fullWidth">Show summary</button>
+            <button id="startNewGameButton" class="fullWidth">Start new game</button>
         </div>
     </div>
     <script>
