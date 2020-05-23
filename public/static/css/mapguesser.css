@@ -274,5 +274,11 @@ div.buttonContainer.bottom {
             top: 40px;
             height: initial;
         }
+
+        #guess.result {
+            left: 20px;
+            right: 20px;
+            bottom: 30px;
+        }
     }
 }
