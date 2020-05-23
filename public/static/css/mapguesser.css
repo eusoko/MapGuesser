@@ -52,7 +52,7 @@ button:disabled {
     opacity: 0.7;
 }
 
-button.block {
+button.fullWidth {
     padding: 0;
     width: 100%;
 }
@@ -67,6 +67,10 @@ button.gray:hover, button.gray:focus {
 
 div.buttonContainer {
     height: 35px;
+}
+
+div.buttonContainer > button {
+    margin: 0 auto;
 }
 
 div.buttonContainer.top {
@@ -119,8 +123,17 @@ div.buttonContainer.bottom {
     z-index: 2;
 }
 
-#guess.result > #closeGuessButtonContainer, #guess.result > #guessButtonContainer {
+#guess > #continueButtonContainer {
     display: none;
+}
+
+#guess.result > #closeGuessButtonContainer,
+#guess.result > #guessButtonContainer {
+    display: none;
+}
+
+#guess.result > #continueButtonContainer {
+    display: block;
 }
 
 #map {
@@ -129,20 +142,18 @@ div.buttonContainer.bottom {
 }
 
 #guess.result > #map {
-    height: 70%;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+    height: calc(100% - 170px);
 }
 
 #resultInfo {
-    height: 30%;
+    margin-top: 5px;
+    height: 120px;
     width: 100%;
-    padding: 10px 20px;
+    padding: 5px 20px;
     text-align: center;
     box-sizing: border-box;
     background-color: #ffffff;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+    border-radius: 3px;
     display: none;
 }
 
@@ -151,7 +162,7 @@ div.buttonContainer.bottom {
 }
 
 #resultInfo > div {
-    height: 25%;
+    height: 33.33%;
     width: 100%;
     display: flex;
     justify-content: center;
