@@ -16,15 +16,15 @@
     </div>
     <div id="panorama"></div>
     <div id="showGuessButtonContainer">
-        <button id="showGuessButton" class="block">Show guess map</button>
+        <button id="showGuessButton" class="fullWidth">Show guess map</button>
     </div>
     <div id="guess">
         <div id="closeGuessButtonContainer" class="buttonContainer top">
-            <button id="closeGuessButton" class="block gray">Close</button>
+            <button id="closeGuessButton" class="fullWidth gray">Close</button>
         </div>
         <div id="map"></div>
         <div id="guessButtonContainer" class="buttonContainer bottom">
-            <button id="guessButton" class="block" disabled>Guess</button>
+            <button id="guessButton" class="fullWidth" disabled>Guess</button>
         </div>
         <div id="resultInfo">
             <div id="distanceInfo">
@@ -40,11 +40,11 @@
                     <div id="scoreBar"></div>
                 </div>
             </div>
-            <div>
-                <button id="continueButton">Continue</button>
-                <button id="showSummaryButton">Show summary</button>
-                <button id="startNewGameButton">Start new game</button>
-            </div>
+        </div>
+        <div id="continueButtonContainer" class="buttonContainer bottom">
+            <button id="continueButton" class="fullWidth">Continue</button>
+            <button id="showSummaryButton" class="fullWidth">Show summary</button>
+            <button id="startNewGameButton" class="fullWidth">Start new game</button>
         </div>
     </div>
     <script>
