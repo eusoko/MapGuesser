@@ -187,7 +187,7 @@
             }
         },
 
-        addRealGuessPair(realPosition, guessPosition, hidden) {
+        addRealGuessPair: function (realPosition, guessPosition, hidden) {
             var round = Core.rounds[Core.rounds.length - 1];
 
             round.realMarker = new google.maps.Marker({
