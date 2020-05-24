@@ -9,7 +9,7 @@
 </head>
 <body>
     <div id="loading">
-        <img src="static/img/loading.gif">
+        <img src="static/img/loading.svg">
     </div>
     <div id="roundInfo">
         <p>Round: <span id="currentRound" class="mono bold"></span> | Score: <span id="currentScoreSum" class="mono bold"></span></p>
