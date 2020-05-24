@@ -23,8 +23,7 @@ RUN ./install-composer.sh
 # Install Node.js and required packages
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt install -y nodejs
-RUN npm install -g uglify-js
-RUN npm install -g clean-css-cli
+RUN npm install -g uglify-js clean-css-cli html-minifier
 
 EXPOSE 80
 VOLUME /var/www/mapguesser
