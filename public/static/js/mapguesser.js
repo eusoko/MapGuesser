@@ -195,7 +195,7 @@
                 visible: !hidden,
                 position: realPosition,
                 title: 'Open in Google Maps',
-                zIndex: 2,
+                zIndex: Core.rounds.length * 2,
                 clickable: true,
                 draggable: false
             });
@@ -208,7 +208,7 @@
                 map: Core.map,
                 visible: !hidden,
                 position: guessPosition,
-                zIndex: 1,
+                zIndex: Core.rounds.length,
                 clickable: false,
                 draggable: false,
                 label: {
