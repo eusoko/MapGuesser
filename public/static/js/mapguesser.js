@@ -121,7 +121,7 @@
 
         loadPositionInfo: function (position) {
             var sv = new google.maps.StreetViewService();
-            sv.getPanorama({ location: position, preference: google.maps.StreetViewPreference.NEAREST }, Core.loadPano);
+            sv.getPanorama({ location: position, preference: google.maps.StreetViewPreference.NEAREST, source: google.maps.StreetViewSource.OUTDOOR }, Core.loadPano);
         },
 
         loadPano: function (data, status) {
