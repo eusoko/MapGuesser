@@ -35,7 +35,7 @@
                 Core.loadPositionInfo(Core.realPosition);
 
                 document.getElementById('currentRound').innerHTML = String(Core.rounds.length) + '/' + String(Core.NUMBER_OF_ROUNDS);
-                document.getElementById('currentScoreSum').innerHTML = String(Core.scoreSum) + '/' + String((Core.rounds.length-1) * Core.MAX_SCORE);
+                document.getElementById('currentScoreSum').innerHTML = String(Core.scoreSum) + '/' + String((Core.rounds.length - 1) * Core.MAX_SCORE);
             } else {
                 Core.startNewRound();
 
@@ -195,7 +195,7 @@
                 visible: !hidden,
                 position: realPosition,
                 title: 'Open in Google Maps',
-                zIndex: 2,
+                zIndex: Core.rounds.length * 2,
                 clickable: true,
                 draggable: false
             });
@@ -208,7 +208,7 @@
                 map: Core.map,
                 visible: !hidden,
                 position: guessPosition,
-                zIndex: 1,
+                zIndex: Core.rounds.length,
                 clickable: false,
                 draggable: false,
                 label: {
@@ -286,7 +286,7 @@
                     fontFamily: 'Roboto',
                     fontSize: '16px',
                     fontWeight: '500',
-                    text: String(i+1)
+                    text: String(i + 1)
                 });
                 round.realMarker.setVisible(true);
                 round.guessMarker.setVisible(true);
@@ -470,4 +470,9 @@
     document.getElementById('startNewGameButton').onclick = function () {
         Core.startNewGame();
     }
+
+    window.onbeforeunload = function (e) {
+        e.preventDefault();
+        e.returnValue = '';
+    };
 })();
