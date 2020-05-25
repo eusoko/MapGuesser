@@ -5,12 +5,15 @@ require '../main.php';
 // very basic routing
 $host = $_SERVER["REQUEST_SCHEME"] . '://' . $_SERVER["SERVER_NAME"];
 $url = $_SERVER['REQUEST_URI'];
+if (($pos = strpos($url, '?')) !== false) {
+    $url = substr($url, 0, $pos);
+}
 switch($url) {
     case '/game':
         $controller = new MapGuesser\Controller\GameController();
         break;
-    case '/getNewPosition.json':
-        $controller = new MapGuesser\Controller\GetNewPosition();
+    case '/position.json':
+        $controller = new MapGuesser\Controller\PositionController();
         break;
     case '/':
         header('Location: ' . $host  . '/game', true, 302);
