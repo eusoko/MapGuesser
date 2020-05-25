@@ -75,18 +75,23 @@ class Bounds
         return $m * ($a + $c) / 2;
     }
 
-    public function toJson(): string
+    public function toArray(): array
     {
         if (!$this->initialized) {
             throw new \Exception("Bounds are not initialized!");
         }
 
-        return json_encode([
+        return [
             'south' => $this->southLat,
             'west' => $this->westLng,
             'north' => $this->northLat,
             'east' => $this->eastLng,
-        ]);
+        ];
+    }
+
+    public function toJson(): string
+    {
+        return json_encode($this->toArray());
     }
 
     private function initialize(Position $position)
