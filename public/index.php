@@ -12,8 +12,8 @@ switch($url) {
     case '/game':
         $controller = new MapGuesser\Controller\GameController();
         break;
-    case '/getNewPosition.json':
-        $controller = new MapGuesser\Controller\GetNewPosition();
+    case '/position.json':
+        $controller = new MapGuesser\Controller\PositionController();
         break;
     case '/':
         header('Location: ' . $host  . '/game', true, 302);
