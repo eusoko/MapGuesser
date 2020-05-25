@@ -7,7 +7,7 @@
 
         rounds: [],
         scoreSum: 0,
-        realPosition: null,
+        panoId: null,
         panorama: null,
         map: null,
         guessMarker: null,
@@ -15,32 +15,24 @@
         googleLink: null,
 
         initialize: function () {
-            if (sessionStorage.rounds) {
-                var roundsLoaded = JSON.parse(sessionStorage.rounds);
-                for (var i = 0; i < roundsLoaded.length; ++i) {
-                    var round = roundsLoaded[i];
-                    Core.rounds.push({ realPosition: round.realPosition, guessPosition: round.guessPosition, realMarker: null, guessMarker: null, line: null });
-                    if (round.guessPosition) {
-                        Core.addRealGuessPair(round.realPosition, round.guessPosition, true);
+            document.getElementById('currentRound').innerHTML = '1/' + String(Core.NUMBER_OF_ROUNDS);
+            document.getElementById('currentScoreSum').innerHTML = '0/0';
+
+            Core.getNewPosition(function (response) {
+                if (response.history) {
+                    for (var i = 0; i < response.history.length; ++i) {
+                        var round = response.history[i];
+                        Core.rounds.push({ position: round.position, guessPosition: round.guessPosition, realMarker: null, guessMarker: null, line: null });
+                        Core.addRealGuessPair(round.position, round.guessPosition, true);
+                        Core.scoreSum += round.score;
                     }
+
+                    document.getElementById('currentRound').innerHTML = String(Core.rounds.length) + '/' + String(Core.NUMBER_OF_ROUNDS);
+                    document.getElementById('currentScoreSum').innerHTML = String(Core.scoreSum) + '/' + String(Core.rounds.length * Core.MAX_SCORE);
                 }
-            }
 
-            if (sessionStorage.scoreSum) {
-                Core.scoreSum = parseInt(sessionStorage.scoreSum);
-            }
-
-            if (Core.rounds.length > 0 && !Core.rounds[Core.rounds.length - 1].guessPosition) {
-                Core.realPosition = Core.rounds[Core.rounds.length - 1].realPosition;
-                Core.loadPositionInfo(Core.realPosition);
-
-                document.getElementById('currentRound').innerHTML = String(Core.rounds.length) + '/' + String(Core.NUMBER_OF_ROUNDS);
-                document.getElementById('currentScoreSum').innerHTML = String(Core.scoreSum) + '/' + String((Core.rounds.length - 1) * Core.MAX_SCORE);
-            } else {
                 Core.startNewRound();
-
-                document.getElementById('currentScoreSum').innerHTML = String(0);
-            }
+            });
         },
 
         startNewGame: function () {
@@ -64,9 +56,13 @@
             document.getElementById('continueButton').style.display = null;
             document.getElementById('startNewGameButton').style.display = null;
 
+            document.getElementById('currentScoreSum').innerHTML = '0/0';
+
             Core.prepareNewRound();
 
-            document.getElementById('currentScoreSum').innerHTML = String(0);
+            Core.getNewPosition(function () {
+                Core.startNewRound();
+            });
         },
 
         prepareNewRound: function () {
@@ -87,113 +83,107 @@
             Core.map.setOptions({
                 draggableCursor: 'crosshair'
             });
-            Core.map.fitBounds(guessMapBounds);
-
-            Core.startNewRound();
+            Core.map.fitBounds(mapBounds);
         },
 
         startNewRound: function () {
-            Core.rounds.push({ realPosition: null, guessPosition: null, realMarker: null, guessMarker: null, line: null });
-
-            Core.panorama.setVisible(false);
-            document.getElementById('loading').style.visibility = 'visible';
+            Core.rounds.push({ position: null, guessPosition: null, realMarker: null, guessMarker: null, line: null });
 
             document.getElementById('currentRound').innerHTML = String(Core.rounds.length) + '/' + String(Core.NUMBER_OF_ROUNDS);
 
-            Core.getNewPosition();
+            Core.loadPano(Core.panoId);
         },
 
-        getNewPosition: function () {
+        getNewPosition: function (callback) {
+            document.getElementById('loading').style.visibility = 'visible';
+
             var xhr = new XMLHttpRequest();
             xhr.responseType = 'json';
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-                    Core.realPosition = this.response.position;
-                    Core.rounds[Core.rounds.length - 1].realPosition = this.response.position;
-                    Core.loadPositionInfo(this.response.position);
+                    document.getElementById('loading').style.visibility = 'hidden';
 
-                    Core.saveToSession();
+                    Core.panoId = this.response.panoId;
+
+                    callback(this.response);
                 }
             };
-            xhr.open('GET', 'getNewPosition.json', true);
+            xhr.open('GET', 'position.json', true);
             xhr.send();
         },
 
-        loadPositionInfo: function (position) {
-            var sv = new google.maps.StreetViewService();
-            sv.getPanorama({ location: position, preference: google.maps.StreetViewPreference.NEAREST, source: google.maps.StreetViewSource.OUTDOOR }, Core.loadPano);
-        },
-
-        loadPano: function (data, status) {
-            if (status !== google.maps.StreetViewStatus.OK) {
-                Core.getNewPosition();
-                return;
-            }
-
-            document.getElementById('loading').style.visibility = 'hidden';
-
+        loadPano: function (panoId) {
             if (Core.adaptGuess) {
                 document.getElementById('guess').classList.add('adapt');
             }
 
-            Core.panorama.setVisible(true);
             Core.panorama.setPov({ heading: 0, pitch: 0 });
             Core.panorama.setZoom(0);
-            Core.panorama.setPano(data.location.pano);
+            Core.panorama.setPano(panoId);
         },
 
         evaluateGuess: function () {
             var guessPosition = Core.guessMarker.getPosition().toJSON();
             Core.rounds[Core.rounds.length - 1].guessPosition = guessPosition;
 
-            var distance = Util.calculateDistance(Core.realPosition, guessPosition);
-            var score = Core.calculateScore(distance);
-            Core.scoreSum += score;
-
-            document.getElementById('currentScoreSum').innerHTML = String(Core.scoreSum) + '/' + String(Core.rounds.length * Core.MAX_SCORE);
-
-            Core.saveToSession();
-
-            Core.guessMarker.setMap(null);
-            Core.guessMarker = null;
-
             if (Core.adaptGuess) {
                 document.getElementById('guess').classList.remove('adapt');
             }
-            document.getElementById('guess').classList.add('result');
+            document.getElementById('loading').style.visibility = 'visible';
 
-            Core.addRealGuessPair(Core.realPosition, guessPosition);
+            var xhr = new XMLHttpRequest();
+            xhr.responseType = 'json';
+            xhr.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    Core.guessMarker.setMap(null);
+                    Core.guessMarker = null;
 
-            var resultBounds = new google.maps.LatLngBounds();
-            resultBounds.extend(Core.realPosition);
-            resultBounds.extend(guessPosition);
+                    document.getElementById('loading').style.visibility = 'hidden';
+                    document.getElementById('guess').classList.add('result');
 
-            Core.map.setOptions({
-                draggableCursor: 'grab'
-            });
-            Core.map.fitBounds(resultBounds);
+                    Core.scoreSum += this.response.result.score;
+                    document.getElementById('currentScoreSum').innerHTML = String(Core.scoreSum) + '/' + String(Core.rounds.length * Core.MAX_SCORE);
 
-            document.getElementById('distance').innerHTML = Util.printDistanceForHuman(distance);
-            document.getElementById('score').innerHTML = score;
+                    Core.rounds[Core.rounds.length - 1].position = this.response.result.position;
+                    Core.addRealGuessPair(this.response.result.position, guessPosition);
 
-            var scoreBarProperties = Core.calculateScoreBarProperties(score, Core.MAX_SCORE);
-            var scoreBar = document.getElementById('scoreBar');
-            scoreBar.style.backgroundColor = scoreBarProperties.backgroundColor;
-            scoreBar.style.width = scoreBarProperties.width;
+                    var resultBounds = new google.maps.LatLngBounds();
+                    resultBounds.extend(this.response.result.position);
+                    resultBounds.extend(guessPosition);
 
-            if (Core.rounds.length == Core.NUMBER_OF_ROUNDS) {
-                document.getElementById('continueButton').style.display = 'none';
-                document.getElementById('showSummaryButton').style.display = 'block';
-            }
+                    Core.map.setOptions({
+                        draggableCursor: 'grab'
+                    });
+                    Core.map.fitBounds(resultBounds);
+
+                    document.getElementById('distance').innerHTML = Util.printDistanceForHuman(this.response.result.distance);
+                    document.getElementById('score').innerHTML = this.response.result.score;
+
+                    var scoreBarProperties = Core.calculateScoreBarProperties(this.response.result.score, Core.MAX_SCORE);
+                    var scoreBar = document.getElementById('scoreBar');
+                    scoreBar.style.backgroundColor = scoreBarProperties.backgroundColor;
+                    scoreBar.style.width = scoreBarProperties.width;
+
+                    if (Core.rounds.length == Core.NUMBER_OF_ROUNDS) {
+                        document.getElementById('continueButton').style.display = 'none';
+                        document.getElementById('showSummaryButton').style.display = 'block';
+                    }
+
+                    Core.panoId = this.response.panoId;
+                }
+            };
+            xhr.open('POST', 'position.json', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send('guess&lat=' + guessPosition.lat + '&lng=' + guessPosition.lng);
         },
 
-        addRealGuessPair: function (realPosition, guessPosition, hidden) {
+        addRealGuessPair: function (position, guessPosition, hidden) {
             var round = Core.rounds[Core.rounds.length - 1];
 
             round.realMarker = new google.maps.Marker({
                 map: Core.map,
                 visible: !hidden,
-                position: realPosition,
+                position: position,
                 title: 'Open in Google Maps',
                 zIndex: Core.rounds.length * 2,
                 clickable: true,
@@ -224,7 +214,7 @@
                 map: Core.map,
                 visible: !hidden,
                 path: [
-                    realPosition,
+                    position,
                     guessPosition
                 ],
                 geodesic: true,
@@ -243,12 +233,6 @@
                 draggable: false,
                 editable: false
             });
-        },
-
-        calculateScore: function (distance) {
-            var goodness = 1.0 - distance / Math.sqrt(mapArea);
-
-            return Math.round(Math.pow(Core.MAX_SCORE, goodness));
         },
 
         calculateScoreBarProperties: function (score, maxScore) {
@@ -292,7 +276,7 @@
                 round.guessMarker.setVisible(true);
                 round.line.setVisible(true);
 
-                resultBounds.extend(round.realPosition);
+                resultBounds.extend(round.position);
                 resultBounds.extend(round.guessPosition);
             }
 
@@ -324,51 +308,10 @@
                     Core.googleLink.href = 'https://maps.google.com/maps';
                 }
             }, 1);
-        },
-
-        saveToSession: function () {
-            if (Core.rounds.length == Core.NUMBER_OF_ROUNDS && Core.rounds[Core.rounds.length - 1].guessPosition) {
-                sessionStorage.removeItem('rounds');
-                sessionStorage.removeItem('scoreSum');
-                return;
-            }
-
-            var roundsToSave = [];
-            for (var i = 0; i < Core.rounds.length; ++i) {
-                var round = Core.rounds[i];
-                roundsToSave.push({ realPosition: round.realPosition, guessPosition: round.guessPosition });
-            }
-
-            sessionStorage.setItem('rounds', JSON.stringify(roundsToSave));
-            sessionStorage.setItem('scoreSum', String(Core.scoreSum));
         }
     };
 
     var Util = {
-        EARTH_RADIUS_IN_METER: 6371000,
-
-        deg2rad: function (deg) {
-            return deg * (Math.PI / 180.0);
-        },
-
-        calculateDistance: function (position1, position2) {
-            var lat1 = Util.deg2rad(position1.lat);
-            var lng1 = Util.deg2rad(position1.lng);
-            var lat2 = Util.deg2rad(position2.lat);
-            var lng2 = Util.deg2rad(position2.lng);
-
-            var angleCos = Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) +
-                Math.sin(lat1) * Math.sin(lat2);
-
-            if (angleCos > 1.0) {
-                angleCos = 1.0;
-            }
-
-            var angle = Math.acos(angleCos);
-
-            return angle * Util.EARTH_RADIUS_IN_METER;
-        },
-
         printDistanceForHuman: function (distance) {
             if (distance < 1000) {
                 return Number.parseFloat(distance).toFixed(0) + ' m';
@@ -393,7 +336,7 @@
         draggingCursor: 'grabbing'
     });
 
-    Core.map.fitBounds(guessMapBounds);
+    Core.map.fitBounds(mapBounds);
 
     Core.map.addListener('click', function (e) {
         if (Core.rounds[Core.rounds.length - 1].guessPosition) {
@@ -461,6 +404,7 @@
 
     document.getElementById('continueButton').onclick = function () {
         Core.prepareNewRound();
+        Core.startNewRound();
     }
 
     document.getElementById('showSummaryButton').onclick = function () {

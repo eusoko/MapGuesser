@@ -14,3 +14,5 @@ if (!empty($_ENV['DEV'])) {
 } else {
     ini_set('display_errors', '0');
 }
+
+session_start();
