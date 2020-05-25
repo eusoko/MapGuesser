@@ -4,6 +4,9 @@ ROOT_DIR=$(dirname $(readlink -f "$0"))/..
 
 . ${ROOT_DIR}/.env
 
+echo "Installing Composer packages..."
+(cd ${ROOT_DIR} && composer install)
+
 if [ -z "${DEV}" ] || [ "${DEV}" -eq "0" ]; then
     echo "Minifying JS, CSS and SVG files..."
 
