@@ -15,13 +15,30 @@
         googleLink: null,
 
         initialize: function () {
+            document.getElementById('loading').style.visibility = 'visible';
             document.getElementById('currentRound').innerHTML = '1/' + String(Core.NUMBER_OF_ROUNDS);
             document.getElementById('currentScoreSum').innerHTML = '0/0';
 
-            Core.getNewPosition(function (response) {
-                if (response.history) {
-                    for (var i = 0; i < response.history.length; ++i) {
-                        var round = response.history[i];
+            Core.map.setOptions({
+                draggableCursor: 'crosshair'
+            });
+            Core.map.fitBounds(mapBounds);
+
+            var xhr = new XMLHttpRequest();
+            xhr.responseType = 'json';
+            xhr.onload = function () {
+                if (this.response.error) {
+                    //TODO: handle this error
+                    return;
+                }
+
+                document.getElementById('loading').style.visibility = 'hidden';
+
+                Core.panoId = this.response.panoId;
+
+                if (this.response.history) {
+                    for (var i = 0; i < this.response.history.length; ++i) {
+                        var round = this.response.history[i];
                         Core.rounds.push({ position: round.position, guessPosition: round.guessPosition, realMarker: null, guessMarker: null, line: null });
                         Core.addRealGuessPair(round.position, round.guessPosition, true);
                         Core.scoreSum += round.score;
@@ -32,16 +49,21 @@
                 }
 
                 Core.startNewRound();
-            });
+            };
+
+            xhr.open('GET', 'position.json', true);
+            xhr.send();
         },
 
-        startNewGame: function () {
+        resetGame: function () {
             for (var i = 0; i < Core.rounds.length; ++i) {
                 var round = Core.rounds[i];
 
-                round.realMarker.setMap(null);
-                round.guessMarker.setMap(null);
-                round.line.setMap(null);
+                if (round.realMarker && round.guessMarker && round.line) {
+                    round.realMarker.setMap(null);
+                    round.guessMarker.setMap(null);
+                    round.line.setMap(null);
+                }
             }
 
             Core.rounds = [];
@@ -56,16 +78,14 @@
             document.getElementById('continueButton').style.display = null;
             document.getElementById('startNewGameButton').style.display = null;
 
-            document.getElementById('currentScoreSum').innerHTML = '0/0';
+            document.getElementById('showGuessButton').style.visibility = null;
+            document.getElementById('guess').style.visibility = null;
+            document.getElementById('guess').classList.remove('result');
 
-            Core.prepareNewRound();
-
-            Core.getNewPosition(function () {
-                Core.startNewRound();
-            });
+            Core.initialize();
         },
 
-        prepareNewRound: function () {
+        resetRound: function () {
             document.getElementById('scoreBar').style.width = null;
 
             if (Core.rounds.length > 0) {
@@ -84,6 +104,8 @@
                 draggableCursor: 'crosshair'
             });
             Core.map.fitBounds(mapBounds);
+
+            Core.startNewRound();
         },
 
         startNewRound: function () {
@@ -94,21 +116,18 @@
             Core.loadPano(Core.panoId);
         },
 
-        getNewPosition: function (callback) {
-            document.getElementById('loading').style.visibility = 'visible';
+        handleErrorResponse: function (error) {
+            // for the time being we only handle the "no_session_found" error and reset the game
 
             var xhr = new XMLHttpRequest();
             xhr.responseType = 'json';
-            xhr.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    document.getElementById('loading').style.visibility = 'hidden';
+            xhr.onload = function () {
+                mapBounds = this.response.bounds;
 
-                    Core.panoId = this.response.panoId;
-
-                    callback(this.response);
-                }
+                Core.resetGame();
             };
-            xhr.open('GET', 'position.json', true);
+
+            xhr.open('GET', 'game.json', true);
             xhr.send();
         },
 
@@ -131,50 +150,58 @@
             }
             document.getElementById('loading').style.visibility = 'visible';
 
+            var data = new FormData();
+            data.append('guess', '1');
+            data.append('lat', String(guessPosition.lat));
+            data.append('lng', String(guessPosition.lng));
+
             var xhr = new XMLHttpRequest();
             xhr.responseType = 'json';
-            xhr.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    Core.guessMarker.setMap(null);
-                    Core.guessMarker = null;
-
-                    document.getElementById('loading').style.visibility = 'hidden';
-                    document.getElementById('guess').classList.add('result');
-
-                    Core.scoreSum += this.response.result.score;
-                    document.getElementById('currentScoreSum').innerHTML = String(Core.scoreSum) + '/' + String(Core.rounds.length * Core.MAX_SCORE);
-
-                    Core.rounds[Core.rounds.length - 1].position = this.response.result.position;
-                    Core.addRealGuessPair(this.response.result.position, guessPosition);
-
-                    var resultBounds = new google.maps.LatLngBounds();
-                    resultBounds.extend(this.response.result.position);
-                    resultBounds.extend(guessPosition);
-
-                    Core.map.setOptions({
-                        draggableCursor: 'grab'
-                    });
-                    Core.map.fitBounds(resultBounds);
-
-                    document.getElementById('distance').innerHTML = Util.printDistanceForHuman(this.response.result.distance);
-                    document.getElementById('score').innerHTML = this.response.result.score;
-
-                    var scoreBarProperties = Core.calculateScoreBarProperties(this.response.result.score, Core.MAX_SCORE);
-                    var scoreBar = document.getElementById('scoreBar');
-                    scoreBar.style.backgroundColor = scoreBarProperties.backgroundColor;
-                    scoreBar.style.width = scoreBarProperties.width;
-
-                    if (Core.rounds.length == Core.NUMBER_OF_ROUNDS) {
-                        document.getElementById('continueButton').style.display = 'none';
-                        document.getElementById('showSummaryButton').style.display = 'block';
-                    }
-
-                    Core.panoId = this.response.panoId;
+            xhr.onload = function () {
+                if (this.response.error) {
+                    Core.handleErrorResponse(this.response.error);
+                    return;
                 }
+
+                Core.guessMarker.setMap(null);
+                Core.guessMarker = null;
+
+                document.getElementById('loading').style.visibility = 'hidden';
+                document.getElementById('guess').classList.add('result');
+
+                Core.scoreSum += this.response.result.score;
+                document.getElementById('currentScoreSum').innerHTML = String(Core.scoreSum) + '/' + String(Core.rounds.length * Core.MAX_SCORE);
+
+                Core.rounds[Core.rounds.length - 1].position = this.response.result.position;
+                Core.addRealGuessPair(this.response.result.position, guessPosition);
+
+                var resultBounds = new google.maps.LatLngBounds();
+                resultBounds.extend(this.response.result.position);
+                resultBounds.extend(guessPosition);
+
+                Core.map.setOptions({
+                    draggableCursor: 'grab'
+                });
+                Core.map.fitBounds(resultBounds);
+
+                document.getElementById('distance').innerHTML = Util.printDistanceForHuman(this.response.result.distance);
+                document.getElementById('score').innerHTML = this.response.result.score;
+
+                var scoreBarProperties = Core.calculateScoreBarProperties(this.response.result.score, Core.MAX_SCORE);
+                var scoreBar = document.getElementById('scoreBar');
+                scoreBar.style.backgroundColor = scoreBarProperties.backgroundColor;
+                scoreBar.style.width = scoreBarProperties.width;
+
+                if (Core.rounds.length == Core.NUMBER_OF_ROUNDS) {
+                    document.getElementById('continueButton').style.display = 'none';
+                    document.getElementById('showSummaryButton').style.display = 'block';
+                }
+
+                Core.panoId = this.response.panoId;
             };
+
             xhr.open('POST', 'position.json', true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.send('guess&lat=' + guessPosition.lat + '&lng=' + guessPosition.lng);
+            xhr.send(data);
         },
 
         addRealGuessPair: function (position, guessPosition, hidden) {
@@ -332,11 +359,8 @@
     Core.map = new google.maps.Map(document.getElementById('map'), {
         disableDefaultUI: true,
         clickableIcons: false,
-        draggableCursor: 'crosshair',
         draggingCursor: 'grabbing'
     });
-
-    Core.map.fitBounds(mapBounds);
 
     Core.map.addListener('click', function (e) {
         if (Core.rounds[Core.rounds.length - 1].guessPosition) {
@@ -403,8 +427,7 @@
     }
 
     document.getElementById('continueButton').onclick = function () {
-        Core.prepareNewRound();
-        Core.startNewRound();
+        Core.resetRound();
     }
 
     document.getElementById('showSummaryButton').onclick = function () {
@@ -412,7 +435,7 @@
     }
 
     document.getElementById('startNewGameButton').onclick = function () {
-        Core.startNewGame();
+        Core.resetGame();
     }
 
     window.onbeforeunload = function (e) {
