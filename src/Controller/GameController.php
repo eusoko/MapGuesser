@@ -2,6 +2,7 @@
 
 use MapGuesser\Util\Geo\Bounds;
 use MapGuesser\View\HtmlView;
+use MapGuesser\View\JsonView;
 use MapGuesser\View\ViewBase;
 use mysqli;
 
@@ -9,12 +10,16 @@ class GameController implements ControllerInterface
 {
     private mysqli $mysql;
 
+    private bool $jsonResponse;
+
     // demo map
     private int $mapId = 1;
 
-    public function __construct()
+    public function __construct($jsonResponse = false)
     {
         $this->mysql = new mysqli($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME']);
+
+        $this->jsonResponse = $jsonResponse;
     }
 
     public function run(): ViewBase
@@ -30,7 +35,12 @@ class GameController implements ControllerInterface
         }
 
         $data = ['bounds' => $bounds->toArray()];
-        return new HtmlView('game', $data);
+
+        if ($this->jsonResponse) {
+            return new JsonView($data);
+        } else {
+            return new HtmlView('game', $data);
+        }
     }
 
     private function getMapBounds(): Bounds

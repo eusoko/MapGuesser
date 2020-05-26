@@ -12,6 +12,9 @@ switch($url) {
     case '/game':
         $controller = new MapGuesser\Controller\GameController();
         break;
+    case '/game.json':
+        $controller = new MapGuesser\Controller\GameController(true);
+        break;
     case '/position.json':
         $controller = new MapGuesser\Controller\PositionController();
         break;
