@@ -24,7 +24,8 @@ class PositionController implements ControllerInterface
     public function run(): ViewBase
     {
         if (!isset($_SESSION['state']) || $_SESSION['state']['mapId'] !== $this->mapId) {
-            return new JsonView(['error' => 'No valid session found!']);
+            $data = ['error' => 'No valid session found!'];
+            return new JsonView($data);
         }
 
         if (count($_SESSION['state']['rounds']) === 0) {
