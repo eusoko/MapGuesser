@@ -1,12 +1,13 @@
 <?php namespace MapGuesser\Controller;
 
+use MapGuesser\Interfaces\Controller\IController;
 use MapGuesser\Util\Geo\Position;
 use MapGuesser\View\JsonView;
-use MapGuesser\View\ViewBase;
+use MapGuesser\Interfaces\View\IView;
 use mysqli;
 use RestClient\Client;
 
-class PositionController implements ControllerInterface
+class PositionController implements IController
 {
     const NUMBER_OF_ROUNDS = 5;
     const MAX_SCORE = 1000;
@@ -21,7 +22,7 @@ class PositionController implements ControllerInterface
         $this->mysql = new mysqli($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME']);
     }
 
-    public function run(): ViewBase
+    public function run(): IView
     {
         if (!isset($_SESSION['state']) || $_SESSION['state']['mapId'] !== $this->mapId) {
             $data = ['error' => 'No valid session found!'];

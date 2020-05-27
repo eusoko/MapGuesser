@@ -1,12 +1,13 @@
 <?php namespace MapGuesser\Controller;
 
+use MapGuesser\Interfaces\Controller\IController;
 use MapGuesser\Util\Geo\Bounds;
 use MapGuesser\View\HtmlView;
 use MapGuesser\View\JsonView;
-use MapGuesser\View\ViewBase;
+use MapGuesser\Interfaces\View\IView;
 use mysqli;
 
-class GameController implements ControllerInterface
+class GameController implements IController
 {
     private mysqli $mysql;
 
@@ -22,7 +23,7 @@ class GameController implements ControllerInterface
         $this->jsonResponse = $jsonResponse;
     }
 
-    public function run(): ViewBase
+    public function run(): IView
     {
         $bounds = $this->getMapBounds();
 
