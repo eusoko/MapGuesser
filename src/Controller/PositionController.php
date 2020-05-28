@@ -1,10 +1,12 @@
 <?php namespace MapGuesser\Controller;
 
+use MapGuesser\Database\Query\Select;
+use MapGuesser\Http\Request;
 use MapGuesser\Interfaces\Controller\IController;
+use MapGuesser\Interfaces\Database\IResultSet;
 use MapGuesser\Util\Geo\Position;
 use MapGuesser\View\JsonView;
 use MapGuesser\Interfaces\View\IView;
-use mysqli;
 use RestClient\Client;
 
 class PositionController implements IController
@@ -12,15 +14,8 @@ class PositionController implements IController
     const NUMBER_OF_ROUNDS = 5;
     const MAX_SCORE = 1000;
 
-    private mysqli $mysql;
-
     // demo map
     private int $mapId = 1;
-
-    public function __construct()
-    {
-        $this->mysql = new mysqli($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME']);
-    }
 
     public function run(): IView
     {
@@ -121,30 +116,20 @@ class PositionController implements IController
 
     private function selectNewPlace(array $exclude): array
     {
-        $condition = '';
-        $params = ['i', &$this->mapId];
-        if (($numExcluded = count($exclude)) > 0) {
-            $condition .= ' AND id NOT IN (' . implode(',', array_fill(0, $numExcluded, '?')) . ')';
-            $params[0] .= str_repeat('i', $numExcluded);
-            foreach ($exclude as &$placeId) {
-                $params[] = &$placeId;
-            }
-        }
+        $select = new Select(\Container::$dbConnection, 'places');
+        $select->columns(['id', 'lat', 'lng']);
+        $select->where('id', 'NOT IN', $exclude);
+        $select->where('map_id', '=', $this->mapId);
 
-        $stmt = $this->mysql->prepare('SELECT COUNT(*) AS num FROM places WHERE map_id=? ' . $condition . '');
-        call_user_func_array([$stmt, 'bind_param'], $params);
-        $stmt->execute();
-        $numberOfPlaces = $stmt->get_result()->fetch_assoc()['num'];
+        $numberOfPlaces = $select->count();
         $randomOffset = random_int(0, $numberOfPlaces - 1);
 
-        $params[0] .= 'i';
-        $params[] = &$randomOffset;
+        $select->orderBy('id');
+        $select->limit(1, $randomOffset);
 
-        $stmt = $this->mysql->prepare('SELECT id, lat, lng FROM places WHERE map_id=? ' . $condition . ' ORDER BY id LIMIT 1 OFFSET ?');
-        call_user_func_array([$stmt, 'bind_param'], $params);
-        $stmt->execute();
+        $place = $select->execute()->fetch(IResultSet::FETCH_ASSOC);
 
-        return $stmt->get_result()->fetch_assoc();
+        return $place;
     }
 
     private function getPanorama(Position $position): ?string
