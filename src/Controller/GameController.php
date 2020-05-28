@@ -1,15 +1,15 @@
 <?php namespace MapGuesser\Controller;
 
+use MapGuesser\Database\Query\Select;
+use MapGuesser\Interfaces\Controller\IController;
+use MapGuesser\Interfaces\Database\IResultSet;
 use MapGuesser\Util\Geo\Bounds;
 use MapGuesser\View\HtmlView;
 use MapGuesser\View\JsonView;
-use MapGuesser\View\ViewBase;
-use mysqli;
+use MapGuesser\Interfaces\View\IView;
 
-class GameController implements ControllerInterface
+class GameController implements IController
 {
-    private mysqli $mysql;
-
     private bool $jsonResponse;
 
     // demo map
@@ -17,12 +17,10 @@ class GameController implements ControllerInterface
 
     public function __construct($jsonResponse = false)
     {
-        $this->mysql = new mysqli($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME']);
-
         $this->jsonResponse = $jsonResponse;
     }
 
-    public function run(): ViewBase
+    public function run(): IView
     {
         $bounds = $this->getMapBounds();
 
@@ -45,10 +43,11 @@ class GameController implements ControllerInterface
 
     private function getMapBounds(): Bounds
     {
-        $stmt = $this->mysql->prepare('SELECT bound_south_lat, bound_west_lng, bound_north_lat, bound_east_lng FROM maps WHERE id=?');
-        $stmt->bind_param("i", $this->mapId);
-        $stmt->execute();
-        $map = $stmt->get_result()->fetch_assoc();
+        $select = new Select(\Container::$dbConnection, 'maps');
+        $select->columns(['bound_south_lat', 'bound_west_lng', 'bound_north_lat', 'bound_east_lng']);
+        $select->whereId($this->mapId);
+
+        $map = $select->execute()->fetch(IResultSet::FETCH_ASSOC);
 
         $bounds = Bounds::createDirectly($map['bound_south_lat'], $map['bound_west_lng'], $map['bound_north_lat'], $map['bound_east_lng']);
 

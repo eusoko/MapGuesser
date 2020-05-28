@@ -15,4 +15,11 @@ if (!empty($_ENV['DEV'])) {
     ini_set('display_errors', '0');
 }
 
+class Container
+{
+    static MapGuesser\Interfaces\Database\IConnection $dbConnection;
+}
+
+Container::$dbConnection = new MapGuesser\Database\Mysql\Connection($_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME']);
+
 session_start();
