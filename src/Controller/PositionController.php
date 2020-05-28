@@ -7,7 +7,6 @@ use MapGuesser\Interfaces\Database\IResultSet;
 use MapGuesser\Util\Geo\Position;
 use MapGuesser\View\JsonView;
 use MapGuesser\Interfaces\View\IView;
-use RestClient\Client;
 
 class PositionController implements IController
 {
@@ -134,17 +133,16 @@ class PositionController implements IController
 
     private function getPanorama(Position $position): ?string
     {
-        $query = [
+        $request = new Request('https://maps.googleapis.com/maps/api/streetview/metadata', Request::HTTP_GET);
+        $request->setQuery([
             'key' => $_ENV['GOOGLE_MAPS_SERVER_API_KEY'],
             'location' => $position->getLat() . ',' . $position->getLng(),
             'source' => 'outdoor'
-        ];
+        ]);
 
-        $client = new Client('https://maps.googleapis.com/maps/api/streetview');
-        $request = $client->newRequest('metadata?' . http_build_query($query));
-        $response = $request->getResponse();
+        $response = $request->send();
 
-        $panoData = json_decode($response->getParsedResponse(), true);
+        $panoData = json_decode($response->getBody(), true);
 
         if ($panoData['status'] !== 'OK') {
             return null;
@@ -158,10 +156,10 @@ class PositionController implements IController
         return $realPosition->calculateDistanceTo($guessPosition);
     }
 
-    private function calculateScore(float $distance, float $area)
+    private function calculateScore(float $distance, float $area): int
     {
         $goodness = 1.0 - ($distance / sqrt($area));
 
-        return round(pow(static::MAX_SCORE, $goodness));
+        return (int) round(pow(static::MAX_SCORE, $goodness));
     }
 }
