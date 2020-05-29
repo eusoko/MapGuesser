@@ -12,17 +12,17 @@ class ResultSet implements IResultSet
         $this->result = $result;
     }
 
-    public function fetch(int $type = IResultSet::FETCH_ASSOC)
+    public function fetch(int $type = IResultSet::FETCH_ASSOC): ?array
     {
         return $this->result->fetch_array($this->convertFetchType($type));
     }
 
-    public function fetchAll(int $type = IResultSet::FETCH_ASSOC)
+    public function fetchAll(int $type = IResultSet::FETCH_ASSOC): array
     {
         return $this->result->fetch_all($this->convertFetchType($type));
     }
 
-    public function fetchOneColumn(string $valueName, string $keyName = null)
+    public function fetchOneColumn(string $valueName, string $keyName = null): array
     {
         $array = [];
 

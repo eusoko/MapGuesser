@@ -115,7 +115,7 @@ class Select
         return $this;
     }
 
-    public function orderBy($column, string $type = 'asc'): Select
+    public function orderBy($column, string $type = 'ASC'): Select
     {
         $this->orders[] = [$column, $type];
 
@@ -394,7 +394,7 @@ class Select
         $orders = $this->orders;
 
         array_walk($orders, function (&$value, $key) {
-            $value = $this->generateColumn($value[0]) . ' ' . $value[1];
+            $value = $this->generateColumn($value[0]) . ' ' . strtoupper($value[1]);
         });
 
         return implode(',', $orders);
