@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3778b9431ef3d22705bdbf1653102a1a",
+    "content-hash": "29431cf83ee884f01ee954b1068c0ccc",
     "packages": [
         {
             "name": "phpoption/phpoption",
@@ -60,51 +60,6 @@
                 "type"
             ],
             "time": "2020-03-21T18:07:53+00:00"
-        },
-        {
-            "name": "romanpitak/php-rest-client",
-            "version": "v1.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/romanpitak/PHP-REST-Client.git",
-                "reference": "728b6c44040a13daeb8033953f5f3cdd3dde1980"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/romanpitak/PHP-REST-Client/zipball/728b6c44040a13daeb8033953f5f3cdd3dde1980",
-                "reference": "728b6c44040a13daeb8033953f5f3cdd3dde1980",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "RestClient\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Roman Piták",
-                    "email": "roman@pitak.net",
-                    "homepage": "http://pitak.net",
-                    "role": "Developer"
-                }
-            ],
-            "description": "REST client library.",
-            "homepage": "https://github.com/romanpitak/PHP-REST-Client",
-            "keywords": [
-                "client",
-                "http",
-                "rest"
-            ],
-            "time": "2015-02-19T15:32:16+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",

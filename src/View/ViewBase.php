@@ -1,6 +1,8 @@
 <?php namespace MapGuesser\View;
 
-abstract class ViewBase
+use MapGuesser\Interfaces\View\IView;
+
+abstract class ViewBase implements IView
 {
     protected array $data;
 
