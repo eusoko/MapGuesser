@@ -2,4 +2,4 @@
 
 This is the MapGuesser Application project.
 
-License: GNU GPL 3.0
+License: GNU AGPL 3.0
