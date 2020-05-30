@@ -16,6 +16,7 @@
 
         initialize: function () {
             document.getElementById('loading').style.visibility = 'visible';
+            document.getElementById('cover').style.visibility = 'visible';
             document.getElementById('currentRound').innerHTML = '1/' + String(Core.NUMBER_OF_ROUNDS);
             document.getElementById('currentScoreSum').innerHTML = '0/0';
 
@@ -33,6 +34,7 @@
                 }
 
                 document.getElementById('loading').style.visibility = 'hidden';
+                document.getElementById('cover').style.visibility = 'hidden';
 
                 Core.panoId = this.response.panoId;
 
@@ -51,11 +53,16 @@
                 Core.startNewRound();
             };
 
-            xhr.open('GET', 'position.json', true);
+            xhr.open('GET', 'position.json?map=' + mapId, true);
             xhr.send();
         },
 
         resetGame: function () {
+            if (Core.guessMarker) {
+                Core.guessMarker.setMap(null);
+                Core.guessMarker = null;
+            }
+
             for (var i = 0; i < Core.rounds.length; ++i) {
                 var round = Core.rounds[i];
 
@@ -96,6 +103,7 @@
                 lastRound.line.setVisible(false);
             }
 
+            document.getElementById('cover').style.visibility = 'hidden';
             document.getElementById('showGuessButton').style.visibility = null;
             document.getElementById('guess').style.visibility = null;
             document.getElementById('guess').classList.remove('result')
@@ -127,7 +135,7 @@
                 Core.resetGame();
             };
 
-            xhr.open('GET', 'game.json', true);
+            xhr.open('GET', 'game.json?map=' + mapId, true);
             xhr.send();
         },
 
@@ -149,6 +157,7 @@
                 document.getElementById('guess').classList.remove('adapt');
             }
             document.getElementById('loading').style.visibility = 'visible';
+            document.getElementById('cover').style.visibility = 'visible';
 
             var data = new FormData();
             data.append('guess', '1');
@@ -192,7 +201,7 @@
                 scoreBar.style.backgroundColor = scoreBarProperties.backgroundColor;
                 scoreBar.style.width = scoreBarProperties.width;
 
-                if (Core.rounds.length == Core.NUMBER_OF_ROUNDS) {
+                if (Core.rounds.length === Core.NUMBER_OF_ROUNDS) {
                     document.getElementById('continueButton').style.display = 'none';
                     document.getElementById('showSummaryButton').style.display = 'block';
                 }
@@ -200,7 +209,7 @@
                 Core.panoId = this.response.panoId;
             };
 
-            xhr.open('POST', 'position.json', true);
+            xhr.open('POST', 'position.json?map=' + mapId, true);
             xhr.send(data);
         },
 
@@ -438,7 +447,13 @@
         Core.resetGame();
     }
 
+    // showing the loading animation is not possible, because we don't know if user cancelled the leave
+
     window.onbeforeunload = function (e) {
+        if (Core.rounds[Core.rounds.length - 1].position) {
+            return;
+        }
+
         e.preventDefault();
         e.returnValue = '';
     };

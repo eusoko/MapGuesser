@@ -4,21 +4,25 @@ class Bounds
 {
     const ONE_DEGREE_OF_LATITUDE_IN_METER = 111132.954;
 
-    private float $southLat;
-    private float $westLng;
+    private float $southLat = 90.0;
+    private float $westLng = 180.0;
 
-    private float $northLat;
-    private float $eastLng;
+    private float $northLat = -90.0;
+    private float $eastLng = -180.0;
 
-    private bool $initialized = false;
-
-    public static function createWithPosition(Position $position): Bounds
+    public function __construct(Position $position = null)
     {
-        $instance = new static();
+        if ($position === null) {
+            return;
+        }
 
-        $instance->initialize($position);
+        $lat = $position->getLat();
+        $lng = $position->getLng();
 
-        return $instance;
+        $this->northLat = $lat;
+        $this->westLng = $lng;
+        $this->southLat = $lat;
+        $this->eastLng = $lng;
     }
 
     public static function createDirectly(float $southLat, float $westLng, float $northLat, float $eastLng): Bounds
@@ -30,19 +34,11 @@ class Bounds
         $instance->northLat = $northLat;
         $instance->eastLng = $eastLng;
 
-        $instance->initialized = true;
-
         return $instance;
     }
 
     public function extend(Position $position): void
     {
-        if (!$this->initialized) {
-            $this->initialize($position);
-
-            return;
-        }
-
         $lat = $position->getLat();
         $lng = $position->getLng();
 
@@ -77,10 +73,6 @@ class Bounds
 
     public function toArray(): array
     {
-        if (!$this->initialized) {
-            throw new \Exception("Bounds are not initialized!");
-        }
-
         return [
             'south' => $this->southLat,
             'west' => $this->westLng,
@@ -92,18 +84,5 @@ class Bounds
     public function toJson(): string
     {
         return json_encode($this->toArray());
-    }
-
-    private function initialize(Position $position)
-    {
-        $lat = $position->getLat();
-        $lng = $position->getLng();
-
-        $this->northLat = $lat;
-        $this->westLng = $lng;
-        $this->southLat = $lat;
-        $this->eastLng = $lng;
-
-        $this->initialized = true;
     }
 }

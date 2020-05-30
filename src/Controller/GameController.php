@@ -10,13 +10,13 @@ use MapGuesser\Interfaces\View\IView;
 
 class GameController implements IController
 {
+    private int $mapId;
+
     private bool $jsonResponse;
 
-    // demo map
-    private int $mapId = 1;
-
-    public function __construct($jsonResponse = false)
+    public function __construct(int $mapId, $jsonResponse = false)
     {
+        $this->mapId = $mapId;
         $this->jsonResponse = $jsonResponse;
     }
 
@@ -32,7 +32,7 @@ class GameController implements IController
             ];
         }
 
-        $data = ['bounds' => $bounds->toArray()];
+        $data = ['mapId' => $this->mapId, 'bounds' => $bounds->toArray()];
 
         if ($this->jsonResponse) {
             return new JsonView($data);
