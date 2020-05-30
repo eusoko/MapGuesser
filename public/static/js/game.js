@@ -16,6 +16,7 @@
 
         initialize: function () {
             document.getElementById('loading').style.visibility = 'visible';
+            document.getElementById('cover').style.visibility = 'visible';
             document.getElementById('currentRound').innerHTML = '1/' + String(Core.NUMBER_OF_ROUNDS);
             document.getElementById('currentScoreSum').innerHTML = '0/0';
 
@@ -33,6 +34,7 @@
                 }
 
                 document.getElementById('loading').style.visibility = 'hidden';
+                document.getElementById('cover').style.visibility = 'hidden';
 
                 Core.panoId = this.response.panoId;
 
@@ -101,6 +103,7 @@
                 lastRound.line.setVisible(false);
             }
 
+            document.getElementById('cover').style.visibility = 'hidden';
             document.getElementById('showGuessButton').style.visibility = null;
             document.getElementById('guess').style.visibility = null;
             document.getElementById('guess').classList.remove('result')
@@ -154,6 +157,7 @@
                 document.getElementById('guess').classList.remove('adapt');
             }
             document.getElementById('loading').style.visibility = 'visible';
+            document.getElementById('cover').style.visibility = 'visible';
 
             var data = new FormData();
             data.append('guess', '1');
@@ -442,6 +446,8 @@
     document.getElementById('startNewGameButton').onclick = function () {
         Core.resetGame();
     }
+
+    // showing the loading animation is not possible, because we don't know if user cancelled the leave
 
     window.onbeforeunload = function (e) {
         if (Core.rounds[Core.rounds.length - 1].position) {
