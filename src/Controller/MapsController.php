@@ -1,6 +1,4 @@
-<?php
-
-namespace MapGuesser\Controller;
+<?php namespace MapGuesser\Controller;
 
 use MapGuesser\Database\Query\Select;
 use MapGuesser\Database\RawExpression;
@@ -34,7 +32,7 @@ class MapsController implements IController
         while ($map = $result->fetch(IResultSet::FETCH_ASSOC)) {
             $bounds = Bounds::createDirectly($map['bound_south_lat'], $map['bound_west_lng'], $map['bound_north_lat'], $map['bound_east_lng']);
 
-            $map['area'] = $this->formatMapArea($bounds->calculateApproximateArea());
+            $map['area'] = $this->formatMapAreaForHuman($bounds->calculateApproximateArea());
 
             $maps[] = $map;
         }
@@ -43,18 +41,26 @@ class MapsController implements IController
         return new HtmlView('maps', $data);
     }
 
-    private function formatMapArea(float $area): string
+    private function formatMapAreaForHuman(float $area): array
     {
-        //TODO: this should be formatted more properly
-
         if ($area < 100000.0) {
-            return round($area, 0) . ' m^2';
+            $digits = 0;
+            $rounded = round($area, 0);
+            $unit = 'm';
         } elseif ($area < 100000000.0) {
-            return round($area / 1000000.0, 0) . ' km^2';
+            $digits = 0;
+            $rounded = round($area / 1000000.0, 0);
+            $unit = 'km';
         } elseif ($area < 10000000000.0) {
-            return round($area / 1000000.0, -2) . ' km^2';
+            $digits = 0;
+            $rounded = round($area / 1000000.0, -2);
+            $unit = 'km';
         } else {
-            return round($area / 1000000.0, -4) . ' km^2';
+            $digits = 0;
+            $rounded = round($area / 1000000.0, -4);
+            $unit = 'km';
         }
+
+        return [number_format($rounded, $digits, '.', ' '), $unit];
     }
 }
