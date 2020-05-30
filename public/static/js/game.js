@@ -51,7 +51,7 @@
                 Core.startNewRound();
             };
 
-            xhr.open('GET', 'position.json', true);
+            xhr.open('GET', 'position.json?map=' + mapId, true);
             xhr.send();
         },
 
@@ -127,7 +127,7 @@
                 Core.resetGame();
             };
 
-            xhr.open('GET', 'game.json', true);
+            xhr.open('GET', 'game.json?map=' + mapId, true);
             xhr.send();
         },
 
@@ -200,7 +200,7 @@
                 Core.panoId = this.response.panoId;
             };
 
-            xhr.open('POST', 'position.json', true);
+            xhr.open('POST', 'position.json?map=' + mapId, true);
             xhr.send(data);
         },
 

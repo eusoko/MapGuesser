@@ -13,8 +13,12 @@ class PositionController implements IController
     const NUMBER_OF_ROUNDS = 5;
     const MAX_SCORE = 1000;
 
-    // demo map
-    private int $mapId = 1;
+    private int $mapId;
+
+    public function __construct(int $mapId)
+    {
+        $this->mapId = $mapId;
+    }
 
     public function run(): IView
     {
@@ -120,7 +124,7 @@ class PositionController implements IController
         $select->where('id', 'NOT IN', $exclude);
         $select->where('map_id', '=', $this->mapId);
 
-        $numberOfPlaces = $select->count();
+        $numberOfPlaces = $select->count();// TODO: what if 0
         $randomOffset = random_int(0, $numberOfPlaces - 1);
 
         $select->orderBy('id');
