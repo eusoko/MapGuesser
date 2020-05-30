@@ -47,7 +47,6 @@ p {
 
 img {
     display: block;
-    max-width: 100%;
 }
 
 .mono {
@@ -136,7 +135,7 @@ div.header {
     color: white;
 }
 
-div.header > div.grid {
+div.header>div.grid {
     display: grid;
     grid-template-columns: auto auto;
 }
@@ -163,7 +162,7 @@ div.mapContainer {
 }
 
 div.mapItem {
-    width: 375px;
+    width: 350px;
     background-color: #eeeeee;
     border-radius: 3px;
     margin: 10px auto;
@@ -180,6 +179,10 @@ div.mapItem>div.title {
 div.mapItem>div.title>p.title {
     font-weight: 500;
     font-size: 18px;
+}
+
+div.mapItem>img {
+    width: 100%;
 }
 
 div.mapItem>div.inner {
@@ -306,27 +309,33 @@ div.mapItem>div.inner>div.info>p:nth-child(2) {
     display: none;
 }
 
-@media screen and (min-width: 1600px) {
+@media screen and (min-width: 1504px) {
     div.mapContainer {
         grid-template-columns: auto auto auto auto;
     }
 }
 
-@media screen and (min-width: 1200px) and (max-width: 1599px) {
+@media screen and (min-width: 1134px) and (max-width: 1503px) {
     div.mapContainer {
         grid-template-columns: auto auto auto;
     }
 }
 
-@media screen and (min-width: 800px) and (max-width: 1199px) {
+@media screen and (min-width: 764px) and (max-width: 1133px) {
     div.mapContainer {
         grid-template-columns: auto auto;
     }
 }
 
-@media screen and (max-width: 799px) {
+@media screen and (max-width: 763px) {
     div.mapContainer {
         grid-template-columns: auto;
+    }
+}
+
+@media screen and (max-width: 374px) {
+    div.mapItem {
+        width: initial;
     }
 }
 
