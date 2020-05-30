@@ -12,6 +12,11 @@ html, body {
     padding: 0;
 }
 
+button::-moz-focus-inner, input::-moz-focus-inner {
+    padding: 0;
+    border: 0;
+}
+
 p, h1, h2, button, a {
     font-family: 'Roboto', sans-serif;
 }
@@ -210,7 +215,7 @@ div.mapItem>div.inner>div.info>p:nth-child(2) {
     left: 50%;
     margin-top: -32px;
     margin-left: -32px;
-    z-index: 3;
+    z-index: 5;
 }
 
 #roundInfo {
@@ -229,11 +234,26 @@ div.mapItem>div.inner>div.info>p:nth-child(2) {
     z-index: 1;
 }
 
+#cover {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #000000;
+    opacity: 0.5;
+    z-index: 3;
+}
+
 #guess {
     position: absolute;
     bottom: 30px;
     right: 20px;
     z-index: 2;
+}
+
+#guess.result {
+    z-index: 4;
 }
 
 #guess>#continueButtonContainer {
@@ -355,8 +375,8 @@ div.mapItem>div.inner>div.info>p:nth-child(2) {
         z-index: 2;
     }
     #guess {
-        left: 20px;
         top: 50px;
+        left: 20px;
         opacity: 0.95;
         visibility: hidden;
     }

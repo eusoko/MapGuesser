@@ -8,6 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&family=Roboto+Mono:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="loading">
+        <img src="static/img/loading.svg">
+    </div>
     <div class="header">
         <h1>
             <!-- Copyright (c) 2019 The Bootstrap Authors. License can be found in 'USED_SOFTWARE' in section 'Bootstrap Icons'. -->
@@ -56,5 +59,12 @@
             <?php endif; ?>
         </div>
     </div>
+    <script>
+        document.getElementById('loading').style.visibility = 'hidden';
+
+        window.addEventListener('beforeunload', function (e) {
+            document.getElementById('loading').style.visibility = 'visible';
+        });
+    </script>
 </body>
 </html>

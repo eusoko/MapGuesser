@@ -8,23 +8,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&family=Roboto+Mono:wght@300;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="header small">
-        <div class="grid">
-        <h1>
-            <a href="maps" title="Back to playable maps">
-                <!-- Copyright (c) 2019 The Bootstrap Authors. License can be found in 'USED_SOFTWARE' in section 'Bootstrap Icons'. -->
-                <svg class="inline" width="1em" height="1em" viewBox="0 0 16 16" fill="#28a745" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M15.817.613A.5.5 0 0 1 16 1v13a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 14.51l-4.902.98A.5.5 0 0 1 0 15V2a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0l4.902.98 4.902-.98a.5.5 0 0 1 .415.103zM10 2.41l-4-.8v11.98l4 .8V2.41zm1 11.98l4-.8V1.61l-4 .8v11.98zm-6-.8V1.61l-4 .8v11.98l4-.8z" />
-                </svg>
-                <span>MapGuesser</span>
-            </a>
-        </h1>
-        <p id="roundInfo">Round: <span id="currentRound" class="mono bold"></span> | Score: <span id="currentScoreSum" class="mono bold"></span></p>
-    </div>
-    </div>
     <div id="loading">
         <img src="static/img/loading.svg">
     </div>
+    <div class="header small">
+        <div class="grid">
+            <h1>
+                <a href="maps" title="Back to playable maps">
+                    <!-- Copyright (c) 2019 The Bootstrap Authors. License can be found in 'USED_SOFTWARE' in section 'Bootstrap Icons'. -->
+                    <svg class="inline" width="1em" height="1em" viewBox="0 0 16 16" fill="#28a745" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M15.817.613A.5.5 0 0 1 16 1v13a.5.5 0 0 1-.402.49l-5 1a.502.502 0 0 1-.196 0L5.5 14.51l-4.902.98A.5.5 0 0 1 0 15V2a.5.5 0 0 1 .402-.49l5-1a.5.5 0 0 1 .196 0l4.902.98 4.902-.98a.5.5 0 0 1 .415.103zM10 2.41l-4-.8v11.98l4 .8V2.41zm1 11.98l4-.8V1.61l-4 .8v11.98zm-6-.8V1.61l-4 .8v11.98l4-.8z" />
+                    </svg>
+                    <span>MapGuesser</span>
+                </a>
+            </h1>
+            <p id="roundInfo">Round: <span id="currentRound" class="mono bold"></span> | Score: <span id="currentScoreSum" class="mono bold"></span></p>
+        </div>
+    </div>
+    <div id="cover"></div>
     <div id="panorama"></div>
     <div id="showGuessButtonContainer">
         <button id="showGuessButton" class="fullWidth">Show guess map</button>
