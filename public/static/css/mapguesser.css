@@ -54,6 +54,21 @@ img {
     display: block;
 }
 
+sup, sub {
+    position: relative;
+    font-size: smaller;
+}
+
+sup {
+    vertical-align: top;
+    top: -0.4em;
+}
+
+sub {
+    vertical-align: bottom;
+    bottom: -0.4em;
+}
+
 .mono {
     font-family: 'Roboto Mono', monospace;
 }
