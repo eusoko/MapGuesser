@@ -3,20 +3,23 @@
 require '../main.php';
 
 // very basic routing
-$host = $_SERVER["REQUEST_SCHEME"] . '://' . $_SERVER["SERVER_NAME"];
+$host = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'];
 $url = $_SERVER['REQUEST_URI'];
 if (($pos = strpos($url, '?')) !== false) {
     $url = substr($url, 0, $pos);
 }
 switch($url) {
     case '/game':
-        $controller = new MapGuesser\Controller\GameController();
+        $mapId = isset($_GET['map']) ? (int) $_GET['map'] : 0;
+        $controller = new MapGuesser\Controller\GameController($mapId);
         break;
     case '/game.json':
-        $controller = new MapGuesser\Controller\GameController(true);
+        $mapId = isset($_GET['map']) ? (int) $_GET['map'] : 0;
+        $controller = new MapGuesser\Controller\GameController($mapId, true);
         break;
     case '/position.json':
-        $controller = new MapGuesser\Controller\PositionController();
+        $mapId = isset($_GET['map']) ? (int) $_GET['map'] : 0;
+        $controller = new MapGuesser\Controller\PositionController($mapId);
         break;
     case '/':
         header('Location: ' . $host  . '/game', true, 302);
