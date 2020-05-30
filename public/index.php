@@ -9,6 +9,9 @@ if (($pos = strpos($url, '?')) !== false) {
     $url = substr($url, 0, $pos);
 }
 switch($url) {
+    case '/maps':
+        $controller = new MapGuesser\Controller\MapsController();
+        break;
     case '/game':
         $mapId = isset($_GET['map']) ? (int) $_GET['map'] : 0;
         $controller = new MapGuesser\Controller\GameController($mapId);
@@ -22,7 +25,7 @@ switch($url) {
         $controller = new MapGuesser\Controller\PositionController($mapId);
         break;
     case '/':
-        header('Location: ' . $host  . '/game', true, 302);
+        header('Location: ' . $host  . '/maps', true, 302);
         die;
     default:
         echo 'Error 404';

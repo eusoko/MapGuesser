@@ -12,13 +12,35 @@ html, body {
     padding: 0;
 }
 
-p, button {
+p, h1, h2, button, a {
     font-family: 'Roboto', sans-serif;
+}
+
+h1, h2 {
+    font-weight: 500;
+}
+
+h1 {
+    font-size: 32px;
+    line-height: inherit;
+}
+
+h2 {
+    font-size: 24px;
+}
+
+p, h2 {
+    line-height: 150%;
 }
 
 p {
     font-weight: 300;
-    font-size: 12px;
+    font-size: 16px;
+}
+
+img {
+    display: block;
+    max-width: 100%;
 }
 
 .mono {
@@ -29,7 +51,37 @@ p {
     font-weight: 500;
 }
 
-button {
+.small {
+    font-size: 12px;
+}
+
+.justify {
+    text-align: justify;
+}
+
+.marginTop {
+    margin-top: 10px;
+}
+
+.marginBottom {
+    margin-bottom: 10px;
+}
+
+svg.inline {
+    vertical-align: -0.15em;
+}
+
+a:link, a:visited {
+    color: #3b5998;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+button, a.button {
     cursor: pointer;
     font-size: 16px;
     font-weight: 500;
@@ -39,11 +91,15 @@ button {
     height: 35px;
     border: none;
     border-radius: 3px;
+    display: inline-block;
+    text-align: center;
+    line-height: 35px;
 }
 
-button:enabled:hover, button:enabled:focus {
+button:enabled:hover, button:enabled:focus, a.button:hover, a.button:focus {
     background-color: #29457f;
     outline: none;
+    text-decoration: none;
 }
 
 button:disabled {
@@ -52,33 +108,78 @@ button:disabled {
     opacity: 0.7;
 }
 
-button.fullWidth {
+button.fullWidth, a.button.fullWidth {
     padding: 0;
     width: 100%;
 }
 
-button.gray {
+button.gray, a.button.gray {
     background-color: #808080;
 }
 
-button.gray:hover, button.gray:focus {
+button.gray:hover, button.gray:focus, a.button.gray:hover, a.button.gray:focus {
     background-color: #555555;
+}
+
+div.header {
+    background-color: #333333;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 12px;
+    color: white;
+}
+
+div.main {
+    padding: 6px 12px;
 }
 
 div.buttonContainer {
     height: 35px;
 }
 
-div.buttonContainer > button {
+div.buttonContainer>button {
     margin: 0 auto;
 }
 
-div.buttonContainer.top {
-    margin-bottom: 10px;
+div.mapContainer {
+    display: grid;
 }
 
-div.buttonContainer.bottom {
-    margin-top: 10px;
+div.mapItem {
+    width: 375px;
+    background-color: #eeeeee;
+    border-radius: 3px;
+    margin: 10px auto;
+}
+
+div.mapItem>div.title {
+    background-color: #28a745;
+    color: white;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 4px 8px;
+}
+
+div.mapItem>div.title>p.title {
+    font-weight: 500;
+    font-size: 18px;
+}
+
+div.mapItem>div.inner {
+    padding: 8px;
+}
+
+div.mapItem>div.inner>div.info {
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+div.mapItem>div.inner>div.info>p:nth-child(1) {
+    text-align: left;
+}
+
+div.mapItem>div.inner>div.info>p:nth-child(2) {
+    text-align: right;
 }
 
 #loading {
@@ -108,11 +209,12 @@ div.buttonContainer.bottom {
 
 #roundInfo p {
     font-size: 16px;
+    line-height: inherit;
 }
 
 #panorama {
-    height: 100%;
     width: 100%;
+    height: 100%;
     z-index: 1;
 }
 
@@ -123,16 +225,15 @@ div.buttonContainer.bottom {
     z-index: 2;
 }
 
-#guess > #continueButtonContainer {
+#guess>#continueButtonContainer {
     display: none;
 }
 
-#guess.result > #closeGuessButtonContainer,
-#guess.result > #guessButtonContainer {
+#guess.result>#closeGuessButtonContainer, #guess.result>#guessButtonContainer {
     display: none;
 }
 
-#guess.result > #continueButtonContainer {
+#guess.result>#continueButtonContainer {
     display: block;
 }
 
@@ -141,14 +242,14 @@ div.buttonContainer.bottom {
     border-radius: 3px;
 }
 
-#guess.result > #map {
+#guess.result>#map {
     height: calc(100% - 170px);
 }
 
 #resultInfo {
     margin-top: 5px;
-    height: 120px;
     width: 100%;
+    height: 120px;
     padding: 5px 20px;
     text-align: center;
     box-sizing: border-box;
@@ -157,13 +258,13 @@ div.buttonContainer.bottom {
     display: none;
 }
 
-#guess.result > #resultInfo {
+#guess.result>#resultInfo {
     display: block;
 }
 
-#resultInfo > div {
-    height: 33.33%;
+#resultInfo>div {
     width: 100%;
+    height: 33.33%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -171,9 +272,10 @@ div.buttonContainer.bottom {
 
 #resultInfo p {
     font-size: 24px;
+    line-height: 1;
 }
 
-#distanceInfo > p:nth-child(2), #scoreInfo > p:nth-child(2) {
+#distanceInfo>p:nth-child(2), #scoreInfo>p:nth-child(2) {
     display: none;
 }
 
@@ -185,8 +287,8 @@ div.buttonContainer.bottom {
 }
 
 #scoreBar {
-    height: 100%;
     width: 0;
+    height: 100%;
     border-radius: 3px;
     transition-property: width;
     transition-duration: 2.0s;
@@ -196,12 +298,35 @@ div.buttonContainer.bottom {
     display: none;
 }
 
+@media screen and (min-width: 1600px) {
+    div.mapContainer {
+        grid-template-columns: auto auto auto auto;
+    }
+}
+
+@media screen and (min-width: 1200px) and (max-width: 1599px) {
+    div.mapContainer {
+        grid-template-columns: auto auto auto;
+    }
+}
+
+@media screen and (min-width: 800px) and (max-width: 1199px) {
+    div.mapContainer {
+        grid-template-columns: auto auto;
+    }
+}
+
+@media screen and (max-width: 799px) {
+    div.mapContainer {
+        grid-template-columns: auto;
+    }
+}
+
 @media screen and (max-width: 599px) {
     button {
         padding: 0;
         width: 100%;
     }
-
     #showGuessButtonContainer {
         position: absolute;
         left: 20px;
@@ -209,18 +334,15 @@ div.buttonContainer.bottom {
         right: 20px;
         z-index: 2;
     }
-
     #guess {
         left: 20px;
         top: 40px;
         opacity: 0.95;
         visibility: hidden;
     }
-
     #map {
         height: calc(100% - 90px);
     }
-
     #scoreBarBase {
         width: 100%;
     }
@@ -230,13 +352,11 @@ div.buttonContainer.bottom {
     #showGuessButtonContainer {
         display: none;
     }
-
     #guess {
         width: 500px;
         height: 375px;
         opacity: 0.95;
     }
-
     #guess.adapt {
         top: initial;
         width: 250px;
@@ -246,22 +366,18 @@ div.buttonContainer.bottom {
         transition-duration: 0.1s;
         transition-delay: 0.8s;
     }
-
     #guess.adapt:hover {
         width: 500px;
         height: 375px;
         opacity: 0.95;
         transition-delay: 0s;
     }
-
     #closeGuessButtonContainer {
         display: none;
     }
-
     #map {
         height: calc(100% - 45px);
     }
-
     #guess.result {
         width: initial;
         height: initial;
@@ -270,22 +386,18 @@ div.buttonContainer.bottom {
         right: 50px;
         bottom: 50px;
     }
-
     #scoreBarBase {
         width: 60%;
     }
-
     @media screen and (max-height: 424px) {
         #guess {
             top: 40px;
             height: initial;
         }
-
         #guess.adapt:hover {
             top: 40px;
             height: initial;
         }
-
         #guess.result {
             left: 20px;
             right: 20px;

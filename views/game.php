@@ -19,11 +19,11 @@
         <button id="showGuessButton" class="fullWidth">Show guess map</button>
     </div>
     <div id="guess">
-        <div id="closeGuessButtonContainer" class="buttonContainer top">
+        <div id="closeGuessButtonContainer" class="buttonContainer marginBottom">
             <button id="closeGuessButton" class="fullWidth gray">Close</button>
         </div>
         <div id="map"></div>
-        <div id="guessButtonContainer" class="buttonContainer bottom">
+        <div id="guessButtonContainer" class="buttonContainer marginTop">
             <button id="guessButton" class="fullWidth" disabled>Guess</button>
         </div>
         <div id="resultInfo">
@@ -41,10 +41,10 @@
                 </div>
             </div>
         </div>
-        <div id="continueButtonContainer" class="buttonContainer bottom">
+        <div id="continueButtonContainer" class="buttonContainer marginTop">
             <button id="continueButton" class="fullWidth">Continue</button>
             <button id="showSummaryButton" class="fullWidth">Show summary</button>
-            <button id="startNewGameButton" class="fullWidth">Start new game</button>
+            <button id="startNewGameButton" class="fullWidth">Play this map again</button>
         </div>
     </div>
     <script>
