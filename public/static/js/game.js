@@ -56,6 +56,11 @@
         },
 
         resetGame: function () {
+            if (Core.guessMarker) {
+                Core.guessMarker.setMap(null);
+                Core.guessMarker = null;
+            }
+
             for (var i = 0; i < Core.rounds.length; ++i) {
                 var round = Core.rounds[i];
 
