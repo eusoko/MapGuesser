@@ -197,7 +197,7 @@
                 scoreBar.style.backgroundColor = scoreBarProperties.backgroundColor;
                 scoreBar.style.width = scoreBarProperties.width;
 
-                if (Core.rounds.length == Core.NUMBER_OF_ROUNDS) {
+                if (Core.rounds.length === Core.NUMBER_OF_ROUNDS) {
                     document.getElementById('continueButton').style.display = 'none';
                     document.getElementById('showSummaryButton').style.display = 'block';
                 }
@@ -444,6 +444,10 @@
     }
 
     window.onbeforeunload = function (e) {
+        if (Core.rounds[Core.rounds.length - 1].position) {
+            return;
+        }
+
         e.preventDefault();
         e.returnValue = '';
     };
