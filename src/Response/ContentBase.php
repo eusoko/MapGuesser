@@ -1,8 +1,8 @@
-<?php namespace MapGuesser\View;
+<?php namespace MapGuesser\Response;
 
-use MapGuesser\Interfaces\View\IView;
+use MapGuesser\Interfaces\Response\IContent;
 
-abstract class ViewBase implements IView
+abstract class ContentBase implements IContent
 {
     protected array $data;
 
