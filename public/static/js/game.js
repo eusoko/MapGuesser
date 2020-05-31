@@ -446,15 +446,4 @@
     document.getElementById('startNewGameButton').onclick = function () {
         Core.resetGame();
     }
-
-    // showing the loading animation is not possible, because we don't know if user cancelled the leave
-
-    window.onbeforeunload = function (e) {
-        if (Core.rounds[Core.rounds.length - 1].position) {
-            return;
-        }
-
-        e.preventDefault();
-        e.returnValue = '';
-    };
 })();

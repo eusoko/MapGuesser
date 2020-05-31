@@ -44,11 +44,4 @@
         <?php endif; ?>
     </div>
 </div>
-<script>
-    document.getElementById('loading').style.visibility = 'hidden';
-
-    window.addEventListener('beforeunload', function (e) {
-        document.getElementById('loading').style.visibility = 'visible';
-    });
-</script>
 <?php require 'templates/main_footer.php'; ?>
