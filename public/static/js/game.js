@@ -53,7 +53,7 @@
                 Core.startNewRound();
             };
 
-            xhr.open('GET', 'position.json?map=' + mapId, true);
+            xhr.open('GET', '/game/' + mapId + '/position.json', true);
             xhr.send();
         },
 
@@ -135,7 +135,7 @@
                 Core.resetGame();
             };
 
-            xhr.open('GET', 'game.json?map=' + mapId, true);
+            xhr.open('GET', '/game/' + mapId + '/position.json', true);
             xhr.send();
         },
 
@@ -160,7 +160,6 @@
             document.getElementById('cover').style.visibility = 'visible';
 
             var data = new FormData();
-            data.append('guess', '1');
             data.append('lat', String(guessPosition.lat));
             data.append('lng', String(guessPosition.lng));
 
@@ -209,7 +208,7 @@
                 Core.panoId = this.response.panoId;
             };
 
-            xhr.open('POST', 'position.json?map=' + mapId, true);
+            xhr.open('POST', '/game/' + mapId + '/guess.json', true);
             xhr.send(data);
         },
 
