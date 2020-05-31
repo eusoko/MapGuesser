@@ -1,6 +1,6 @@
-<?php namespace MapGuesser\View;
+<?php namespace MapGuesser\Response;
 
-class HtmlView extends ViewBase
+class HtmlContent extends ContentBase
 {
     private string $template;
 

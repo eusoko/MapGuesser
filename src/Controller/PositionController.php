@@ -2,75 +2,30 @@
 
 use MapGuesser\Database\Query\Select;
 use MapGuesser\Http\Request;
-use MapGuesser\Interfaces\Controller\IController;
 use MapGuesser\Interfaces\Database\IResultSet;
 use MapGuesser\Util\Geo\Position;
-use MapGuesser\View\JsonView;
-use MapGuesser\Interfaces\View\IView;
+use MapGuesser\Response\JsonContent;
+use MapGuesser\Interfaces\Response\IContent;
 
-class PositionController implements IController
+class PositionController
 {
     const NUMBER_OF_ROUNDS = 5;
     const MAX_SCORE = 1000;
 
-    private int $mapId;
-
-    public function __construct(int $mapId)
+    public function getPosition(array $parameters): IContent
     {
-        $this->mapId = $mapId;
-    }
+        $mapId = (int) $parameters['mapId'];
 
-    public function run(): IView
-    {
-        if (!isset($_SESSION['state']) || $_SESSION['state']['mapId'] !== $this->mapId) {
+        if (!isset($_SESSION['state']) || $_SESSION['state']['mapId'] !== $mapId) {
             $data = ['error' => 'No valid session found!'];
-            return new JsonView($data);
+            return new JsonContent($data);
         }
 
         if (count($_SESSION['state']['rounds']) === 0) {
-            $newPosition = $this->getNewPosition();
+            $newPosition = $this->getNewPosition($mapId);
             $_SESSION['state']['rounds'][] = $newPosition;
 
             $data = ['panoId' => $newPosition['panoId']];
-        } elseif (isset($_POST['guess'])) {
-            $last = &$_SESSION['state']['rounds'][count($_SESSION['state']['rounds']) - 1];
-
-            $position = $last['position'];
-            $guessPosition = new Position((float) $_POST['lat'], (float) $_POST['lng']);
-
-            $last['guessPosition'] = $guessPosition;
-
-            $distance = $this->calculateDistance($position, $guessPosition);
-            $score = $this->calculateScore($distance, $_SESSION['state']['area']);
-
-            $last['distance'] = $distance;
-            $last['score'] = $score;
-
-            if (count($_SESSION['state']['rounds']) < static::NUMBER_OF_ROUNDS) {
-                $exclude = [];
-
-                foreach ($_SESSION['state']['rounds'] as $round) {
-                    $exclude = array_merge($exclude, $round['placesWithoutPano'], [$round['placeId']]);
-                }
-
-                $newPosition = $this->getNewPosition($exclude);
-                $_SESSION['state']['rounds'][] = $newPosition;
-
-                $panoId = $newPosition['panoId'];
-            } else {
-                $_SESSION['state']['rounds'] = [];
-
-                $panoId = null;
-            }
-
-            $data = [
-                'result' => [
-                    'position' => $position->toArray(),
-                    'distance' => $distance,
-                    'score' => $score
-                ],
-                'panoId' => $panoId
-            ];
         } else {
             $rounds = count($_SESSION['state']['rounds']);
             $last = $_SESSION['state']['rounds'][$rounds - 1];
@@ -92,15 +47,65 @@ class PositionController implements IController
             ];
         }
 
-        return new JsonView($data);
+        return new JsonContent($data);
     }
 
-    private function getNewPosition(array $exclude = []): array
+    public function evaluateGuess(array $parameters): IContent
+    {
+        $mapId = (int) $parameters['mapId'];
+
+        if (!isset($_SESSION['state']) || $_SESSION['state']['mapId'] !== $mapId) {
+            $data = ['error' => 'No valid session found!'];
+            return new JsonContent($data);
+        }
+
+        $last = &$_SESSION['state']['rounds'][count($_SESSION['state']['rounds']) - 1];
+
+        $position = $last['position'];
+        $guessPosition = new Position((float) $_POST['lat'], (float) $_POST['lng']);
+
+        $last['guessPosition'] = $guessPosition;
+
+        $distance = $this->calculateDistance($position, $guessPosition);
+        $score = $this->calculateScore($distance, $_SESSION['state']['area']);
+
+        $last['distance'] = $distance;
+        $last['score'] = $score;
+
+        if (count($_SESSION['state']['rounds']) < static::NUMBER_OF_ROUNDS) {
+            $exclude = [];
+
+            foreach ($_SESSION['state']['rounds'] as $round) {
+                $exclude = array_merge($exclude, $round['placesWithoutPano'], [$round['placeId']]);
+            }
+
+            $newPosition = $this->getNewPosition($mapId, $exclude);
+            $_SESSION['state']['rounds'][] = $newPosition;
+
+            $panoId = $newPosition['panoId'];
+        } else {
+            $_SESSION['state']['rounds'] = [];
+
+            $panoId = null;
+        }
+
+        $data = [
+            'result' => [
+                'position' => $position->toArray(),
+                'distance' => $distance,
+                'score' => $score
+            ],
+            'panoId' => $panoId
+        ];
+        return new JsonContent($data);
+    }
+
+    private function getNewPosition(int $mapId, array $exclude = []): array
     {
         $placesWithoutPano = [];
 
         do {
-            $place = $this->selectNewPlace($exclude);
+            $place = $this->selectNewPlace($mapId, $exclude);
             $position = new Position($place['lat'], $place['lng']);
             $panoId = $this->getPanorama($position);
 
@@ -117,12 +122,12 @@ class PositionController implements IController
         ];
     }
 
-    private function selectNewPlace(array $exclude): array
+    private function selectNewPlace(int $mapId, array $exclude): array
     {
         $select = new Select(\Container::$dbConnection, 'places');
         $select->columns(['id', 'lat', 'lng']);
         $select->where('id', 'NOT IN', $exclude);
-        $select->where('map_id', '=', $this->mapId);
+        $select->where('map_id', '=', $mapId);
 
         $numberOfPlaces = $select->count();// TODO: what if 0
         $randomOffset = random_int(0, $numberOfPlaces - 1);

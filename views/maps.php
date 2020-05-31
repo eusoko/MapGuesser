@@ -1,10 +1,5 @@
-<?php require 'templates/main_header.php'; ?>
-<div class="header">
-    <h1>
-        <?php require 'templates/icon.php'; ?>
-        MapGuesser
-    </h1>
-</div>
+<?php require ROOT . '/views/templates/main_header.php'; ?>
+<?php require ROOT . '/views/templates/header.php'; ?>
 <div class="main">
     <h2>Playable maps</h2>
     <div class="mapContainer">
@@ -34,7 +29,7 @@
                     </div>
                     <p class="small justify marginTop"><?= $map['description'] ?></p>
                 </div>
-                <a class="button fullWidth" href="game?map=<?= $map['id']; ?>" title="Play map '<?= $map['name'] ?>'">Play this map</a>
+                <a class="button fullWidth" href="game/<?= $map['id']; ?>" title="Play map '<?= $map['name'] ?>'">Play this map</a>
             </div>
         <?php endforeach; ?>
         <?php if (count($maps) < 4): ?>
@@ -44,4 +39,4 @@
         <?php endif; ?>
     </div>
 </div>
-<?php require 'templates/main_footer.php'; ?>
+<?php require ROOT . '/views/templates/main_footer.php'; ?>
