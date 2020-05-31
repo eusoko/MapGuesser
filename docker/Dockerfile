@@ -2,16 +2,14 @@ FROM ubuntu:focal
 
 ENV DEBIAN_FRONTEND noninteractive
 
-# Install Apache, PHP and further necessary packages
-RUN apt update
-RUN apt install -y curl git mariadb-client apache2 \
+# Install Nginx, PHP and further necessary packages
+RUN apt update --fix-missing
+RUN apt install -y curl git mariadb-client nginx \
     php-apcu php-xdebug php7.4-cli php7.4-curl php7.4-fpm php7.4-mbstring php7.4-mysql php7.4-zip
 
-# Configure Apache with PHP
+# Configure Nginx with PHP
 RUN mkdir -p /run/php
-RUN a2enmod proxy_fcgi rewrite
-RUN a2enconf php7.4-fpm
-COPY configs/apache.conf /etc/apache2/sites-available/000-default.conf
+COPY configs/nginx.conf /etc/nginx/sites-available/default
 RUN echo "xdebug.remote_enable = 1" >> /etc/php/7.4/mods-available/xdebug.ini
 RUN echo "xdebug.remote_autostart = 1" >> /etc/php/7.4/mods-available/xdebug.ini
 RUN echo "xdebug.remote_connect_back = 1" >> /etc/php/7.4/mods-available/xdebug.ini
@@ -29,4 +27,4 @@ EXPOSE 80
 VOLUME /var/www/mapguesser
 WORKDIR /var/www/mapguesser
 
-ENTRYPOINT /usr/sbin/php-fpm7.4 -F & /usr/sbin/apache2ctl -DFOREGROUND
+ENTRYPOINT /usr/sbin/php-fpm7.4 -F & /usr/sbin/nginx -g 'daemon off;'
