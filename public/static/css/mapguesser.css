@@ -231,6 +231,7 @@ div.mapItem>div.inner>div.info>p:nth-child(2) {
     margin-top: -32px;
     margin-left: -32px;
     z-index: 5;
+    visibility: hidden;
 }
 
 #roundInfo {
