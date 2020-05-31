@@ -1,9 +1,9 @@
-<?php require 'templates/main_header.php'; ?>
+<?php require ROOT . '/views/templates/main_header.php'; ?>
 <div class="header small">
     <div class="grid">
         <h1>
-            <a href="maps" title="Back to playable maps">
-                <?php require 'templates/icon.php'; ?>
+            <a href="/maps" title="Back to playable maps">
+                <?php require ROOT . '/views/templates/icon.php'; ?>
                 <span>MapGuesser</span>
             </a>
         </h1>
@@ -49,5 +49,5 @@
     var mapBounds = <?= json_encode($bounds) ?>;
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=<?= $_ENV['GOOGLE_MAPS_JS_API_KEY'] ?>"></script>
-<script src="static/js/game.js"></script>
-<?php require 'templates/main_footer.php'; ?>
+<script src="/static/js/game.js"></script>
+<?php require ROOT . '/views/templates/main_footer.php'; ?>

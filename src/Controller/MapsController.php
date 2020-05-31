@@ -2,15 +2,14 @@
 
 use MapGuesser\Database\Query\Select;
 use MapGuesser\Database\RawExpression;
-use MapGuesser\Interfaces\Controller\IController;
 use MapGuesser\Interfaces\Database\IResultSet;
-use MapGuesser\Interfaces\View\IView;
+use MapGuesser\Interfaces\Response\IContent;
 use MapGuesser\Util\Geo\Bounds;
-use MapGuesser\View\HtmlView;
+use MapGuesser\Response\HtmlContent;
 
-class MapsController implements IController
+class MapsController
 {
-    public function run(): IView
+    public function getMaps(): IContent
     {
         $select = new Select(\Container::$dbConnection, 'maps');
         $select->columns([
@@ -38,7 +37,7 @@ class MapsController implements IController
         }
 
         $data = ['maps' => $maps];
-        return new HtmlView('maps', $data);
+        return new HtmlContent('maps', $data);
     }
 
     private function formatMapAreaForHuman(float $area): array

@@ -1,51 +1,48 @@
 <?php namespace MapGuesser\Controller;
 
 use MapGuesser\Database\Query\Select;
-use MapGuesser\Interfaces\Controller\IController;
 use MapGuesser\Interfaces\Database\IResultSet;
 use MapGuesser\Util\Geo\Bounds;
-use MapGuesser\View\HtmlView;
-use MapGuesser\View\JsonView;
-use MapGuesser\Interfaces\View\IView;
+use MapGuesser\Response\HtmlContent;
+use MapGuesser\Response\JsonContent;
+use MapGuesser\Interfaces\Response\IContent;
 
-class GameController implements IController
+class GameController
 {
-    private int $mapId;
-
-    private bool $jsonResponse;
-
-    public function __construct(int $mapId, $jsonResponse = false)
+    public function getGame(array $parameters): IContent
     {
-        $this->mapId = $mapId;
-        $this->jsonResponse = $jsonResponse;
+        $mapId = (int) $parameters['mapId'];
+        $data = $this->prepareGame($mapId);
+        return new HtmlContent('game', $data);
     }
 
-    public function run(): IView
+    public function getGameJson(array $parameters): IContent
     {
-        $bounds = $this->getMapBounds();
+        $mapId = (int) $parameters['mapId'];
+        $data = $this->prepareGame($mapId);
+        return new JsonContent($data);
+    }
 
-        if (!isset($_SESSION['state']) || $_SESSION['state']['mapId'] !== $this->mapId) {
+    private function prepareGame(int $mapId)
+    {
+        $bounds = $this->getMapBounds($mapId);
+
+        if (!isset($_SESSION['state']) || $_SESSION['state']['mapId'] !== $mapId) {
             $_SESSION['state'] = [
-                'mapId' => $this->mapId,
+                'mapId' => $mapId,
                 'area' => $bounds->calculateApproximateArea(),
                 'rounds' => []
             ];
         }
 
-        $data = ['mapId' => $this->mapId, 'bounds' => $bounds->toArray()];
-
-        if ($this->jsonResponse) {
-            return new JsonView($data);
-        } else {
-            return new HtmlView('game', $data);
-        }
+        return ['mapId' => $mapId, 'bounds' => $bounds->toArray()];
     }
 
-    private function getMapBounds(): Bounds
+    private function getMapBounds(int $mapId): Bounds
     {
         $select = new Select(\Container::$dbConnection, 'maps');
         $select->columns(['bound_south_lat', 'bound_west_lng', 'bound_north_lat', 'bound_east_lng']);
-        $select->whereId($this->mapId);
+        $select->whereId($mapId);
 
         $map = $select->execute()->fetch(IResultSet::FETCH_ASSOC);
 

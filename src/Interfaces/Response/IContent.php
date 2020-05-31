@@ -1,6 +1,6 @@
-<?php namespace MapGuesser\Interfaces\View;
+<?php namespace MapGuesser\Interfaces\Response;
 
-interface IView
+interface IContent
 {
     public function &getData(): array;
 

@@ -1,6 +1,6 @@
-<?php namespace MapGuesser\View;
+<?php namespace MapGuesser\Response;
 
-class JsonView extends ViewBase
+class JsonContent extends ContentBase
 {
     public function __construct(array &$data = [])
     {
