@@ -91,7 +91,8 @@
         fullscreenControl: false,
         fullscreenControlOptions: {
             position: google.maps.ControlPosition.LEFT_TOP
-        }
+        },
+        motionTracking: false
     });
 
     document.getElementById('cancelButton').onclick = function () {
