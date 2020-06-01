@@ -1,0 +1,16 @@
+<!-- Original image: Copyright (c) 2019 The Bootstrap Authors. License can be found in 'USED_SOFTWARE' in section 'Bootstrap Icons'. -->
+<svg viewBox="0 0 12 16" xmlns="http://www.w3.org/2000/svg">
+    <path
+        fill="#d24d4d"
+        fill-rule="evenodd"
+        stroke="#752929"
+        stroke-width="0.3"
+        stroke-linecap="round"
+        d="m 5.9999998,15.849652 c 0,0 5.8511182,-5.579947 5.8511182,-9.8134832 a 5.8511179,5.8880898 0 0 0 -11.7022358,0 c 0,4.2335362 5.8511176,9.8134832 5.8511176,9.8134832" />
+    <circle
+        fill="#752929"
+        fill-rule="evenodd"
+        cx="6"
+        cy="6"
+        r="3" />
+</svg>

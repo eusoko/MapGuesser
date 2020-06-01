@@ -222,7 +222,13 @@
                 title: 'Open in Google Maps',
                 zIndex: Core.rounds.length * 2,
                 clickable: true,
-                draggable: false
+                draggable: false,
+                icon: {
+                    url: '/static/img/markers/marker-green.svg',
+                    size: new google.maps.Size(24, 32),
+                    scaledSize: new google.maps.Size(24, 32),
+                    anchor: new google.maps.Point(12, 32)
+                },
             });
 
             round.realMarker.addListener('click', function () {
@@ -236,10 +242,17 @@
                 zIndex: Core.rounds.length,
                 clickable: false,
                 draggable: false,
+                icon: {
+                    url: '/static/img/markers/marker-gray-empty.svg',
+                    size: new google.maps.Size(24, 32),
+                    scaledSize: new google.maps.Size(24, 32),
+                    anchor: new google.maps.Point(12, 32),
+                    labelOrigin: new google.maps.Point(12, 14)
+                },
                 label: {
                     color: '#ffffff',
                     fontFamily: 'Roboto',
-                    fontSize: '18px',
+                    fontSize: '16px',
                     fontWeight: '500',
                     text: '?'
                 }
@@ -300,8 +313,15 @@
             for (var i = 0; i < Core.rounds.length; ++i) {
                 var round = Core.rounds[i];
 
+                round.realMarker.setIcon({
+                    url: '/static/img/markers/marker-green-empty.svg',
+                    size: new google.maps.Size(24, 32),
+                    scaledSize: new google.maps.Size(24, 32),
+                    anchor: new google.maps.Point(12, 32),
+                    labelOrigin: new google.maps.Point(12, 14)
+                });
                 round.realMarker.setLabel({
-                    color: '#812519',
+                    color: '#285624',
                     fontFamily: 'Roboto',
                     fontSize: '16px',
                     fontWeight: '500',
@@ -385,10 +405,17 @@
             position: e.latLng,
             clickable: false,
             draggable: true,
+            icon: {
+                url: '/static/img/markers/marker-gray-empty.svg',
+                size: new google.maps.Size(24, 32),
+                scaledSize: new google.maps.Size(24, 32),
+                anchor: new google.maps.Point(12, 32),
+                labelOrigin: new google.maps.Point(12, 14)
+            },
             label: {
                 color: '#ffffff',
                 fontFamily: 'Roboto',
-                fontSize: '18px',
+                fontSize: '16px',
                 fontWeight: '500',
                 text: '?'
             }
