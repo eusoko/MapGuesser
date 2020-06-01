@@ -93,7 +93,10 @@ sub {
     margin-bottom: 10px;
 }
 
-svg.inline {
+svg.inline, img.inline {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
     vertical-align: -0.15em;
 }
 
@@ -147,6 +150,14 @@ button.gray:hover, button.gray:focus, a.button.gray:hover, a.button.gray:focus {
     background-color: #555555;
 }
 
+button.red, a.button.red {
+    background-color: #aa5e5e;
+}
+
+button.red:hover, button.red:focus, a.button.red:hover, a.button.red:focus {
+    background-color: #7f2929;
+}
+
 div.header {
     background-color: #333333;
     height: 50px;
@@ -177,51 +188,6 @@ div.buttonContainer>button {
     margin: 0 auto;
 }
 
-div.mapContainer {
-    display: grid;
-}
-
-div.mapItem {
-    width: 350px;
-    background-color: #eeeeee;
-    border-radius: 3px;
-    margin: 10px auto;
-}
-
-div.mapItem>div.title {
-    background-color: #28a745;
-    color: white;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
-    padding: 4px 8px;
-}
-
-div.mapItem>div.title>p.title {
-    font-weight: 500;
-    font-size: 18px;
-}
-
-div.mapItem>img {
-    width: 100%;
-}
-
-div.mapItem>div.inner {
-    padding: 8px;
-}
-
-div.mapItem>div.inner>div.info {
-    display: grid;
-    grid-template-columns: auto auto;
-}
-
-div.mapItem>div.inner>div.info>p:nth-child(1) {
-    text-align: left;
-}
-
-div.mapItem>div.inner>div.info>p:nth-child(2) {
-    text-align: right;
-}
-
 #loading {
     position: absolute;
     width: 64px;
@@ -234,147 +200,6 @@ div.mapItem>div.inner>div.info>p:nth-child(2) {
     visibility: hidden;
 }
 
-#roundInfo {
-    line-height: inherit;
-    text-align: right;
-}
-
-#roundInfo p {
-    font-size: 16px;
-    line-height: inherit;
-}
-
-#panorama {
-    width: 100%;
-    height: calc(100% - 40px);
-    z-index: 1;
-}
-
-#cover {
-    position: absolute;
-    top: 40px;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background-color: #000000;
-    opacity: 0.5;
-    z-index: 3;
-}
-
-#guess {
-    position: absolute;
-    bottom: 30px;
-    right: 20px;
-    z-index: 2;
-}
-
-#guess.result {
-    z-index: 4;
-}
-
-#guess>#continueButtonContainer {
-    display: none;
-}
-
-#guess.result>#closeGuessButtonContainer, #guess.result>#guessButtonContainer {
-    display: none;
-}
-
-#guess.result>#continueButtonContainer {
-    display: block;
-}
-
-#map {
-    width: 100%;
-    border-radius: 3px;
-}
-
-#guess.result>#map {
-    height: calc(100% - 170px);
-}
-
-#resultInfo {
-    margin-top: 5px;
-    width: 100%;
-    height: 120px;
-    padding: 5px 20px;
-    text-align: center;
-    box-sizing: border-box;
-    background-color: #ffffff;
-    border-radius: 3px;
-    display: none;
-}
-
-#guess.result>#resultInfo {
-    display: block;
-}
-
-#resultInfo>div {
-    width: 100%;
-    height: 33.33%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#resultInfo p {
-    font-size: 24px;
-    line-height: 1;
-}
-
-#distanceInfo>p:nth-child(2), #scoreInfo>p:nth-child(2) {
-    display: none;
-}
-
-#scoreBarBase {
-    height: 24px;
-    margin: 0 auto;
-    background-color: #eeeeee;
-    border-radius: 3px;
-}
-
-#scoreBar {
-    width: 0;
-    height: 100%;
-    border-radius: 3px;
-    transition-property: width;
-    transition-duration: 2.0s;
-}
-
-#showSummaryButton, #startNewGameButton {
-    display: none;
-}
-
-@media screen and (min-width: 1504px) {
-    div.mapContainer {
-        grid-template-columns: auto auto auto auto;
-    }
-}
-
-@media screen and (min-width: 1134px) and (max-width: 1503px) {
-    div.mapContainer {
-        grid-template-columns: auto auto auto;
-    }
-}
-
-@media screen and (min-width: 764px) and (max-width: 1133px) {
-    div.mapContainer {
-        grid-template-columns: auto auto;
-    }
-}
-
-@media screen and (max-width: 763px) {
-    div.mapContainer {
-        grid-template-columns: auto;
-    }
-}
-
-@media screen and (max-width: 374px) {
-    div.mapItem {
-        width: initial;
-    }
-}
-
 @media screen and (max-width: 599px) {
     div.header.small h1 span {
         display: none;
@@ -382,82 +207,5 @@ div.mapItem>div.inner>div.info>p:nth-child(2) {
     button {
         padding: 0;
         width: 100%;
-    }
-    #showGuessButtonContainer {
-        position: absolute;
-        left: 20px;
-        bottom: 30px;
-        right: 20px;
-        z-index: 2;
-    }
-    #guess {
-        top: 50px;
-        left: 20px;
-        opacity: 0.95;
-        visibility: hidden;
-    }
-    #map {
-        height: calc(100% - 90px);
-    }
-    #scoreBarBase {
-        width: 100%;
-    }
-}
-
-@media screen and (min-width: 600px) {
-    #showGuessButtonContainer {
-        display: none;
-    }
-    #guess {
-        width: 500px;
-        height: 375px;
-        opacity: 0.95;
-    }
-    #guess.adapt {
-        top: initial;
-        width: 250px;
-        height: 200px;
-        opacity: 0.5;
-        transition-property: width, height, opacity;
-        transition-duration: 0.1s;
-        transition-delay: 0.8s;
-    }
-    #guess.adapt:hover {
-        width: 500px;
-        height: 375px;
-        opacity: 0.95;
-        transition-delay: 0s;
-    }
-    #closeGuessButtonContainer {
-        display: none;
-    }
-    #map {
-        height: calc(100% - 45px);
-    }
-    #guess.result {
-        width: initial;
-        height: initial;
-        top: 50px;
-        left: 50px;
-        right: 50px;
-        bottom: 50px;
-    }
-    #scoreBarBase {
-        width: 60%;
-    }
-    @media screen and (max-height: 424px) {
-        #guess {
-            top: 50px;
-            height: initial;
-        }
-        #guess.adapt:hover {
-            top: 50px;
-            height: initial;
-        }
-        #guess.result {
-            left: 20px;
-            right: 20px;
-            bottom: 30px;
-        }
     }
 }

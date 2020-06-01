@@ -1,0 +1,190 @@
+#roundInfo {
+    line-height: inherit;
+    text-align: right;
+}
+
+#roundInfo p {
+    font-size: 16px;
+    line-height: inherit;
+}
+
+#panorama {
+    width: 100%;
+    height: calc(100% - 40px);
+    z-index: 1;
+}
+
+#cover {
+    position: absolute;
+    top: 40px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #000000;
+    opacity: 0.5;
+    z-index: 3;
+}
+
+#guess {
+    position: absolute;
+    bottom: 30px;
+    right: 20px;
+    z-index: 2;
+}
+
+#guess.result {
+    z-index: 4;
+}
+
+#guess>#continueButtonContainer {
+    display: none;
+}
+
+#guess.result>#closeGuessButtonContainer, #guess.result>#guessButtonContainer {
+    display: none;
+}
+
+#guess.result>#continueButtonContainer {
+    display: block;
+}
+
+#map {
+    width: 100%;
+    border-radius: 3px;
+}
+
+#guess.result>#map {
+    height: calc(100% - 170px);
+}
+
+#resultInfo {
+    margin-top: 5px;
+    width: 100%;
+    height: 120px;
+    padding: 5px 20px;
+    text-align: center;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    border-radius: 3px;
+    display: none;
+}
+
+#guess.result>#resultInfo {
+    display: block;
+}
+
+#resultInfo>div {
+    width: 100%;
+    height: 33.33%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#resultInfo p {
+    font-size: 24px;
+    line-height: 1;
+}
+
+#distanceInfo>p:nth-child(2), #scoreInfo>p:nth-child(2) {
+    display: none;
+}
+
+#scoreBarBase {
+    height: 24px;
+    margin: 0 auto;
+    background-color: #eeeeee;
+    border-radius: 3px;
+}
+
+#scoreBar {
+    width: 0;
+    height: 100%;
+    border-radius: 3px;
+    transition-property: width;
+    transition-duration: 2.0s;
+}
+
+#showSummaryButton, #startNewGameButton {
+    display: none;
+}
+
+@media screen and (max-width: 599px) {
+    #showGuessButtonContainer {
+        position: absolute;
+        left: 20px;
+        bottom: 30px;
+        right: 20px;
+        z-index: 2;
+    }
+    #guess {
+        top: 50px;
+        left: 20px;
+        opacity: 0.95;
+        visibility: hidden;
+    }
+    #map {
+        height: calc(100% - 90px);
+    }
+    #scoreBarBase {
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    #showGuessButtonContainer {
+        display: none;
+    }
+    #guess {
+        width: 500px;
+        height: 375px;
+        opacity: 0.95;
+    }
+    #guess.adapt {
+        top: initial;
+        width: 250px;
+        height: 200px;
+        opacity: 0.5;
+        transition-property: width, height, opacity;
+        transition-duration: 0.1s;
+        transition-delay: 0.8s;
+    }
+    #guess.adapt:hover {
+        width: 500px;
+        height: 375px;
+        opacity: 0.95;
+        transition-delay: 0s;
+    }
+    #closeGuessButtonContainer {
+        display: none;
+    }
+    #map {
+        height: calc(100% - 45px);
+    }
+    #guess.result {
+        width: initial;
+        height: initial;
+        top: 50px;
+        left: 50px;
+        right: 50px;
+        bottom: 50px;
+    }
+    #scoreBarBase {
+        width: 60%;
+    }
+    @media screen and (max-height: 424px) {
+        #guess {
+            top: 50px;
+            height: initial;
+        }
+        #guess.adapt:hover {
+            top: 50px;
+            height: initial;
+        }
+        #guess.result {
+            left: 20px;
+            right: 20px;
+            bottom: 30px;
+        }
+    }
+}

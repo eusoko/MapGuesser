@@ -1,8 +1,9 @@
+<?php $cssFiles = ['/static/css/maps.css']; ?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
 <?php require ROOT . '/views/templates/header.php'; ?>
 <div class="main">
     <h2>Playable maps</h2>
-    <div class="mapContainer">
+    <div id="mapContainer">
         <?php foreach ($maps as $map) : ?>
             <div class="mapItem">
                 <div class="title">

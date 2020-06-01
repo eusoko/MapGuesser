@@ -19,6 +19,10 @@ Container::$routeCollection->group('game', function (MapGuesser\Routing\RouteCol
     $routeCollection->get('position-json', '{mapId}/position.json', [MapGuesser\Controller\PositionController::class, 'getPosition']);
     $routeCollection->post('guess-json', '{mapId}/guess.json', [MapGuesser\Controller\PositionController::class, 'evaluateGuess']);
 });
+Container::$routeCollection->group('admin', function (MapGuesser\Routing\RouteCollection $routeCollection) {
+    $routeCollection->get('admin.maps', 'maps', [MapGuesser\Controller\MapAdminController::class, 'getMaps']);
+    $routeCollection->get('admin.mapEditor', 'mapEditor/{mapId}', [MapGuesser\Controller\MapAdminController::class, 'getMapEditor']);
+});
 
 $match = Container::$routeCollection->match($method, explode('/', $url));
 
