@@ -1,9 +1,10 @@
+<?php $cssFiles = ['/static/css/game.css']; ?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
 <div class="header small">
     <div class="grid">
         <h1>
             <a href="/maps" title="Back to playable maps">
-                <?php require ROOT . '/views/templates/icon.php'; ?>
+                <img class="inline" src="/static/img/icon.svg">
                 <span>MapGuesser</span>
             </a>
         </h1>
