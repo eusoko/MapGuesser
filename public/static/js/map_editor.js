@@ -82,6 +82,10 @@
         })
             .addTo(MapEditor.map)
             .on('click', function () {
+                if (MapEditor.selectedMarker === this) {
+                    return;
+                }
+
                 MapEditor.select(this);
             });
     }
