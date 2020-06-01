@@ -3,7 +3,7 @@
 require '../main.php';
 
 // very basic routing
-$host = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'];
+$host = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
 $method = strtolower($_SERVER['REQUEST_METHOD']);
 $url = substr($_SERVER['REQUEST_URI'], strlen('/'));
 if (($pos = strpos($url, '?')) !== false) {
