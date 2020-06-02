@@ -16,7 +16,7 @@ class Modify
 
     private array $original = [];
 
-    private bool $autoIncrement = false;
+    private bool $autoIncrement = true;
 
     public function __construct(IConnection $connection, string $table)
     {

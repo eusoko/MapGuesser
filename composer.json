@@ -4,7 +4,8 @@
   "description": "MapGuesser Application",
   "license": "GNU GPL 3.0",
   "require": {
-    "vlucas/phpdotenv": "^4.1"
+    "vlucas/phpdotenv": "^4.1",
+    "symfony/console": "^5.1"
   },
   "require-dev": {},
   "autoload": {
