@@ -4,7 +4,7 @@
         panorama: null,
         selectedMarker: null,
 
-        getPlace: function(placeId) {
+        getPlace: function (placeId) {
             var xhr = new XMLHttpRequest();
             xhr.responseType = 'json';
             xhr.onload = function () {
@@ -33,8 +33,9 @@
             document.getElementById('loading').style.visibility = 'visible';
 
             document.getElementById('map').classList.add('selected');
+            document.getElementById('control').classList.add('selected');
             document.getElementById('noPano').style.visibility = 'hidden';
-            document.getElementById('panorama').style.display = 'block';
+            document.getElementById('panorama').style.visibility = 'visible';
             document.getElementById('placeControl').style.visibility = 'visible';
 
             MapEditor.resetSelected();
@@ -69,12 +70,30 @@
         }
     };
 
+    var Util = {
+        getHighResData: function () {
+            if (window.devicePixelRatio >= 4) {
+                return { ppi: 320, tileSize: 128, zoomOffset: 1 };
+            } else if (window.devicePixelRatio >= 2) {
+                return { ppi: 250, tileSize: 256, zoomOffset: 0 };
+            } else {
+                return { ppi: 72, tileSize: 512, zoomOffset: -1 };
+            }
+        }
+    };
+
     MapEditor.map = L.map('map', {
         attributionControl: false,
         zoomControl: false
     });
 
+    var highResData = Util.getHighResData();
+
     L.tileLayer(tileUrl, {
+        subdomains: '1234',
+        ppi: highResData.ppi,
+        tileSize: highResData.tileSize,
+        zoomOffset: highResData.zoomOffset,
         minZoom: 0,
         maxZoom: 20
     }).addTo(MapEditor.map);
@@ -109,8 +128,9 @@
 
     document.getElementById('cancelButton').onclick = function () {
         document.getElementById('map').classList.remove('selected');
+        document.getElementById('control').classList.remove('selected');
         document.getElementById('noPano').style.visibility = 'hidden';
-        document.getElementById('panorama').style.display = 'none';
+        document.getElementById('panorama').style.visibility = 'hidden';
         document.getElementById('placeControl').style.visibility = 'hidden';
 
         MapEditor.resetSelected();

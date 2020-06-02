@@ -4,24 +4,15 @@
     z-index: 1;
 }
 
-#map.selected {
-    height: calc(50% - 25px);
-}
-
 #panorama {
-    width: 100%;
-    height: calc(50% - 25px);
-    display: none;
+    position: absolute;
     z-index: 1;
+    visibility: hidden;
 }
 
 #noPano {
     display: flex;
     position: absolute;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    height: calc(50% - 25px);
     z-index: 2;
     visibility: hidden;
     background: #cccccc;
@@ -33,17 +24,53 @@
 
 #control {
     position: absolute;
-    right: 10px;
-    top: 60px;
     width: 125px;
     z-index: 3;
 }
 
 #placeControl {
     position: absolute;
-    right: 10px;
-    top: calc(50% + 35px);
-    width: 100px;
     z-index: 3;
+    width: 100px;
     visibility: hidden;
+}
+
+@media screen and (max-width: 999px) and (min-height: 600px) {
+    #map.selected {
+        height: calc(50% - 25px);
+    }
+    #panorama, #noPano {
+        left: 0;
+        bottom: 0;
+        right: 0;
+        height: calc(50% - 25px);
+    }
+    #control {
+        right: 10px;
+        top: 60px;
+    }
+    #placeControl {
+        right: 10px;
+        top: calc(50% + 35px);
+    }
+}
+
+@media screen and (min-width: 1000px), (max-height: 599px) {
+    #map.selected {
+        width: 50%;
+    }
+    #panorama, #noPano {
+        top: 50px;
+        bottom: 0;
+        right: 0;
+        width: 50%;
+    }
+    #control, #placeControl {
+        right: 10px;
+        top: 60px;
+    }
+    #control.selected {
+        right: calc(50% + 10px);
+        top: 60px;
+    }
 }
