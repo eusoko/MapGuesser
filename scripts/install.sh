@@ -15,6 +15,9 @@ echo "Installing Yarn packages..."
 echo "Installing MapGuesser DB..."
 mysql --host=${DB_HOST} --user=${DB_USER} --password=${DB_PASSWORD} ${DB_NAME} < ${ROOT_DIR}/db/mapguesser.sql
 
+echo "Migrating DB..."
+(cd ${ROOT_DIR} && ./mapg migrate)
+
 if [ -z "${DEV}" ] || [ "${DEV}" -eq "0" ]; then
     echo "Minifying JS, CSS and SVG files..."
     ${ROOT_DIR}/scripts/minify.sh
