@@ -70,12 +70,30 @@
         }
     };
 
+    var Util = {
+        getHighResData: function () {
+            if (window.devicePixelRatio >= 4) {
+                return { ppi: 320, tileSize: 128, zoomOffset: 1 };
+            } else if (window.devicePixelRatio >= 2) {
+                return { ppi: 250, tileSize: 256, zoomOffset: 0 };
+            } else {
+                return { ppi: 72, tileSize: 512, zoomOffset: -1 };
+            }
+        }
+    };
+
     MapEditor.map = L.map('map', {
         attributionControl: false,
         zoomControl: false
     });
 
+    var highResData = Util.getHighResData();
+
     L.tileLayer(tileUrl, {
+        subdomains: '1234',
+        ppi: highResData.ppi,
+        tileSize: highResData.tileSize,
+        zoomOffset: highResData.zoomOffset,
         minZoom: 0,
         maxZoom: 20
     }).addTo(MapEditor.map);
