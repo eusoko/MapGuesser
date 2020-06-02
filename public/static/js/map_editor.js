@@ -4,18 +4,29 @@
         panorama: null,
         selectedMarker: null,
 
-        loadPano: function (data, status) {
-            document.getElementById('loading').style.visibility = 'hidden';
+        getPlace: function(placeId) {
+            var xhr = new XMLHttpRequest();
+            xhr.responseType = 'json';
+            xhr.onload = function () {
+                document.getElementById('loading').style.visibility = 'hidden';
 
-            if (status !== google.maps.StreetViewStatus.OK) {
-                document.getElementById('noPano').style.visibility = 'visible';
-                return;
-            }
+                if (!this.response.panoId) {
+                    document.getElementById('noPano').style.visibility = 'visible';
+                    return;
+                }
 
+                MapEditor.loadPano(this.response.panoId);
+            };
+
+            xhr.open('GET', '/admin/place.json/' + placeId, true);
+            xhr.send();
+        },
+
+        loadPano: function (panoId) {
             MapEditor.panorama.setVisible(true);
             MapEditor.panorama.setPov({ heading: 0, pitch: 0 });
             MapEditor.panorama.setZoom(0);
-            MapEditor.panorama.setPano(data.location.pano);
+            MapEditor.panorama.setPano(panoId);
         },
 
         select: function (marker) {
@@ -41,8 +52,7 @@
 
             MapEditor.panorama.setVisible(false);
 
-            var sv = new google.maps.StreetViewService();
-            sv.getPanorama({ location: marker.getLatLng(), preference: google.maps.StreetViewPreference.NEAREST, source: google.maps.StreetViewSource.OUTDOOR }, MapEditor.loadPano);
+            MapEditor.getPlace(marker.placeId);
         },
 
         resetSelected: function () {
@@ -84,6 +94,8 @@
             .on('click', function () {
                 MapEditor.select(this);
             });
+
+        marker.placeId = places[i].id;
     }
 
     MapEditor.panorama = new google.maps.StreetViewPanorama(document.getElementById('panorama'), {

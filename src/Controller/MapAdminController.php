@@ -1,9 +1,11 @@
 <?php namespace MapGuesser\Controller;
 
 use MapGuesser\Database\Query\Select;
+use MapGuesser\Http\Request;
 use MapGuesser\Interfaces\Database\IResultSet;
 use MapGuesser\Interfaces\Response\IContent;
 use MapGuesser\Response\HtmlContent;
+use MapGuesser\Response\JsonContent;
 use MapGuesser\Util\Geo\Bounds;
 
 class MapAdminController
@@ -23,6 +25,36 @@ class MapAdminController
 
         $data = ['mapId' => $mapId, 'bounds' => $bounds->toArray(), 'places' => &$places];
         return new HtmlContent('admin/map_editor', $data);
+    }
+
+    public function getPlace(array $parameters) {
+        $placeId = (int) $parameters['placeId'];
+
+        $select = new Select(\Container::$dbConnection, 'places');
+        $select->columns(['id', 'lat', 'lng']);
+        $select->whereId($placeId);
+
+        $place = $select->execute()->fetch(IResultSet::FETCH_ASSOC);
+
+        $request = new Request('https://maps.googleapis.com/maps/api/streetview/metadata', Request::HTTP_GET);
+        $request->setQuery([
+            'key' => $_ENV['GOOGLE_MAPS_SERVER_API_KEY'],
+            'location' => $place['lat'] . ',' . $place['lng'],
+            'source' => 'outdoor'
+        ]);
+
+        $response = $request->send();
+
+        $panoData = json_decode($response->getBody(), true);
+
+        if ($panoData['status'] !== 'OK') {
+            $panoId = null;
+        } else {
+            $panoId = $panoData['pano_id'];
+        }
+
+        $data = ['panoId' => $panoId];
+        return new JsonContent($data);
     }
 
     private function getMapBounds(int $mapId): Bounds
