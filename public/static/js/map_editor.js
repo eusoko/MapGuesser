@@ -4,7 +4,7 @@
         panorama: null,
         selectedMarker: null,
 
-        getPlace: function(placeId) {
+        getPlace: function (placeId) {
             var xhr = new XMLHttpRequest();
             xhr.responseType = 'json';
             xhr.onload = function () {
@@ -33,8 +33,9 @@
             document.getElementById('loading').style.visibility = 'visible';
 
             document.getElementById('map').classList.add('selected');
+            document.getElementById('control').classList.add('selected');
             document.getElementById('noPano').style.visibility = 'hidden';
-            document.getElementById('panorama').style.display = 'block';
+            document.getElementById('panorama').style.visibility = 'visible';
             document.getElementById('placeControl').style.visibility = 'visible';
 
             MapEditor.resetSelected();
@@ -109,8 +110,9 @@
 
     document.getElementById('cancelButton').onclick = function () {
         document.getElementById('map').classList.remove('selected');
+        document.getElementById('control').classList.remove('selected');
         document.getElementById('noPano').style.visibility = 'hidden';
-        document.getElementById('panorama').style.display = 'none';
+        document.getElementById('panorama').style.visibility = 'hidden';
         document.getElementById('placeControl').style.visibility = 'hidden';
 
         MapEditor.resetSelected();
