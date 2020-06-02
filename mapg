@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+require 'main.php';
+
+$app = new Symfony\Component\Console\Application('MapGuesser Console', '');
+
+$app->add(new MapGuesser\Cli\DatabaseMigration());
+
+$app->run();
