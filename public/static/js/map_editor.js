@@ -4,7 +4,7 @@
         panorama: null,
         selectedMarker: null,
 
-        getPlace: function (placeId) {
+        getPlace: function (placeId, marker) {
             var xhr = new XMLHttpRequest();
             xhr.responseType = 'json';
             xhr.onload = function () {
@@ -12,6 +12,9 @@
 
                 if (!this.response.panoId) {
                     document.getElementById('noPano').style.visibility = 'visible';
+
+                    marker.noPano = true;
+
                     return;
                 }
 
@@ -41,11 +44,7 @@
             MapEditor.resetSelected();
             MapEditor.selectedMarker = marker;
 
-            marker.setIcon(L.icon({
-                iconUrl: '/static/img/markers/marker-blue.svg',
-                iconSize: [24, 32],
-                iconAnchor: [12, 32]
-            }));
+            marker.setIcon(IconCollection.iconBlue);
             marker.setZIndexOffset(2000);
 
             MapEditor.map.invalidateSize(true);
@@ -53,7 +52,7 @@
 
             MapEditor.panorama.setVisible(false);
 
-            MapEditor.getPlace(marker.placeId);
+            MapEditor.getPlace(marker.placeId, marker);
         },
 
         resetSelected: function () {
@@ -61,13 +60,27 @@
                 return;
             }
 
-            MapEditor.selectedMarker.setIcon(L.icon({
-                iconUrl: '/static/img/markers/marker-green.svg',
-                iconSize: [24, 32],
-                iconAnchor: [12, 32]
-            }));
+            MapEditor.selectedMarker.setIcon(MapEditor.selectedMarker.noPano ? IconCollection.iconRed : IconCollection.iconGreen);
             MapEditor.selectedMarker.setZIndexOffset(1000);
         }
+    };
+
+    var IconCollection = {
+        iconGreen: L.icon({
+            iconUrl: '/static/img/markers/marker-green.svg',
+            iconSize: [24, 32],
+            iconAnchor: [12, 32]
+        }),
+        iconRed: L.icon({
+            iconUrl: '/static/img/markers/marker-red.svg',
+            iconSize: [24, 32],
+            iconAnchor: [12, 32]
+        }),
+        iconBlue: L.icon({
+            iconUrl: '/static/img/markers/marker-blue.svg',
+            iconSize: [24, 32],
+            iconAnchor: [12, 32]
+        }),
     };
 
     var Util = {
@@ -102,11 +115,7 @@
 
     for (var i = 0; i < places.length; ++i) {
         var marker = L.marker({ lat: places[i].lat, lng: places[i].lng }, {
-            icon: L.icon({
-                iconUrl: '/static/img/markers/marker-green.svg',
-                iconSize: [24, 32],
-                iconAnchor: [12, 32]
-            }),
+            icon: places[i].noPano ? IconCollection.iconRed : IconCollection.iconGreen,
             zIndexOffset: 1000
         })
             .addTo(MapEditor.map)
@@ -119,6 +128,7 @@
             });
 
         marker.placeId = places[i].id;
+        marker.noPano = places[i].noPano;
     }
 
     MapEditor.panorama = new google.maps.StreetViewPanorama(document.getElementById('panorama'), {
