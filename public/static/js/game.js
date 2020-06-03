@@ -135,7 +135,7 @@
                 Core.resetGame();
             };
 
-            xhr.open('GET', '/game/' + mapId + '/position.json', true);
+            xhr.open('GET', '/game/' + mapId + '/json', true);
             xhr.send();
         },
 
