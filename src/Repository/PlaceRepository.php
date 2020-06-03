@@ -77,7 +77,7 @@ class PlaceRepository
         return $place;
     }
 
-    private function requestPanoId(array $place): ?string
+    private function requestPanoId(array $place, bool $canBeIndoor = false): ?string
     {
         if (
             $place['pano_id_cached_timestamp'] &&
@@ -90,7 +90,7 @@ class PlaceRepository
         $request->setQuery([
             'key' => $_ENV['GOOGLE_MAPS_SERVER_API_KEY'],
             'location' => $place['lat'] . ',' . $place['lng'],
-            'source' => 'outdoor'
+            'source' => $canBeIndoor ? 'default' : 'outdoor'
         ]);
 
         $response = $request->send();
@@ -98,6 +98,11 @@ class PlaceRepository
         $panoData = json_decode($response->getBody(), true);
 
         $panoId = $panoData['status'] === 'OK' ? $panoData['pano_id'] : null;
+
+        // enable indoor panos if no outdoor found
+        if ($panoId === null && !$canBeIndoor) {
+            return $this->requestPanoId($place, true);
+        }
 
         $this->saveCachedPanoId($place['id'], $panoId);
 
