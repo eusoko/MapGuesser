@@ -17,7 +17,7 @@ class PositionController
         $mapId = (int) $parameters['mapId'];
 
         if (!isset($_SESSION['state']) || $_SESSION['state']['mapId'] !== $mapId) {
-            $data = ['error' => 'No valid session found!'];
+            $data = ['error' => 'no_session_found'];
             return new JsonContent($data);
         }
 
@@ -55,7 +55,7 @@ class PositionController
         $mapId = (int) $parameters['mapId'];
 
         if (!isset($_SESSION['state']) || $_SESSION['state']['mapId'] !== $mapId) {
-            $data = ['error' => 'No valid session found!'];
+            $data = ['error' => 'no_session_found'];
             return new JsonContent($data);
         }
 
