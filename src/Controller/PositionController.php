@@ -1,16 +1,21 @@
 <?php namespace MapGuesser\Controller;
 
-use MapGuesser\Database\Query\Select;
-use MapGuesser\Http\Request;
-use MapGuesser\Interfaces\Database\IResultSet;
 use MapGuesser\Util\Geo\Position;
 use MapGuesser\Response\JsonContent;
 use MapGuesser\Interfaces\Response\IContent;
+use MapGuesser\Repository\PlaceRepository;
 
 class PositionController
 {
     const NUMBER_OF_ROUNDS = 5;
     const MAX_SCORE = 1000;
+
+    private PlaceRepository $placeRepository;
+
+    public function __construct()
+    {
+        $this->placeRepository = new PlaceRepository();
+    }
 
     public function getPosition(array $parameters): IContent
     {
@@ -22,7 +27,7 @@ class PositionController
         }
 
         if (count($_SESSION['state']['rounds']) === 0) {
-            $newPosition = $this->getNewPosition($mapId);
+            $newPosition = $this->placeRepository->getForMapWithValidPano($mapId);
             $_SESSION['state']['rounds'][] = $newPosition;
 
             $data = ['panoId' => $newPosition['panoId']];
@@ -79,7 +84,7 @@ class PositionController
                 $exclude = array_merge($exclude, $round['placesWithoutPano'], [$round['placeId']]);
             }
 
-            $newPosition = $this->getNewPosition($mapId, $exclude);
+            $newPosition = $this->placeRepository->getForMapWithValidPano($mapId, $exclude);
             $_SESSION['state']['rounds'][] = $newPosition;
 
             $panoId = $newPosition['panoId'];
@@ -98,66 +103,6 @@ class PositionController
             'panoId' => $panoId
         ];
         return new JsonContent($data);
-    }
-
-    private function getNewPosition(int $mapId, array $exclude = []): array
-    {
-        $placesWithoutPano = [];
-
-        do {
-            $place = $this->selectNewPlace($mapId, $exclude);
-            $position = new Position($place['lat'], $place['lng']);
-            $panoId = $this->getPanorama($position);
-
-            if ($panoId === null) {
-                $placesWithoutPano[] = $place['id'];
-            }
-        } while ($panoId === null);
-
-        return [
-            'placesWithoutPano' => $placesWithoutPano,
-            'placeId' => $place['id'],
-            'position' => $position,
-            'panoId' => $panoId
-        ];
-    }
-
-    private function selectNewPlace(int $mapId, array $exclude): array
-    {
-        $select = new Select(\Container::$dbConnection, 'places');
-        $select->columns(['id', 'lat', 'lng']);
-        $select->where('id', 'NOT IN', $exclude);
-        $select->where('map_id', '=', $mapId);
-
-        $numberOfPlaces = $select->count();// TODO: what if 0
-        $randomOffset = random_int(0, $numberOfPlaces - 1);
-
-        $select->orderBy('id');
-        $select->limit(1, $randomOffset);
-
-        $place = $select->execute()->fetch(IResultSet::FETCH_ASSOC);
-
-        return $place;
-    }
-
-    private function getPanorama(Position $position): ?string
-    {
-        $request = new Request('https://maps.googleapis.com/maps/api/streetview/metadata', Request::HTTP_GET);
-        $request->setQuery([
-            'key' => $_ENV['GOOGLE_MAPS_SERVER_API_KEY'],
-            'location' => $position->getLat() . ',' . $position->getLng(),
-            'source' => 'outdoor'
-        ]);
-
-        $response = $request->send();
-
-        $panoData = json_decode($response->getBody(), true);
-
-        if ($panoData['status'] !== 'OK') {
-            return null;
-        }
-
-        return $panoData['pano_id'];
     }
 
     private function calculateDistance(Position $realPosition, Position $guessPosition): float
