@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-    var Core = {
+    var Game = {
         NUMBER_OF_ROUNDS: 5,
         MAX_SCORE: 1000,
 
@@ -17,13 +17,13 @@
         initialize: function () {
             document.getElementById('loading').style.visibility = 'visible';
             document.getElementById('cover').style.visibility = 'visible';
-            document.getElementById('currentRound').innerHTML = '1/' + String(Core.NUMBER_OF_ROUNDS);
+            document.getElementById('currentRound').innerHTML = '1/' + String(Game.NUMBER_OF_ROUNDS);
             document.getElementById('currentScoreSum').innerHTML = '0/0';
 
-            Core.map.setOptions({
+            Game.map.setOptions({
                 draggableCursor: 'crosshair'
             });
-            Core.map.fitBounds(mapBounds);
+            Game.map.fitBounds(mapBounds);
 
             var xhr = new XMLHttpRequest();
             xhr.responseType = 'json';
@@ -36,35 +36,35 @@
                 document.getElementById('loading').style.visibility = 'hidden';
                 document.getElementById('cover').style.visibility = 'hidden';
 
-                Core.panoId = this.response.panoId;
+                Game.panoId = this.response.panoId;
 
                 if (this.response.history) {
                     for (var i = 0; i < this.response.history.length; ++i) {
                         var round = this.response.history[i];
-                        Core.rounds.push({ position: round.position, guessPosition: round.guessPosition, realMarker: null, guessMarker: null, line: null });
-                        Core.addRealGuessPair(round.position, round.guessPosition, true);
-                        Core.scoreSum += round.score;
+                        Game.rounds.push({ position: round.position, guessPosition: round.guessPosition, realMarker: null, guessMarker: null, line: null });
+                        Game.addRealGuessPair(round.position, round.guessPosition, true);
+                        Game.scoreSum += round.score;
                     }
 
-                    document.getElementById('currentRound').innerHTML = String(Core.rounds.length) + '/' + String(Core.NUMBER_OF_ROUNDS);
-                    document.getElementById('currentScoreSum').innerHTML = String(Core.scoreSum) + '/' + String(Core.rounds.length * Core.MAX_SCORE);
+                    document.getElementById('currentRound').innerHTML = String(Game.rounds.length) + '/' + String(Game.NUMBER_OF_ROUNDS);
+                    document.getElementById('currentScoreSum').innerHTML = String(Game.scoreSum) + '/' + String(Game.rounds.length * Game.MAX_SCORE);
                 }
 
-                Core.startNewRound();
+                Game.startNewRound();
             };
 
             xhr.open('GET', '/game/' + mapId + '/position.json', true);
             xhr.send();
         },
 
-        resetGame: function () {
-            if (Core.guessMarker) {
-                Core.guessMarker.setMap(null);
-                Core.guessMarker = null;
+        reset: function () {
+            if (Game.guessMarker) {
+                Game.guessMarker.setMap(null);
+                Game.guessMarker = null;
             }
 
-            for (var i = 0; i < Core.rounds.length; ++i) {
-                var round = Core.rounds[i];
+            for (var i = 0; i < Game.rounds.length; ++i) {
+                var round = Game.rounds[i];
 
                 if (round.realMarker && round.guessMarker && round.line) {
                     round.realMarker.setMap(null);
@@ -73,8 +73,8 @@
                 }
             }
 
-            Core.rounds = [];
-            Core.scoreSum = 0;
+            Game.rounds = [];
+            Game.scoreSum = 0;
 
             var distanceInfo = document.getElementById('distanceInfo');
             distanceInfo.children[0].style.display = null;
@@ -89,14 +89,14 @@
             document.getElementById('guess').style.visibility = null;
             document.getElementById('guess').classList.remove('result');
 
-            Core.initialize();
+            Game.initialize();
         },
 
         resetRound: function () {
             document.getElementById('scoreBar').style.width = null;
 
-            if (Core.rounds.length > 0) {
-                var lastRound = Core.rounds[Core.rounds.length - 1];
+            if (Game.rounds.length > 0) {
+                var lastRound = Game.rounds[Game.rounds.length - 1];
 
                 lastRound.realMarker.setVisible(false);
                 lastRound.guessMarker.setVisible(false);
@@ -108,20 +108,20 @@
             document.getElementById('guess').style.visibility = null;
             document.getElementById('guess').classList.remove('result')
 
-            Core.map.setOptions({
+            Game.map.setOptions({
                 draggableCursor: 'crosshair'
             });
-            Core.map.fitBounds(mapBounds);
+            Game.map.fitBounds(mapBounds);
 
-            Core.startNewRound();
+            Game.startNewRound();
         },
 
         startNewRound: function () {
-            Core.rounds.push({ position: null, guessPosition: null, realMarker: null, guessMarker: null, line: null });
+            Game.rounds.push({ position: null, guessPosition: null, realMarker: null, guessMarker: null, line: null });
 
-            document.getElementById('currentRound').innerHTML = String(Core.rounds.length) + '/' + String(Core.NUMBER_OF_ROUNDS);
+            document.getElementById('currentRound').innerHTML = String(Game.rounds.length) + '/' + String(Game.NUMBER_OF_ROUNDS);
 
-            Core.loadPano(Core.panoId);
+            Game.loadPano(Game.panoId);
         },
 
         handleErrorResponse: function (error) {
@@ -132,7 +132,7 @@
             xhr.onload = function () {
                 mapBounds = this.response.bounds;
 
-                Core.resetGame();
+                Game.reset();
             };
 
             xhr.open('GET', '/game/' + mapId + '/json', true);
@@ -140,20 +140,25 @@
         },
 
         loadPano: function (panoId) {
-            if (Core.adaptGuess) {
+            if (Game.adaptGuess) {
                 document.getElementById('guess').classList.add('adapt');
             }
 
-            Core.panorama.setPov({ heading: 0, pitch: 0 });
-            Core.panorama.setZoom(0);
-            Core.panorama.setPano(panoId);
+            Game.panorama.setPov({ heading: 0, pitch: 0 });
+            Game.panorama.setZoom(0);
+            Game.panorama.setPano(panoId);
         },
 
         evaluateGuess: function () {
-            var guessPosition = Core.guessMarker.getPosition().toJSON();
-            Core.rounds[Core.rounds.length - 1].guessPosition = guessPosition;
+            if (!Game.guessMarker) {
+                return;
+            }
 
-            if (Core.adaptGuess) {
+            var guessPosition = Game.guessMarker.getPosition().toJSON();
+            Game.rounds[Game.rounds.length - 1].guessPosition = guessPosition;
+
+            document.getElementById('guessButton').disabled = true;
+            if (Game.adaptGuess) {
                 document.getElementById('guess').classList.remove('adapt');
             }
             document.getElementById('loading').style.visibility = 'visible';
@@ -167,45 +172,45 @@
             xhr.responseType = 'json';
             xhr.onload = function () {
                 if (this.response.error) {
-                    Core.handleErrorResponse(this.response.error);
+                    Game.handleErrorResponse(this.response.error);
                     return;
                 }
 
-                Core.guessMarker.setMap(null);
-                Core.guessMarker = null;
+                Game.guessMarker.setMap(null);
+                Game.guessMarker = null;
 
                 document.getElementById('loading').style.visibility = 'hidden';
                 document.getElementById('guess').classList.add('result');
 
-                Core.scoreSum += this.response.result.score;
-                document.getElementById('currentScoreSum').innerHTML = String(Core.scoreSum) + '/' + String(Core.rounds.length * Core.MAX_SCORE);
+                Game.scoreSum += this.response.result.score;
+                document.getElementById('currentScoreSum').innerHTML = String(Game.scoreSum) + '/' + String(Game.rounds.length * Game.MAX_SCORE);
 
-                Core.rounds[Core.rounds.length - 1].position = this.response.result.position;
-                Core.addRealGuessPair(this.response.result.position, guessPosition);
+                Game.rounds[Game.rounds.length - 1].position = this.response.result.position;
+                Game.addRealGuessPair(this.response.result.position, guessPosition);
 
                 var resultBounds = new google.maps.LatLngBounds();
                 resultBounds.extend(this.response.result.position);
                 resultBounds.extend(guessPosition);
 
-                Core.map.setOptions({
+                Game.map.setOptions({
                     draggableCursor: 'grab'
                 });
-                Core.map.fitBounds(resultBounds);
+                Game.map.fitBounds(resultBounds);
 
                 document.getElementById('distance').innerHTML = Util.printDistanceForHuman(this.response.result.distance);
                 document.getElementById('score').innerHTML = this.response.result.score;
 
-                var scoreBarProperties = Core.calculateScoreBarProperties(this.response.result.score, Core.MAX_SCORE);
+                var scoreBarProperties = Game.calculateScoreBarProperties(this.response.result.score, Game.MAX_SCORE);
                 var scoreBar = document.getElementById('scoreBar');
                 scoreBar.style.backgroundColor = scoreBarProperties.backgroundColor;
                 scoreBar.style.width = scoreBarProperties.width;
 
-                if (Core.rounds.length === Core.NUMBER_OF_ROUNDS) {
+                if (Game.rounds.length === Game.NUMBER_OF_ROUNDS) {
                     document.getElementById('continueButton').style.display = 'none';
                     document.getElementById('showSummaryButton').style.display = 'block';
                 }
 
-                Core.panoId = this.response.panoId;
+                Game.panoId = this.response.panoId;
             };
 
             xhr.open('POST', '/game/' + mapId + '/guess.json', true);
@@ -213,14 +218,14 @@
         },
 
         addRealGuessPair: function (position, guessPosition, hidden) {
-            var round = Core.rounds[Core.rounds.length - 1];
+            var round = Game.rounds[Game.rounds.length - 1];
 
             round.realMarker = new google.maps.Marker({
-                map: Core.map,
+                map: Game.map,
                 visible: !hidden,
                 position: position,
                 title: 'Open in Google Maps',
-                zIndex: Core.rounds.length * 2,
+                zIndex: Game.rounds.length * 2,
                 clickable: true,
                 draggable: false,
                 icon: {
@@ -236,10 +241,10 @@
             });
 
             round.guessMarker = new google.maps.Marker({
-                map: Core.map,
+                map: Game.map,
                 visible: !hidden,
                 position: guessPosition,
-                zIndex: Core.rounds.length,
+                zIndex: Game.rounds.length,
                 clickable: false,
                 draggable: false,
                 icon: {
@@ -259,7 +264,7 @@
             });
 
             round.line = new google.maps.Polyline({
-                map: Core.map,
+                map: Game.map,
                 visible: !hidden,
                 path: [
                     position,
@@ -310,8 +315,8 @@
 
             var resultBounds = new google.maps.LatLngBounds();
 
-            for (var i = 0; i < Core.rounds.length; ++i) {
-                var round = Core.rounds[i];
+            for (var i = 0; i < Game.rounds.length; ++i) {
+                var round = Game.rounds[i];
 
                 round.realMarker.setIcon({
                     url: '/static/img/markers/marker-green-empty.svg',
@@ -335,32 +340,32 @@
                 resultBounds.extend(round.guessPosition);
             }
 
-            Core.map.fitBounds(resultBounds);
+            Game.map.fitBounds(resultBounds);
 
-            document.getElementById('scoreSum').innerHTML = String(Core.scoreSum);
+            document.getElementById('scoreSum').innerHTML = String(Game.scoreSum);
 
-            var scoreBarProperties = Core.calculateScoreBarProperties(Core.scoreSum, Core.NUMBER_OF_ROUNDS * Core.MAX_SCORE);
+            var scoreBarProperties = Game.calculateScoreBarProperties(Game.scoreSum, Game.NUMBER_OF_ROUNDS * Game.MAX_SCORE);
             var scoreBar = document.getElementById('scoreBar');
             scoreBar.style.backgroundColor = scoreBarProperties.backgroundColor;
             scoreBar.style.width = scoreBarProperties.width;
         },
 
         rewriteGoogleLink: function () {
-            if (!Core.googleLink) {
+            if (!Game.googleLink) {
                 var anchors = document.getElementById('panorama').getElementsByTagName('a');
                 for (var i = 0; i < anchors.length; i++) {
                     var a = anchors[i];
                     if (a.href.indexOf('maps.google.com/maps') !== -1) {
-                        Core.googleLink = a;
+                        Game.googleLink = a;
                         break;
                     }
                 }
             }
 
             setTimeout(function () {
-                if (Core.googleLink) {
-                    Core.googleLink.title = 'Google Maps';
-                    Core.googleLink.href = 'https://maps.google.com/maps';
+                if (Game.googleLink) {
+                    Game.googleLink.title = 'Google Maps';
+                    Game.googleLink.href = 'https://maps.google.com/maps';
                 }
             }, 1);
         }
@@ -381,27 +386,27 @@
     };
 
     if (!('ontouchstart' in document.documentElement)) {
-        Core.adaptGuess = true;
+        Game.adaptGuess = true;
     }
 
-    Core.map = new google.maps.Map(document.getElementById('map'), {
+    Game.map = new google.maps.Map(document.getElementById('map'), {
         disableDefaultUI: true,
         clickableIcons: false,
         draggingCursor: 'grabbing'
     });
 
-    Core.map.addListener('click', function (e) {
-        if (Core.rounds[Core.rounds.length - 1].guessPosition) {
+    Game.map.addListener('click', function (e) {
+        if (Game.rounds[Game.rounds.length - 1].guessPosition) {
             return;
         }
 
-        if (Core.guessMarker) {
-            Core.guessMarker.setPosition(e.latLng);
+        if (Game.guessMarker) {
+            Game.guessMarker.setPosition(e.latLng);
             return;
         }
 
-        Core.guessMarker = new google.maps.Marker({
-            map: Core.map,
+        Game.guessMarker = new google.maps.Marker({
+            map: Game.map,
             position: e.latLng,
             clickable: false,
             draggable: true,
@@ -424,22 +429,22 @@
         document.getElementById('guessButton').disabled = false;
     });
 
-    Core.panorama = new google.maps.StreetViewPanorama(document.getElementById('panorama'), {
+    Game.panorama = new google.maps.StreetViewPanorama(document.getElementById('panorama'), {
         disableDefaultUI: true,
         linksControl: true,
         showRoadLabels: false,
         motionTracking: false
     });
 
-    Core.panorama.addListener('position_changed', function () {
-        Core.rewriteGoogleLink();
+    Game.panorama.addListener('position_changed', function () {
+        Game.rewriteGoogleLink();
     });
 
-    Core.panorama.addListener('pov_changed', function () {
-        Core.rewriteGoogleLink();
+    Game.panorama.addListener('pov_changed', function () {
+        Game.rewriteGoogleLink();
     });
 
-    Core.initialize();
+    Game.initialize();
 
     document.getElementById('showGuessButton').onclick = function () {
         this.style.visibility = 'hidden';
@@ -452,24 +457,18 @@
     }
 
     document.getElementById('guessButton').onclick = function () {
-        if (!Core.guessMarker) {
-            return;
-        }
-
-        this.disabled = true;
-
-        Core.evaluateGuess();
+        Game.evaluateGuess();
     }
 
     document.getElementById('continueButton').onclick = function () {
-        Core.resetRound();
+        Game.resetRound();
     }
 
     document.getElementById('showSummaryButton').onclick = function () {
-        Core.showSummary();
+        Game.showSummary();
     }
 
     document.getElementById('startNewGameButton').onclick = function () {
-        Core.resetGame();
+        Game.reset();
     }
 })();
