@@ -1,8 +1,13 @@
+'use strict';
+
 (function () {
     var MapEditor = {
         map: null,
         panorama: null,
         selectedMarker: null,
+        added: {},
+        edited: {},
+        deleted: {},
 
         getPlace: function (placeId, marker) {
             var xhr = new XMLHttpRequest();
@@ -13,39 +18,53 @@
                 if (!this.response.panoId) {
                     document.getElementById('noPano').style.visibility = 'visible';
 
-                    marker.noPano = true;
+                    places[marker.placeId].panoId = -1;
+                    places[marker.placeId].noPano = true;
 
                     return;
                 }
 
-                MapEditor.loadPano(this.response.panoId);
+                places[marker.placeId].panoId = this.response.panoId;
+                places[marker.placeId].noPano = false;
+
+                MapEditor.loadPano(this.response.panoId, places[marker.placeId].pov);
             };
 
             xhr.open('GET', '/admin/place.json/' + placeId, true);
             xhr.send();
         },
 
-        loadPano: function (panoId) {
+        loadPano: function (panoId, pov) {
             MapEditor.panorama.setVisible(true);
-            MapEditor.panorama.setPov({ heading: 0, pitch: 0 });
-            MapEditor.panorama.setZoom(0);
+            MapEditor.panorama.setPov({ heading: pov.heading, pitch: pov.pitch });
+            MapEditor.panorama.setZoom(pov.zoom);
             MapEditor.panorama.setPano(panoId);
         },
 
         loadPanoForNewPlace: function (panoLocationData) {
+            var placeId = MapEditor.selectedMarker.placeId;
+
             if (!panoLocationData) {
-                MapEditor.selectedMarker.noPano = true;
+                places[placeId].panoId = -1;
+                places[placeId].noPano = true;
 
                 document.getElementById('noPano').style.visibility = 'visible';
+
                 return;
             }
 
-            var latLng = panoLocationData.latLng
-            MapEditor.selectedMarker.setLatLng({ lat: latLng.lat(), lng: latLng.lng() });
+            var latLng = panoLocationData.latLng;
+
+            places[placeId].panoId = panoLocationData.pano;
+            places[placeId].lat = latLng.lat();
+            places[placeId].lng = latLng.lng();
+
+            MapEditor.selectedMarker.setLatLng({ lat: places[placeId].lat, lng: places[placeId].lng });
+            MapEditor.map.panTo(MapEditor.selectedMarker.getLatLng());
 
             MapEditor.panorama.setVisible(true);
-            MapEditor.panorama.setPov({ heading: 0, pitch: 0 });
-            MapEditor.panorama.setZoom(0);
+            MapEditor.panorama.setPov({ heading: 0.0, pitch: 0.0 });
+            MapEditor.panorama.setZoom(0.0);
             MapEditor.panorama.setPano(panoLocationData.pano);
         },
 
@@ -55,6 +74,7 @@
             sv.getPanorama({
                 location: location,
                 preference: google.maps.StreetViewPreference.NEAREST,
+                radius: 100,
                 source: canBeIndoor ? google.maps.StreetViewSource.DEFAULT : google.maps.StreetViewSource.OUTDOOR
             }, function (data, status) {
                 var panoLocationData = status === google.maps.StreetViewStatus.OK ? data.location : null;
@@ -66,14 +86,14 @@
 
                 document.getElementById('loading').style.visibility = 'hidden';
 
-                MapEditor.selectedMarker.setOpacity(1.0);
-
                 MapEditor.loadPanoForNewPlace(panoLocationData);
             });
         },
 
         select: function (marker) {
-            document.getElementById('loading').style.visibility = 'visible';
+            if (MapEditor.selectedMarker === marker) {
+                return;
+            }
 
             document.getElementById('map').classList.add('selected');
             document.getElementById('control').classList.add('selected');
@@ -84,20 +104,40 @@
             MapEditor.resetSelected();
             MapEditor.selectedMarker = marker;
 
-            if (marker.placeId) {
-                marker.setIcon(IconCollection.iconBlue);
-                marker.setZIndexOffset(2000);
-            }
-
             MapEditor.map.invalidateSize(true);
             MapEditor.map.panTo(marker.getLatLng());
 
             MapEditor.panorama.setVisible(false);
 
             if (marker.placeId) {
+                marker.setIcon(IconCollection.iconBlue);
+                marker.setZIndexOffset(2000);
+
+                document.getElementById('deleteButton').style.display = 'block';
+
+                if (places[marker.placeId].panoId) {
+                    if (places[marker.placeId].panoId === -1) {
+                        document.getElementById('noPano').style.visibility = 'visible';
+                    } else {
+                        MapEditor.loadPano(places[marker.placeId].panoId, places[marker.placeId].pov);
+                    }
+
+                    return;
+                }
+
+                document.getElementById('loading').style.visibility = 'visible';
+
                 MapEditor.getPlace(marker.placeId, marker);
             } else {
-                MapEditor.requestPanoData(marker.getLatLng());
+                marker.placeId = 'new_' + new Date().getTime();
+
+                var latLng = marker.getLatLng();
+
+                places[marker.placeId] = { id: null, lat: latLng.lat, lng: latLng.lng, panoId: null, pov: { heading: 0.0, pitch: 0.0, zoom: 0 }, noPano: false };
+
+                document.getElementById('loading').style.visibility = 'visible';
+
+                MapEditor.requestPanoData(latLng);
             }
         },
 
@@ -106,12 +146,80 @@
                 return;
             }
 
-            if (MapEditor.selectedMarker.placeId) {
-                MapEditor.selectedMarker.setIcon(MapEditor.selectedMarker.noPano ? IconCollection.iconRed : IconCollection.iconGreen);
+            var placeId = MapEditor.selectedMarker.placeId
+
+            if (places[placeId].id) {
+                MapEditor.selectedMarker.setIcon(places[placeId].noPano ? IconCollection.iconRed : IconCollection.iconGreen);
                 MapEditor.selectedMarker.setZIndexOffset(1000);
             } else {
+                delete places[placeId];
                 MapEditor.map.removeLayer(MapEditor.selectedMarker);
             }
+
+            document.getElementById('deleteButton').style.display = 'none';
+        },
+
+        applyPlace: function () {
+            var placeId = MapEditor.selectedMarker.placeId;
+
+            if (!places[placeId].noPano) {
+                var latLng = MapEditor.panorama.getPosition();
+                var pov = MapEditor.panorama.getPov();
+                var zoom = MapEditor.panorama.getZoom();
+
+                places[placeId].lat = latLng.lat();
+                places[placeId].lng = latLng.lng();
+                places[placeId].panoId = MapEditor.panorama.getPano();
+                places[placeId].pov = { heading: pov.heading, pitch: pov.pitch, zoom: zoom };
+            }
+
+            if (!places[placeId].id) {
+                places[placeId].id = 'new';
+                MapEditor.added[placeId] = places[placeId];
+
+                document.getElementById('deleteButton').style.display = 'block';
+            } else {
+                MapEditor.edited[placeId] = places[placeId];
+            }
+
+            MapEditor.selectedMarker.setLatLng({ lat: places[placeId].lat, lng: places[placeId].lng });
+        },
+
+        closePlace: function () {
+            document.getElementById('map').classList.remove('selected');
+            document.getElementById('control').classList.remove('selected');
+            document.getElementById('noPano').style.visibility = 'hidden';
+            document.getElementById('panorama').style.visibility = 'hidden';
+            document.getElementById('placeControl').style.visibility = 'hidden';
+
+            MapEditor.resetSelected();
+            MapEditor.selectedMarker = null;
+
+            MapEditor.map.invalidateSize(true);
+        },
+
+        deletePlace: function () {
+            document.getElementById('map').classList.remove('selected');
+            document.getElementById('control').classList.remove('selected');
+            document.getElementById('noPano').style.visibility = 'hidden';
+            document.getElementById('panorama').style.visibility = 'hidden';
+            document.getElementById('placeControl').style.visibility = 'hidden';
+            document.getElementById('deleteButton').style.display = 'none';
+
+            var placeId = MapEditor.selectedMarker.placeId;
+
+            if (places[placeId].id && !MapEditor.added[placeId]) {
+                MapEditor.deleted[placeId] = places[placeId];
+            }
+
+            delete places[placeId];
+            delete MapEditor.added[placeId];
+            delete MapEditor.edited[placeId];
+
+            MapEditor.map.removeLayer(MapEditor.selectedMarker);
+            MapEditor.selectedMarker = null;
+
+            MapEditor.map.invalidateSize(true);
         }
     };
 
@@ -153,10 +261,12 @@
     MapEditor.map.on('click', function (e) {
         var marker = L.marker(e.latlng, {
             icon: IconCollection.iconBlue,
-            zIndexOffset: 2000,
-            opacity: 0.0
+            zIndexOffset: 2000
         })
-            .addTo(MapEditor.map);
+            .addTo(MapEditor.map)
+            .on('click', function () {
+                MapEditor.select(this);
+            });
 
         MapEditor.select(marker);
     });
@@ -174,22 +284,23 @@
 
     MapEditor.map.fitBounds(L.latLngBounds({ lat: mapBounds.south, lng: mapBounds.west }, { lat: mapBounds.north, lng: mapBounds.east }));
 
-    for (var i = 0; i < places.length; ++i) {
-        var marker = L.marker({ lat: places[i].lat, lng: places[i].lng }, {
-            icon: places[i].noPano ? IconCollection.iconRed : IconCollection.iconGreen,
+    for (var placeId in places) {
+        if (!places.hasOwnProperty(placeId)) {
+            continue;
+        }
+
+        var place = places[placeId];
+
+        var marker = L.marker({ lat: place.lat, lng: place.lng }, {
+            icon: place.noPano ? IconCollection.iconRed : IconCollection.iconGreen,
             zIndexOffset: 1000
         })
             .addTo(MapEditor.map)
             .on('click', function () {
-                if (MapEditor.selectedMarker === this) {
-                    return;
-                }
-
                 MapEditor.select(this);
             });
 
-        marker.placeId = places[i].id;
-        marker.noPano = places[i].noPano;
+        marker.placeId = place.id;
     }
 
     MapEditor.panorama = new google.maps.StreetViewPanorama(document.getElementById('panorama'), {
@@ -201,16 +312,15 @@
         motionTracking: false
     });
 
+    document.getElementById('applyButton').onclick = function () {
+        MapEditor.applyPlace();
+    };
+
     document.getElementById('cancelButton').onclick = function () {
-        document.getElementById('map').classList.remove('selected');
-        document.getElementById('control').classList.remove('selected');
-        document.getElementById('noPano').style.visibility = 'hidden';
-        document.getElementById('panorama').style.visibility = 'hidden';
-        document.getElementById('placeControl').style.visibility = 'hidden';
+        MapEditor.closePlace();
+    };
 
-        MapEditor.resetSelected();
-        MapEditor.selectedMarker = null;
-
-        MapEditor.map.invalidateSize(true);
+    document.getElementById('deleteButton').onclick = function () {
+        MapEditor.deletePlace();
     };
 })();

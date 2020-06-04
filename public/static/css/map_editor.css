@@ -39,6 +39,10 @@
     visibility: hidden;
 }
 
+#deleteButton {
+    display: none;
+}
+
 @media screen and (max-width: 999px) and (min-height: 600px) {
     #map.selected {
         height: calc(50% - 25px);
