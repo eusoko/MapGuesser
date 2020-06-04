@@ -84,9 +84,18 @@ class MapAdminController implements ISecured
         $places = [];
 
         while ($place = $result->fetch(IResultSet::FETCH_ASSOC)) {
+            //$panoId = ???
+            //$pov = ???
             $noPano = $place['pano_id_cached_timestamp'] && $place['pano_id_cached'] === null;
 
-            $places[] = ['id' => $place['id'], 'lat' => $place['lat'], 'lng' => $place['lng'], 'noPano' => $noPano];
+            $places[$place['id']] = [
+                'id' => $place['id'],
+                'lat' => $place['lat'],
+                'lng' => $place['lng'],
+                'panoId' => null,
+                'pov' => ['heading' => 0.0, 'pitch' => 0.0, 'zoom' => 0.0],
+                'noPano' => $noPano
+            ];
         }
 
         return $places;
