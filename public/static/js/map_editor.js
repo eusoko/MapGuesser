@@ -32,6 +32,46 @@
             MapEditor.panorama.setPano(panoId);
         },
 
+        loadPanoForNewPlace: function (panoLocationData) {
+            if (!panoLocationData) {
+                MapEditor.selectedMarker.noPano = true;
+
+                document.getElementById('noPano').style.visibility = 'visible';
+                return;
+            }
+
+            var latLng = panoLocationData.latLng
+            MapEditor.selectedMarker.setLatLng({ lat: latLng.lat(), lng: latLng.lng() });
+
+            MapEditor.panorama.setVisible(true);
+            MapEditor.panorama.setPov({ heading: 0, pitch: 0 });
+            MapEditor.panorama.setZoom(0);
+            MapEditor.panorama.setPano(panoLocationData.pano);
+        },
+
+        requestPanoData: function (location, canBeIndoor) {
+            var sv = new google.maps.StreetViewService();
+
+            sv.getPanorama({
+                location: location,
+                preference: google.maps.StreetViewPreference.NEAREST,
+                source: canBeIndoor ? google.maps.StreetViewSource.DEFAULT : google.maps.StreetViewSource.OUTDOOR
+            }, function (data, status) {
+                var panoLocationData = status === google.maps.StreetViewStatus.OK ? data.location : null;
+
+                if (panoLocationData === null && !canBeIndoor) {
+                    MapEditor.requestPanoData(location, true);
+                    return;
+                }
+
+                document.getElementById('loading').style.visibility = 'hidden';
+
+                MapEditor.selectedMarker.setOpacity(1.0);
+
+                MapEditor.loadPanoForNewPlace(panoLocationData);
+            });
+        },
+
         select: function (marker) {
             document.getElementById('loading').style.visibility = 'visible';
 
@@ -44,15 +84,21 @@
             MapEditor.resetSelected();
             MapEditor.selectedMarker = marker;
 
-            marker.setIcon(IconCollection.iconBlue);
-            marker.setZIndexOffset(2000);
+            if (marker.placeId) {
+                marker.setIcon(IconCollection.iconBlue);
+                marker.setZIndexOffset(2000);
+            }
 
             MapEditor.map.invalidateSize(true);
             MapEditor.map.panTo(marker.getLatLng());
 
             MapEditor.panorama.setVisible(false);
 
-            MapEditor.getPlace(marker.placeId, marker);
+            if (marker.placeId) {
+                MapEditor.getPlace(marker.placeId, marker);
+            } else {
+                MapEditor.requestPanoData(marker.getLatLng());
+            }
         },
 
         resetSelected: function () {
@@ -60,8 +106,12 @@
                 return;
             }
 
-            MapEditor.selectedMarker.setIcon(MapEditor.selectedMarker.noPano ? IconCollection.iconRed : IconCollection.iconGreen);
-            MapEditor.selectedMarker.setZIndexOffset(1000);
+            if (MapEditor.selectedMarker.placeId) {
+                MapEditor.selectedMarker.setIcon(MapEditor.selectedMarker.noPano ? IconCollection.iconRed : IconCollection.iconGreen);
+                MapEditor.selectedMarker.setZIndexOffset(1000);
+            } else {
+                MapEditor.map.removeLayer(MapEditor.selectedMarker);
+            }
         }
     };
 
@@ -98,6 +148,17 @@
     MapEditor.map = L.map('map', {
         attributionControl: false,
         zoomControl: false
+    });
+
+    MapEditor.map.on('click', function (e) {
+        var marker = L.marker(e.latlng, {
+            icon: IconCollection.iconBlue,
+            zIndexOffset: 2000,
+            opacity: 0.0
+        })
+            .addTo(MapEditor.map);
+
+        MapEditor.select(marker);
     });
 
     var highResData = Util.getHighResData();
