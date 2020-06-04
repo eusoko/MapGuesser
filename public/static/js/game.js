@@ -53,7 +53,7 @@
                 Game.startNewRound();
             };
 
-            xhr.open('GET', '/game/' + mapId + '/position.json', true);
+            xhr.open('GET', '/game/' + mapId + '/newPlace.json', true);
             xhr.send();
         },
 
