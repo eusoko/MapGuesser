@@ -28,13 +28,13 @@
             var xhr = new XMLHttpRequest();
             xhr.responseType = 'json';
             xhr.onload = function () {
+                document.getElementById('loading').style.visibility = 'hidden';
+                document.getElementById('cover').style.visibility = 'hidden';
+
                 if (this.response.error) {
                     //TODO: handle this error
                     return;
                 }
-
-                document.getElementById('loading').style.visibility = 'hidden';
-                document.getElementById('cover').style.visibility = 'hidden';
 
                 Game.panoId = this.response.panoId;
 
