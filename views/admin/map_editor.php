@@ -1,6 +1,16 @@
 <?php $cssFiles = ['/static/node_modules/leaflet/dist/leaflet.css', '/static/css/map_editor.css']; ?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
-<?php require ROOT . '/views/templates/header.php'; ?>
+<div class="header small">
+    <div class="grid">
+        <h1>
+            <a href="/maps" title="Back to playable maps">
+                <img class="inline" src="/static/img/icon.svg">
+                <span>MapGuesser</span>
+            </a>
+        </h1>
+        <p>Added: <span id="added" class="mono bold">0</span> | Edited: <span id="edited" class="mono bold">0</span> | Deleted: <span id="deleted" class="mono bold">0</span></p>
+    </div>
+</div>
 <div id="map"></div>
 <div id="control">
     <button id="saveButton" class="fullWidth">Save</button>

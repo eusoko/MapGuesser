@@ -1,6 +1,6 @@
 #map {
     width: 100%;
-    height: calc(100% - 50px);
+    height: calc(100% - 40px);
     z-index: 1;
 }
 
@@ -45,21 +45,21 @@
 
 @media screen and (max-width: 999px) and (min-height: 600px) {
     #map.selected {
-        height: calc(50% - 25px);
+        height: calc(50% - 20px);
     }
     #panorama, #noPano {
         left: 0;
         bottom: 0;
         right: 0;
-        height: calc(50% - 25px);
+        height: calc(50% - 20px);
     }
     #control {
         right: 10px;
-        top: 60px;
+        top: 50px;
     }
     #placeControl {
         right: 10px;
-        top: calc(50% + 35px);
+        top: calc(50% + 30px);
     }
 }
 
@@ -68,17 +68,17 @@
         width: 50%;
     }
     #panorama, #noPano {
-        top: 50px;
+        top: 40px;
         bottom: 0;
         right: 0;
         width: 50%;
     }
     #control, #placeControl {
         right: 10px;
-        top: 60px;
+        top: 50px;
     }
     #control.selected {
         right: calc(50% + 10px);
-        top: 60px;
+        top: 50px;
     }
 }
