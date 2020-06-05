@@ -49,13 +49,23 @@ class MapAdminController implements ISecured
         return new HtmlContent('admin/map_editor', $data);
     }
 
-    public function getPlace()
+    public function getPlace(): IContent
     {
         $placeId = (int) $this->request->query('placeId');
 
         $placeData = $this->placeRepository->getById($placeId);
 
         $data = ['panoId' => $placeData['panoId']];
+        return new JsonContent($data);
+    }
+
+    public function saveMap(): IContent
+    {
+        $mapId = (int) $this->request->query('mapId');
+
+        //TODO
+
+        $data = ['added' => []];
         return new JsonContent($data);
     }
 

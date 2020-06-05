@@ -26,6 +26,7 @@ Container::$routeCollection->group('admin', function (MapGuesser\Routing\RouteCo
     $routeCollection->get('admin.maps', 'maps', [MapGuesser\Controller\MapAdminController::class, 'getMaps']);
     $routeCollection->get('admin.mapEditor', 'mapEditor/{mapId}', [MapGuesser\Controller\MapAdminController::class, 'getMapEditor']);
     $routeCollection->get('admin.place', 'place.json/{placeId}', [MapGuesser\Controller\MapAdminController::class, 'getPlace']);
+    $routeCollection->post('admin.saveMap', 'saveMap/{mapId}/json', [MapGuesser\Controller\MapAdminController::class, 'saveMap']);
 });
 
 $match = Container::$routeCollection->match($method, explode('/', $url));

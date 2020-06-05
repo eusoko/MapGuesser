@@ -174,12 +174,20 @@
             }
 
             if (!places[placeId].id) {
-                places[placeId].id = 'new';
+                places[placeId].id = placeId;
                 MapEditor.added[placeId] = places[placeId];
+
+                document.getElementById('added').innerHTML = String(Object.keys(MapEditor.added).length);
 
                 document.getElementById('deleteButton').style.display = 'block';
             } else {
-                MapEditor.edited[placeId] = places[placeId];
+                if (!MapEditor.added[placeId]) {
+                    MapEditor.edited[placeId] = places[placeId];
+
+                    document.getElementById('edited').innerHTML = String(Object.keys(MapEditor.edited).length);
+                } else {
+                    MapEditor.added[placeId] = places[placeId];
+                }
             }
 
             MapEditor.selectedMarker.setLatLng({ lat: places[placeId].lat, lng: places[placeId].lng });
@@ -210,16 +218,77 @@
 
             if (places[placeId].id && !MapEditor.added[placeId]) {
                 MapEditor.deleted[placeId] = places[placeId];
+
+                document.getElementById('deleted').innerHTML = String(Object.keys(MapEditor.deleted).length);
             }
 
             delete places[placeId];
             delete MapEditor.added[placeId];
             delete MapEditor.edited[placeId];
 
+            document.getElementById('added').innerHTML = String(Object.keys(MapEditor.added).length);
+            document.getElementById('edited').innerHTML = String(Object.keys(MapEditor.edited).length);
+
             MapEditor.map.removeLayer(MapEditor.selectedMarker);
             MapEditor.selectedMarker = null;
 
             MapEditor.map.invalidateSize(true);
+        },
+
+        saveMap: function () {
+            document.getElementById('loading').style.visibility = 'visible';
+
+            var data = new FormData();
+            for (var placeId in MapEditor.added) {
+                if (!MapEditor.added.hasOwnProperty(placeId)) {
+                    continue;
+                }
+                data.append('added[]', JSON.stringify(MapEditor.added[placeId]));
+            }
+            for (var placeId in MapEditor.edited) {
+                if (!MapEditor.edited.hasOwnProperty(placeId)) {
+                    continue;
+                }
+                data.append('edited[]', JSON.stringify(MapEditor.edited[placeId]));
+            }
+            for (var placeId in MapEditor.deleted) {
+                if (!MapEditor.deleted.hasOwnProperty(placeId)) {
+                    continue;
+                }
+                data.append('deleted[]', JSON.stringify(MapEditor.deleted[placeId]));
+            }
+
+            var xhr = new XMLHttpRequest();
+            xhr.responseType = 'json';
+            xhr.onload = function () {
+                document.getElementById('loading').style.visibility = 'hidden';
+
+                if (this.response.error) {
+                    //TODO: handle this error
+                    return;
+                }
+
+                MapEditor.replacePlaceIdsToReal(this.response.added);
+
+                MapEditor.added = {};
+                MapEditor.edited = {};
+                MapEditor.deleted = {};
+
+                document.getElementById('added').innerHTML = '0';
+                document.getElementById('edited').innerHTML = '0';
+                document.getElementById('deleted').innerHTML = '0';
+            };
+
+            xhr.open('POST', '/admin/saveMap/' + mapId + '/json', true);
+            xhr.send(data);
+        },
+
+        replacePlaceIdsToReal: function (addedPlaces) {
+            for (var i = 0; i < addedPlaces.length; ++i) {
+                var tempId = addedPlaces[i].tempId;
+                var placeId = addedPlaces[i].id;
+                places[tempId].id = placeId;
+            }
         }
     };
 
@@ -311,6 +380,10 @@
         },
         motionTracking: false
     });
+
+    document.getElementById('saveButton').onclick = function () {
+        MapEditor.saveMap();
+    };
 
     document.getElementById('applyButton').onclick = function () {
         MapEditor.applyPlace();
