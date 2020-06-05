@@ -8,7 +8,7 @@
                 <span>MapGuesser</span>
             </a>
         </h1>
-        <p id="roundInfo">Round: <span id="currentRound" class="mono bold"></span> | Score: <span id="currentScoreSum" class="mono bold"></span></p>
+        <p>Round: <span id="currentRound" class="mono bold"></span> | Score: <span id="currentScoreSum" class="mono bold"></span></p>
     </div>
 </div>
 <div id="cover"></div>

@@ -228,6 +228,11 @@ div.header.small {
     line-height: 40px;
 }
 
+div.header>div.grid>:nth-child(2) {
+    line-height: inherit;
+    text-align: right;
+}
+
 div.main {
     padding: 6px 12px;
 }
