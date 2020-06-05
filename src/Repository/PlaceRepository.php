@@ -48,6 +48,33 @@ class PlaceRepository
         ];
     }
 
+    public function addToMap(int $mapId, array $place): int
+    {
+        $modify = new Modify(\Container::$dbConnection, 'places');
+        $modify->set('map_id', $mapId);
+        $modify->fill($place);
+        $modify->save();
+
+        return $modify->getId();
+    }
+
+    public function modify(int $id, array $place): void
+    {
+        $modify = new Modify(\Container::$dbConnection, 'places');
+        $modify->setId($id);
+        $modify->set('pano_id_cached', null);
+        $modify->set('pano_id_cached_timestamp', null);
+        $modify->fill($place);
+        $modify->save();
+    }
+
+    public function delete(int $id): void
+    {
+        $modify = new Modify(\Container::$dbConnection, 'places');
+        $modify->setId($id);
+        $modify->delete();
+    }
+
     private function selectFromDbById(int $placeId): array
     {
         $select = new Select(\Container::$dbConnection, 'places');
@@ -66,7 +93,7 @@ class PlaceRepository
         $select->where('id', 'NOT IN', $exclude);
         $select->where('map_id', '=', $mapId);
 
-        $numberOfPlaces = $select->count();// TODO: what if 0
+        $numberOfPlaces = $select->count(); // TODO: what if 0
         $randomOffset = random_int(0, $numberOfPlaces - 1);
 
         $select->orderBy('id');

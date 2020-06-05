@@ -59,6 +59,11 @@ class Modify
         return $this;
     }
 
+    public function getId()
+    {
+        return $this->attributes[$this->idName];
+    }
+
     public function save(): void
     {
         if (isset($this->attributes[$this->idName])) {

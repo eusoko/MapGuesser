@@ -1,5 +1,7 @@
 <?php namespace MapGuesser\Controller;
 
+use DateTime;
+use MapGuesser\Database\Query\Modify;
 use MapGuesser\Database\Query\Select;
 use MapGuesser\Interfaces\Authentication\IUser;
 use MapGuesser\Interfaces\Authorization\ISecured;
@@ -10,6 +12,7 @@ use MapGuesser\Repository\PlaceRepository;
 use MapGuesser\Response\HtmlContent;
 use MapGuesser\Response\JsonContent;
 use MapGuesser\Util\Geo\Bounds;
+use MapGuesser\Util\Geo\Position;
 
 class MapAdminController implements ISecured
 {
@@ -63,9 +66,52 @@ class MapAdminController implements ISecured
     {
         $mapId = (int) $this->request->query('mapId');
 
-        //TODO
+        if (isset($_POST['added'])) {
+            $addedIds = [];
+            foreach ($_POST['added'] as $placeRaw) {
+                $placeRaw = json_decode($placeRaw, true);
 
-        $data = ['added' => []];
+                $addedIds[] = ['tempId' => $placeRaw['id'], $this->placeRepository->addToMap($mapId, [
+                    'lat' => (float) $placeRaw['lat'],
+                    'lng' => (float) $placeRaw['lng'],
+                    'pano_id_cached_timestamp' => $placeRaw['panoId'] === -1 ? (new DateTime('-1 day'))->format('Y-m-d H:i:s') : null
+                ])];
+            }
+        } else {
+            $addedIds = [];
+        }
+
+        if (isset($_POST['edited'])) {
+            foreach ($_POST['edited'] as $placeRaw) {
+                $placeRaw = json_decode($placeRaw, true);
+
+                $this->placeRepository->modify((int) $placeRaw['id'], [
+                    'lat' => (float) $placeRaw['lat'],
+                    'lng' => (float) $placeRaw['lng']
+                ]);
+            }
+        }
+
+        if (isset($_POST['deleted'])) {
+            foreach ($_POST['deleted'] as $placeRaw) {
+                $placeRaw = json_decode($placeRaw, true);
+
+                $this->placeRepository->delete($placeRaw['id']);
+            }
+        }
+
+        $mapBounds = $this->calculateMapBounds($mapId);
+
+        $map = [
+            'bound_south_lat' => $mapBounds->getSouthLat(),
+            'bound_west_lng' => $mapBounds->getWestLng(),
+            'bound_north_lat' => $mapBounds->getNorthLat(),
+            'bound_east_lng' => $mapBounds->getEastLng()
+        ];
+
+        $this->saveMapData($mapId, $map);
+
+        $data = ['added' => $addedIds];
         return new JsonContent($data);
     }
 
@@ -82,12 +128,35 @@ class MapAdminController implements ISecured
         return $bounds;
     }
 
+    private function calculateMapBounds(int $mapId): Bounds
+    {
+        $select = new Select(\Container::$dbConnection, 'places');
+        $select->columns(['lat', 'lng']);
+        $select->where('map_id', '=', $mapId);
+
+        $result = $select->execute();
+
+        $bounds = new Bounds();
+        while ($place = $result->fetch(IResultSet::FETCH_ASSOC)) {
+            $bounds->extend(new Position($place['lat'], $place['lng']));
+        }
+
+        return $bounds;
+    }
+
+    private function saveMapData(int $mapId, array $map): void
+    {
+        $modify = new Modify(\Container::$dbConnection, 'maps');
+        $modify->setId($mapId);
+        $modify->fill($map);
+        $modify->save();
+    }
+
     private function &getPlaces(int $mapId): array
     {
         $select = new Select(\Container::$dbConnection, 'places');
         $select->columns(['id', 'lat', 'lng', 'pano_id_cached', 'pano_id_cached_timestamp']);
         $select->where('map_id', '=', $mapId);
-        $select->orderBy('lng');
 
         $result = $select->execute();
 
