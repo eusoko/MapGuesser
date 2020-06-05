@@ -98,7 +98,7 @@ sub {
 }
 
 svg.inline, img.inline {
-    display: inline-block;
+    display: inline;
     width: 1em;
     height: 1em;
     vertical-align: -0.15em;
@@ -231,6 +231,19 @@ div.header.small {
 div.header>div.grid>:nth-child(2) {
     line-height: inherit;
     text-align: right;
+}
+
+div.header>div.grid>:nth-child(2)>span {
+    padding-left: 6px;
+}
+
+div.header>div.grid>:nth-child(2)>span>a:link, div.header>div.grid>:nth-child(2)>span>a:visited {
+    color: inherit;
+}
+
+div.header>div.grid>:nth-child(2)>span:not(:last-child) {
+    border-right: solid white 1px;
+    padding-right: 6px;
 }
 
 div.main {
