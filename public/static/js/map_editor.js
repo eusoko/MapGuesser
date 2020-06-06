@@ -2,12 +2,29 @@
 
 (function () {
     var MapEditor = {
+        metadata: {
+            name: null,
+            description: null
+        },
         map: null,
         panorama: null,
         selectedMarker: null,
         added: {},
         edited: {},
         deleted: {},
+
+        editMetadata: function () {
+            var form = document.getElementById('metadataForm');
+
+            MapEditor.metadata.name = form.elements.name.value;
+            MapEditor.metadata.description = form.elements.description.value;
+
+            document.getElementById('mapName').innerHTML = form.elements.name.value ? form.elements.name.value : '[unnamed map]';
+
+            document.getElementById('metadata').style.visibility = 'hidden';
+
+            document.getElementById('saveButton').disabled = false;
+        },
 
         getPlace: function (placeId, marker) {
             var xhr = new XMLHttpRequest();
@@ -92,9 +109,11 @@
 
         select: function (marker) {
             if (MapEditor.selectedMarker === marker) {
+                MapEditor.closePlace();
                 return;
             }
 
+            document.getElementById('metadata').classList.add('selected');
             document.getElementById('map').classList.add('selected');
             document.getElementById('control').classList.add('selected');
             document.getElementById('noPano').style.visibility = 'hidden';
@@ -141,14 +160,14 @@
             }
         },
 
-        resetSelected: function () {
+        resetSelected: function (del) {
             if (!MapEditor.selectedMarker) {
                 return;
             }
 
             var placeId = MapEditor.selectedMarker.placeId
 
-            if (places[placeId].id) {
+            if (places[placeId].id && !del) {
                 MapEditor.selectedMarker.setIcon(places[placeId].noPano ? IconCollection.iconRed : IconCollection.iconGreen);
                 MapEditor.selectedMarker.setZIndexOffset(1000);
             } else {
@@ -191,29 +210,25 @@
             }
 
             MapEditor.selectedMarker.setLatLng({ lat: places[placeId].lat, lng: places[placeId].lng });
+
+            document.getElementById('saveButton').disabled = false;
         },
 
-        closePlace: function () {
+        closePlace: function (del) {
+            document.getElementById('metadata').classList.remove('selected')
             document.getElementById('map').classList.remove('selected');
             document.getElementById('control').classList.remove('selected');
             document.getElementById('noPano').style.visibility = 'hidden';
             document.getElementById('panorama').style.visibility = 'hidden';
             document.getElementById('placeControl').style.visibility = 'hidden';
 
-            MapEditor.resetSelected();
+            MapEditor.resetSelected(del);
             MapEditor.selectedMarker = null;
 
             MapEditor.map.invalidateSize(true);
         },
 
         deletePlace: function () {
-            document.getElementById('map').classList.remove('selected');
-            document.getElementById('control').classList.remove('selected');
-            document.getElementById('noPano').style.visibility = 'hidden';
-            document.getElementById('panorama').style.visibility = 'hidden';
-            document.getElementById('placeControl').style.visibility = 'hidden';
-            document.getElementById('deleteButton').style.display = 'none';
-
             var placeId = MapEditor.selectedMarker.placeId;
 
             if (places[placeId].id && !MapEditor.added[placeId]) {
@@ -222,23 +237,29 @@
                 document.getElementById('deleted').innerHTML = String(Object.keys(MapEditor.deleted).length);
             }
 
-            delete places[placeId];
+            MapEditor.closePlace(true);
+
             delete MapEditor.added[placeId];
             delete MapEditor.edited[placeId];
 
             document.getElementById('added').innerHTML = String(Object.keys(MapEditor.added).length);
             document.getElementById('edited').innerHTML = String(Object.keys(MapEditor.edited).length);
 
-            MapEditor.map.removeLayer(MapEditor.selectedMarker);
-            MapEditor.selectedMarker = null;
-
-            MapEditor.map.invalidateSize(true);
+            document.getElementById('saveButton').disabled = false;
         },
 
         saveMap: function () {
             document.getElementById('loading').style.visibility = 'visible';
 
             var data = new FormData();
+
+            if (MapEditor.metadata.name !== null) {
+                data.append('name', MapEditor.metadata.name);
+            }
+            if (MapEditor.metadata.description !== null) {
+                data.append('description', MapEditor.metadata.description);
+            }
+
             for (var placeId in MapEditor.added) {
                 if (!MapEditor.added.hasOwnProperty(placeId)) {
                     continue;
@@ -277,6 +298,8 @@
                 document.getElementById('added').innerHTML = '0';
                 document.getElementById('edited').innerHTML = '0';
                 document.getElementById('deleted').innerHTML = '0';
+
+                document.getElementById('saveButton').disabled = true;
             };
 
             xhr.open('POST', '/admin/saveMap/' + mapId + '/json', true);
@@ -381,6 +404,29 @@
         motionTracking: false
     });
 
+    document.getElementById('mapName').onclick = function (e) {
+        e.preventDefault();
+
+        var metadata = document.getElementById('metadata');
+
+        if (metadata.style.visibility === 'visible') {
+            metadata.style.visibility = 'hidden';
+        } else {
+            metadata.style.visibility = 'visible';
+            document.getElementById('metadataForm').elements.name.select();
+        }
+    };
+
+    document.getElementById('metadataForm').onsubmit = function (e) {
+        e.preventDefault();
+
+        MapEditor.editMetadata();
+    };
+
+    document.getElementById('closeMetadataButton').onclick = function () {
+        document.getElementById('metadata').style.visibility = 'hidden';
+    };
+
     document.getElementById('saveButton').onclick = function () {
         MapEditor.saveMap();
     };
@@ -389,7 +435,7 @@
         MapEditor.applyPlace();
     };
 
-    document.getElementById('cancelButton').onclick = function () {
+    document.getElementById('closeButton').onclick = function () {
         MapEditor.closePlace();
     };
 
