@@ -30,15 +30,31 @@ $match = Container::$routeCollection->match($method, explode('/', $url));
 if ($match !== null) {
     list($route, $params) = $match;
 
-    $response = $route->callController($params);
+    $handler = $route->getHandler();
 
-    if ($response instanceof MapGuesser\Interfaces\Response\IContent) {
-        header('Content-Type: ' . $response->getContentType() . '; charset=UTF-8');
-        echo $response->render();
-    } elseif ($response instanceof MapGuesser\Interfaces\Response\IRedirect) {
-        header('Location: ' . $host . '/' . $response->getUrl(), true, $response->getHttpCode());
+    $controller = new $handler[0];
+
+    if ($controller instanceof MapGuesser\Interfaces\Authorization\ISecured) {
+        $authorized = $controller->authorize();
+    } else {
+        $authorized = true;
     }
-} else {
-    header('Content-Type: text/html; charset=UTF-8', true, 404);
-    require ROOT . '/views/error/404.php';
+
+    if ($authorized) {
+        $response = call_user_func([$controller, $handler[1]], $params);
+
+        if ($response instanceof MapGuesser\Interfaces\Response\IContent) {
+            header('Content-Type: ' . $response->getContentType() . '; charset=UTF-8');
+            echo $response->render();
+
+            return;
+        } elseif ($response instanceof MapGuesser\Interfaces\Response\IRedirect) {
+            header('Location: ' . $host . '/' . $response->getUrl(), true, $response->getHttpCode());
+
+            return;
+        }
+    }
 }
+
+header('Content-Type: text/html; charset=UTF-8', true, 404);
+require ROOT . '/views/error/404.php';

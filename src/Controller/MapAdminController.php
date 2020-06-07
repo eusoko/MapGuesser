@@ -1,6 +1,7 @@
 <?php namespace MapGuesser\Controller;
 
 use MapGuesser\Database\Query\Select;
+use MapGuesser\Interfaces\Authorization\ISecured;
 use MapGuesser\Interfaces\Database\IResultSet;
 use MapGuesser\Interfaces\Response\IContent;
 use MapGuesser\Repository\PlaceRepository;
@@ -8,13 +9,20 @@ use MapGuesser\Response\HtmlContent;
 use MapGuesser\Response\JsonContent;
 use MapGuesser\Util\Geo\Bounds;
 
-class MapAdminController
+class MapAdminController implements ISecured
 {
     private PlaceRepository $placeRepository;
 
     public function __construct()
     {
         $this->placeRepository = new PlaceRepository();
+    }
+
+    public function authorize(): bool
+    {
+        //TODO
+
+        return false;
     }
 
     public function getMaps(): IContent
