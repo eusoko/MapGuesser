@@ -1,5 +1,6 @@
 <?php namespace MapGuesser\Controller;
 
+use MapGuesser\Interfaces\Request\IRequest;
 use MapGuesser\Util\Geo\Position;
 use MapGuesser\Response\JsonContent;
 use MapGuesser\Interfaces\Response\IContent;
@@ -10,34 +11,40 @@ class PositionController
     const NUMBER_OF_ROUNDS = 5;
     const MAX_SCORE = 1000;
 
+    private IRequest $request;
+
     private PlaceRepository $placeRepository;
 
-    public function __construct()
+    public function __construct(IRequest $request)
     {
+        $this->request = $request;
         $this->placeRepository = new PlaceRepository();
     }
 
-    public function getPosition(array $parameters): IContent
+    public function getPosition(): IContent
     {
-        $mapId = (int) $parameters['mapId'];
+        $mapId = (int) $this->request->query('mapId');
 
-        if (!isset($_SESSION['state']) || $_SESSION['state']['mapId'] !== $mapId) {
+        $session = $this->request->session();
+
+        if (!($state = $session->get('state')) || $state['mapId'] !== $mapId) {
             $data = ['error' => 'no_session_found'];
             return new JsonContent($data);
         }
 
-        if (count($_SESSION['state']['rounds']) === 0) {
+        if (count($state['rounds']) === 0) {
             $newPosition = $this->placeRepository->getForMapWithValidPano($mapId);
-            $_SESSION['state']['rounds'][] = $newPosition;
+            $state['rounds'][] = $newPosition;
+            $session->set('state', $state);
 
             $data = ['panoId' => $newPosition['panoId']];
         } else {
-            $rounds = count($_SESSION['state']['rounds']);
-            $last = $_SESSION['state']['rounds'][$rounds - 1];
+            $rounds = count($state['rounds']);
+            $last = $state['rounds'][$rounds - 1];
 
             $history = [];
             for ($i = 0; $i < $rounds - 1; ++$i) {
-                $round = $_SESSION['state']['rounds'][$i];
+                $round = $state['rounds'][$i];
                 $history[] = [
                     'position' => $round['position']->toArray(),
                     'guessPosition' => $round['guessPosition']->toArray(),
@@ -55,41 +62,45 @@ class PositionController
         return new JsonContent($data);
     }
 
-    public function evaluateGuess(array $parameters): IContent
+    public function evaluateGuess(): IContent
     {
-        $mapId = (int) $parameters['mapId'];
+        $mapId = (int) $this->request->query('mapId');
 
-        if (!isset($_SESSION['state']) || $_SESSION['state']['mapId'] !== $mapId) {
+        $session = $this->request->session();
+
+        if (!($state = $session->get('state')) || $state['mapId'] !== $mapId) {
             $data = ['error' => 'no_session_found'];
             return new JsonContent($data);
         }
 
-        $last = &$_SESSION['state']['rounds'][count($_SESSION['state']['rounds']) - 1];
+        $last = $state['rounds'][count($state['rounds']) - 1];
 
         $position = $last['position'];
-        $guessPosition = new Position((float) $_POST['lat'], (float) $_POST['lng']);
-
-        $last['guessPosition'] = $guessPosition;
+        $guessPosition = new Position((float) $this->request->post('lat'), (float) $this->request->post('lng'));
 
         $distance = $this->calculateDistance($position, $guessPosition);
-        $score = $this->calculateScore($distance, $_SESSION['state']['area']);
+        $score = $this->calculateScore($distance, $state['area']);
 
+        $last['guessPosition'] = $guessPosition;
         $last['distance'] = $distance;
         $last['score'] = $score;
+        $state['rounds'][count($state['rounds']) - 1] = $last;
 
-        if (count($_SESSION['state']['rounds']) < static::NUMBER_OF_ROUNDS) {
+        if (count($state['rounds']) < static::NUMBER_OF_ROUNDS) {
             $exclude = [];
 
-            foreach ($_SESSION['state']['rounds'] as $round) {
+            foreach ($state['rounds'] as $round) {
                 $exclude = array_merge($exclude, $round['placesWithoutPano'], [$round['placeId']]);
             }
 
             $newPosition = $this->placeRepository->getForMapWithValidPano($mapId, $exclude);
-            $_SESSION['state']['rounds'][] = $newPosition;
+            $state['rounds'][] = $newPosition;
+            $session->set('state', $state);
 
             $panoId = $newPosition['panoId'];
         } else {
-            $_SESSION['state']['rounds'] = [];
+            $state['rounds'] = [];
+            $session->set('state', $state);
 
             $panoId = null;
         }

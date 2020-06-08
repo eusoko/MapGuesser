@@ -30,9 +30,10 @@ $match = Container::$routeCollection->match($method, explode('/', $url));
 if ($match !== null) {
     list($route, $params) = $match;
 
-    $handler = $route->getHandler();
+    $request = new MapGuesser\Request\Request($_GET, $params, $_POST, $_SESSION);
 
-    $controller = new $handler[0];
+    $handler = $route->getHandler();
+    $controller = new $handler[0]($request);
 
     if ($controller instanceof MapGuesser\Interfaces\Authorization\ISecured) {
         $authorized = $controller->authorize();
@@ -41,7 +42,7 @@ if ($match !== null) {
     }
 
     if ($authorized) {
-        $response = call_user_func([$controller, $handler[1]], $params);
+        $response = call_user_func([$controller, $handler[1]]);
 
         if ($response instanceof MapGuesser\Interfaces\Response\IContent) {
             header('Content-Type: ' . $response->getContentType() . '; charset=UTF-8');

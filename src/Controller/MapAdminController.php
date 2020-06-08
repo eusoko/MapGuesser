@@ -1,8 +1,10 @@
 <?php namespace MapGuesser\Controller;
 
 use MapGuesser\Database\Query\Select;
+use MapGuesser\Interfaces\Authentication\IUser;
 use MapGuesser\Interfaces\Authorization\ISecured;
 use MapGuesser\Interfaces\Database\IResultSet;
+use MapGuesser\Interfaces\Request\IRequest;
 use MapGuesser\Interfaces\Response\IContent;
 use MapGuesser\Repository\PlaceRepository;
 use MapGuesser\Response\HtmlContent;
@@ -11,18 +13,21 @@ use MapGuesser\Util\Geo\Bounds;
 
 class MapAdminController implements ISecured
 {
+    private IRequest $request;
+
     private PlaceRepository $placeRepository;
 
-    public function __construct()
+    public function __construct(IRequest $request)
     {
+        $this->request = $request;
         $this->placeRepository = new PlaceRepository();
     }
 
     public function authorize(): bool
     {
-        //TODO
+        $user = $this->request->user();
 
-        return false;
+        return $user !== null && $user->hasPermission(IUser::PERMISSION_ADMIN);
     }
 
     public function getMaps(): IContent
@@ -32,9 +37,9 @@ class MapAdminController implements ISecured
         return new HtmlContent('admin/maps');
     }
 
-    public function getMapEditor(array $parameters): IContent
+    public function getMapEditor(): IContent
     {
-        $mapId = (int) $parameters['mapId'];
+        $mapId = (int) $this->request->query('mapId');
 
         $bounds = $this->getMapBounds($mapId);
 
@@ -44,9 +49,9 @@ class MapAdminController implements ISecured
         return new HtmlContent('admin/map_editor', $data);
     }
 
-    public function getPlace(array $parameters)
+    public function getPlace()
     {
-        $placeId = (int) $parameters['placeId'];
+        $placeId = (int) $this->request->query('placeId');
 
         $placeData = $this->placeRepository->getById($placeId);
 
