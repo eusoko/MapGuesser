@@ -1,0 +1,50 @@
+<?php namespace MapGuesser\Cli;
+
+use MapGuesser\Database\Query\Modify;
+use MapGuesser\Model\User;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class AddUserCommand extends Command
+{
+    public function configure()
+    {
+        $this->setName('user:add')
+            ->setDescription('Adding of user.')
+            ->addArgument('email', InputArgument::REQUIRED, 'Email of user')
+            ->addArgument('password', InputArgument::REQUIRED, 'Password of user')
+            ->addArgument('type', InputArgument::OPTIONAL, 'Type of user');;
+    }
+
+    public function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $user = new User([
+            'email' => $input->getArgument('email'),
+            'password' => $input->getArgument('password')
+        ]);
+
+        if ($input->hasArgument('type')) {
+            $user->setType($input->getArgument('type'));
+        }
+
+        try {
+            $modify = new Modify(\Container::$dbConnection, 'users');
+            $modify->fill($user->toArray());
+            $modify->save();
+        } catch (\Exception $e) {
+            $output->writeln('<error>Adding user failed!</error>');
+            $output->writeln('');
+
+            $output->writeln((string) $e);
+            $output->writeln('');
+
+            return 1;
+        }
+
+        $output->writeln('<info>User was successfully added!</info>');
+
+        return 0;
+    }
+}

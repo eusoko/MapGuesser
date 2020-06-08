@@ -6,5 +6,6 @@ require 'main.php';
 $app = new Symfony\Component\Console\Application('MapGuesser Console', '');
 
 $app->add(new MapGuesser\Cli\DatabaseMigration());
+$app->add(new MapGuesser\Cli\AddUserCommand());
 
 $app->run();
