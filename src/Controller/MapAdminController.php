@@ -37,13 +37,6 @@ class MapAdminController implements ISecured
         return $user !== null && $user->hasPermission(IUser::PERMISSION_ADMIN);
     }
 
-    public function getMaps(): IContent
-    {
-        //TODO
-
-        return new HtmlContent('admin/maps');
-    }
-
     public function getMapEditor(): IContent
     {
         $mapId = (int) $this->request->query('mapId');

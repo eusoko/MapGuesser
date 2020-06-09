@@ -162,6 +162,14 @@ button.red:hover, button.red:focus, a.button.red:hover, a.button.red:focus {
     background-color: #7f2929;
 }
 
+button.yellow, a.button.yellow {
+    background-color: #e8a349;
+}
+
+button.yellow:hover, button.yellow:focus, a.button.yellow:hover, a.button.yellow:focus {
+    background-color: #c37713;
+}
+
 input, select, textarea {
     background-color: #f9fafb;
     border: solid #c8d2e1 1px;

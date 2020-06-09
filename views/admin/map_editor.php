@@ -3,7 +3,7 @@
 <div class="header small">
     <div class="grid">
         <h1>
-            <a href="/admin/maps" title="Back to maps">
+            <a href="/maps" title="Back to playable maps">
                 <img class="inline" src="/static/img/icon.svg">
                 <span>MapGuesser</span>
             </a>

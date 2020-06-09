@@ -2,13 +2,22 @@
 
 use MapGuesser\Database\Query\Select;
 use MapGuesser\Database\RawExpression;
+use MapGuesser\Interfaces\Authentication\IUser;
 use MapGuesser\Interfaces\Database\IResultSet;
+use MapGuesser\Interfaces\Request\IRequest;
 use MapGuesser\Interfaces\Response\IContent;
 use MapGuesser\Util\Geo\Bounds;
 use MapGuesser\Response\HtmlContent;
 
 class MapsController
 {
+    private IRequest $request;
+
+    public function __construct(IRequest $request)
+    {
+        $this->request = $request;
+    }
+
     public function getMaps(): IContent
     {
         $select = new Select(\Container::$dbConnection, 'maps');
@@ -36,7 +45,8 @@ class MapsController
             $maps[] = $map;
         }
 
-        $data = ['maps' => $maps];
+        $user = $this->request->user();
+        $data = ['maps' => $maps, 'isAdmin' => $user !== null && $user->hasPermission(IUser::PERMISSION_ADMIN)];
         return new HtmlContent('maps', $data);
     }
 
