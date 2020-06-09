@@ -17,7 +17,7 @@ button::-moz-focus-inner, input::-moz-focus-inner {
     border: 0;
 }
 
-p, h1, h2, button, a {
+p, h1, h2, input, textarea, select, button, a {
     font-family: 'Roboto', sans-serif;
 }
 
@@ -93,6 +93,10 @@ sub {
     margin-bottom: 10px;
 }
 
+.right {
+    text-align: right;
+}
+
 svg.inline, img.inline {
     display: inline-block;
     width: 1em;
@@ -158,6 +162,54 @@ button.red:hover, button.red:focus, a.button.red:hover, a.button.red:focus {
     background-color: #7f2929;
 }
 
+input, select, textarea {
+    background-color: #f9fafb;
+    border: solid #c8d2e1 1px;
+    border-radius: 2px;
+    padding: 4px;
+    box-sizing: border-box;
+    font-size: 15px;
+    font-weight: 300;
+}
+
+textarea {
+    font-size: 13px;
+    resize: none;
+}
+
+input.big, select.big, textarea.big {
+    padding: 5px;
+    font-size: 18px;
+}
+
+input.fullWidth, select.fullWidth, textarea.fullWidth {
+    display: block;
+    width: 100%;
+}
+
+input:disabled, select:disabled, textarea:disabled {
+    background-color: #dfdfdf;
+    border: solid #dfdfdf 1px;
+    color: #000000;
+}
+
+input:focus, select:focus, textarea:focus {
+    background-color: #ffffff;
+    border: solid #29457f 2px;
+    padding: 3px;
+    outline: none;
+}
+
+input.big:focus, select.big:focus, textarea.big:focus {
+    padding: 4px;
+}
+
+p.formError {
+    color: #7f2929;
+    font-weight: 500;
+    display: none;
+}
+
 div.header {
     background-color: #333333;
     height: 50px;
@@ -200,6 +252,15 @@ div.buttonContainer>button {
     visibility: hidden;
 }
 
+div.box {
+    width: 576px;
+    background-color: #eeeeee;
+    border-radius: 3px;
+    margin: 10px auto;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
 @media screen and (max-width: 599px) {
     div.header.small h1 span {
         display: none;
@@ -207,5 +268,8 @@ div.buttonContainer>button {
     button {
         padding: 0;
         width: 100%;
+    }
+    div.box {
+        width: initial;
     }
 }

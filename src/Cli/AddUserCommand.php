@@ -22,8 +22,9 @@ class AddUserCommand extends Command
     {
         $user = new User([
             'email' => $input->getArgument('email'),
-            'password' => $input->getArgument('password')
         ]);
+
+        $user->setPlainPassword($input->getArgument('password'));
 
         if ($input->hasArgument('type')) {
             $user->setType($input->getArgument('type'));

@@ -12,6 +12,9 @@ if (($pos = strpos($url, '?')) !== false) {
 $url = rawurldecode($url);
 
 Container::$routeCollection->get('index', '', [MapGuesser\Controller\HomeController::class, 'getIndex']);
+Container::$routeCollection->get('login', 'login', [MapGuesser\Controller\LoginController::class, 'getLoginForm']);
+Container::$routeCollection->post('login-action', 'login', [MapGuesser\Controller\LoginController::class, 'login']);
+Container::$routeCollection->get('logout', 'logout', [MapGuesser\Controller\LoginController::class, 'logout']);
 Container::$routeCollection->get('maps', 'maps', [MapGuesser\Controller\MapsController::class, 'getMaps']);
 Container::$routeCollection->group('game', function (MapGuesser\Routing\RouteCollection $routeCollection) {
     $routeCollection->get('game', '{mapId}', [MapGuesser\Controller\GameController::class, 'getGame']);
