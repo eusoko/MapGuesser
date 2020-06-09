@@ -27,7 +27,7 @@ div.mapItem>img {
 }
 
 div.mapItem>div.inner {
-    padding: 8px;
+    padding: 10px 8px;
 }
 
 div.mapItem>div.inner>div.info {
