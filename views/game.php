@@ -8,7 +8,11 @@
                 <span>MapGuesser</span>
             </a>
         </h1>
-        <p id="roundInfo">Round: <span id="currentRound" class="mono bold"></span> | Score: <span id="currentScoreSum" class="mono bold"></span></p>
+        <p>
+            <span id="mapName" class="bold"><?= $mapName ?></span><!--
+         --><span>Round <span id="currentRound" class="bold"></span></span><!--
+         --><span>Score <span id="currentScoreSum" class="bold"></span></span>
+        </p>
     </div>
 </div>
 <div id="cover"></div>

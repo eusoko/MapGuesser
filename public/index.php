@@ -19,13 +19,14 @@ Container::$routeCollection->get('maps', 'maps', [MapGuesser\Controller\MapsCont
 Container::$routeCollection->group('game', function (MapGuesser\Routing\RouteCollection $routeCollection) {
     $routeCollection->get('game', '{mapId}', [MapGuesser\Controller\GameController::class, 'getGame']);
     $routeCollection->get('game-json', '{mapId}/json', [MapGuesser\Controller\GameController::class, 'getGameJson']);
-    $routeCollection->get('position-json', '{mapId}/position.json', [MapGuesser\Controller\PositionController::class, 'getPosition']);
-    $routeCollection->post('guess-json', '{mapId}/guess.json', [MapGuesser\Controller\PositionController::class, 'evaluateGuess']);
+    $routeCollection->get('newPlace-json', '{mapId}/newPlace.json', [MapGuesser\Controller\GameFlowController::class, 'getNewPlace']);
+    $routeCollection->post('guess-json', '{mapId}/guess.json', [MapGuesser\Controller\GameFlowController::class, 'evaluateGuess']);
 });
 Container::$routeCollection->group('admin', function (MapGuesser\Routing\RouteCollection $routeCollection) {
     $routeCollection->get('admin.maps', 'maps', [MapGuesser\Controller\MapAdminController::class, 'getMaps']);
     $routeCollection->get('admin.mapEditor', 'mapEditor/{mapId}', [MapGuesser\Controller\MapAdminController::class, 'getMapEditor']);
     $routeCollection->get('admin.place', 'place.json/{placeId}', [MapGuesser\Controller\MapAdminController::class, 'getPlace']);
+    $routeCollection->post('admin.saveMap', 'saveMap/{mapId}/json', [MapGuesser\Controller\MapAdminController::class, 'saveMap']);
 });
 
 $match = Container::$routeCollection->match($method, explode('/', $url));

@@ -6,7 +6,7 @@ use MapGuesser\Response\JsonContent;
 use MapGuesser\Interfaces\Response\IContent;
 use MapGuesser\Repository\PlaceRepository;
 
-class PositionController
+class GameFlowController
 {
     const NUMBER_OF_ROUNDS = 5;
     const MAX_SCORE = 1000;
@@ -21,7 +21,7 @@ class PositionController
         $this->placeRepository = new PlaceRepository();
     }
 
-    public function getPosition(): IContent
+    public function getNewPlace(): IContent
     {
         $mapId = (int) $this->request->query('mapId');
 
@@ -33,11 +33,11 @@ class PositionController
         }
 
         if (count($state['rounds']) === 0) {
-            $newPosition = $this->placeRepository->getForMapWithValidPano($mapId);
-            $state['rounds'][] = $newPosition;
+            $place = $this->placeRepository->getForMapWithValidPano($mapId);
+            $state['rounds'][] = $place;
             $session->set('state', $state);
 
-            $data = ['panoId' => $newPosition['panoId']];
+            $data = ['panoId' => $place['panoId']];
         } else {
             $rounds = count($state['rounds']);
             $last = $state['rounds'][$rounds - 1];
@@ -93,11 +93,11 @@ class PositionController
                 $exclude = array_merge($exclude, $round['placesWithoutPano'], [$round['placeId']]);
             }
 
-            $newPosition = $this->placeRepository->getForMapWithValidPano($mapId, $exclude);
-            $state['rounds'][] = $newPosition;
+            $place = $this->placeRepository->getForMapWithValidPano($mapId, $exclude);
+            $state['rounds'][] = $place;
             $session->set('state', $state);
 
-            $panoId = $newPosition['panoId'];
+            $panoId = $place['panoId'];
         } else {
             $state['rounds'] = [];
             $session->set('state', $state);

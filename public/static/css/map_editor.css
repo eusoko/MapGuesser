@@ -1,7 +1,25 @@
+#metadata {
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    padding: 10px;
+    background-color: #eeeeee;
+    border: solid 1px #555555;
+    border-radius: 3px;
+    box-sizing: border-box;
+    opacity: 0.95;
+    z-index: 2;
+    visibility: hidden;
+}
+
 #map {
     width: 100%;
-    height: calc(100% - 50px);
+    height: calc(100% - 40px);
     z-index: 1;
+}
+
+.leaflet-container {
+    cursor: crosshair;
 }
 
 #panorama {
@@ -24,53 +42,65 @@
 
 #control {
     position: absolute;
+    top: 50px;
+    right: 10px;
     width: 125px;
     z-index: 3;
 }
 
 #placeControl {
     position: absolute;
+    right: 10px;
     z-index: 3;
     width: 100px;
     visibility: hidden;
 }
 
+#deleteButton {
+    display: none;
+}
+
 @media screen and (max-width: 999px) and (min-height: 600px) {
+    #metadata {
+        width: calc(100% - 155px);
+    }
     #map.selected {
-        height: calc(50% - 25px);
+        height: calc(50% - 20px);
     }
     #panorama, #noPano {
         left: 0;
         bottom: 0;
         right: 0;
-        height: calc(50% - 25px);
-    }
-    #control {
-        right: 10px;
-        top: 60px;
+        height: calc(50% - 20px);
     }
     #placeControl {
-        right: 10px;
-        top: calc(50% + 35px);
+        top: calc(50% + 30px);
     }
 }
 
 @media screen and (min-width: 1000px), (max-height: 599px) {
+    #metadata {
+        width: calc(50% - 20px);
+    }
+    #metadata.selected {
+        top: 95px;
+    }
     #map.selected {
         width: 50%;
     }
     #panorama, #noPano {
-        top: 50px;
+        top: 40px;
         bottom: 0;
         right: 0;
         width: 50%;
     }
-    #control, #placeControl {
-        right: 10px;
-        top: 60px;
+    #placeControl {
+        top: 50px;
+    }
+    #modified.selected {
+        right: calc(50% + 10px);
     }
     #control.selected {
         right: calc(50% + 10px);
-        top: 60px;
     }
 }

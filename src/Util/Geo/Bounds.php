@@ -59,6 +59,26 @@ class Bounds
         }
     }
 
+    public function getSouthLat(): float
+    {
+        return $this->southLat;
+    }
+
+    public function getWestLng(): float
+    {
+        return $this->westLng;
+    }
+
+    public function getNorthLat(): float
+    {
+        return $this->northLat;
+    }
+
+    public function getEastLng(): float
+    {
+        return $this->eastLng;
+    }
+
     public function calculateApproximateArea(): float
     {
         $dLat = $this->northLat - $this->southLat;

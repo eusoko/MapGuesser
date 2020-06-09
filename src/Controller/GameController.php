@@ -7,14 +7,18 @@ use MapGuesser\Util\Geo\Bounds;
 use MapGuesser\Response\HtmlContent;
 use MapGuesser\Response\JsonContent;
 use MapGuesser\Interfaces\Response\IContent;
+use MapGuesser\Repository\MapRepository;
 
 class GameController
 {
     private IRequest $request;
 
+    private MapRepository $mapRepository;
+
     public function __construct(IRequest $request)
     {
         $this->request = $request;
+        $this->mapRepository = new MapRepository();
     }
 
     public function getGame(): IContent
@@ -33,7 +37,9 @@ class GameController
 
     private function prepareGame(int $mapId)
     {
-        $bounds = $this->getMapBounds($mapId);
+        $map = $this->mapRepository->getById($mapId);
+
+        $bounds = Bounds::createDirectly($map['bound_south_lat'], $map['bound_west_lng'], $map['bound_north_lat'], $map['bound_east_lng']);
 
         $session = $this->request->session();
 
@@ -45,19 +51,6 @@ class GameController
             ]);
         }
 
-        return ['mapId' => $mapId, 'bounds' => $bounds->toArray()];
-    }
-
-    private function getMapBounds(int $mapId): Bounds
-    {
-        $select = new Select(\Container::$dbConnection, 'maps');
-        $select->columns(['bound_south_lat', 'bound_west_lng', 'bound_north_lat', 'bound_east_lng']);
-        $select->whereId($mapId);
-
-        $map = $select->execute()->fetch(IResultSet::FETCH_ASSOC);
-
-        $bounds = Bounds::createDirectly($map['bound_south_lat'], $map['bound_west_lng'], $map['bound_north_lat'], $map['bound_east_lng']);
-
-        return $bounds;
+        return ['mapId' => $mapId, 'mapName' => $map['name'], 'bounds' => $bounds->toArray()];
     }
 }
