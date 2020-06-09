@@ -45,7 +45,7 @@ class MapAdminController implements ISecured
         $bounds = Bounds::createDirectly($map['bound_south_lat'], $map['bound_west_lng'], $map['bound_north_lat'], $map['bound_east_lng']);
         $places = $this->getPlaces($mapId);
 
-        $data = ['mapId' => $mapId, 'mapName' => $map['name'], 'mapDescription' => str_replace('<br>', '\n', $map['description']), 'bounds' => $bounds->toArray(), 'places' => &$places];
+        $data = ['mapId' => $mapId, 'mapName' => $map['name'], 'mapDescription' => str_replace('<br>', "\n", $map['description']), 'bounds' => $bounds->toArray(), 'places' => &$places];
         return new HtmlContent('admin/map_editor', $data);
     }
 
@@ -110,7 +110,7 @@ class MapAdminController implements ISecured
             $map['name'] = $_POST['name'] ? $_POST['name'] : '[unnamed map]';
         }
         if (isset($_POST['description'])) {
-            $map['description'] = str_replace(['\n', '\r\n'], '<br>', $_POST['description']);
+            $map['description'] = str_replace(["\n", "\r\n"], '<br>', $_POST['description']);
         }
 
         $this->saveMapData($mapId, $map);
