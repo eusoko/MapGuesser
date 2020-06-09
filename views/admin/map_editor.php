@@ -9,7 +9,7 @@
             </a>
         </h1>
         <p>
-            <span class="bold"><a href="#" id="mapName"><?= $mapName ?></a></span><!--
+            <span class="bold"><a href="javascript:;" id="mapName"><?= $mapName ?></a></span><!--
          --><span><!--
                 <?php /* Copyright (c) 2019 The Bootstrap Authors. License can be found in 'USED_SOFTWARE' in section 'Bootstrap Icons'. */ ?>
              --><svg class="inline" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
