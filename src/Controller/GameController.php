@@ -2,6 +2,7 @@
 
 use MapGuesser\Database\Query\Select;
 use MapGuesser\Interfaces\Database\IResultSet;
+use MapGuesser\Interfaces\Request\IRequest;
 use MapGuesser\Util\Geo\Bounds;
 use MapGuesser\Response\HtmlContent;
 use MapGuesser\Response\JsonContent;
@@ -9,16 +10,23 @@ use MapGuesser\Interfaces\Response\IContent;
 
 class GameController
 {
-    public function getGame(array $parameters): IContent
+    private IRequest $request;
+
+    public function __construct(IRequest $request)
     {
-        $mapId = (int) $parameters['mapId'];
+        $this->request = $request;
+    }
+
+    public function getGame(): IContent
+    {
+        $mapId = (int) $this->request->query('mapId');
         $data = $this->prepareGame($mapId);
         return new HtmlContent('game', $data);
     }
 
-    public function getGameJson(array $parameters): IContent
+    public function getGameJson(): IContent
     {
-        $mapId = (int) $parameters['mapId'];
+        $mapId = (int) $this->request->query('mapId');
         $data = $this->prepareGame($mapId);
         return new JsonContent($data);
     }
@@ -27,12 +35,14 @@ class GameController
     {
         $bounds = $this->getMapBounds($mapId);
 
-        if (!isset($_SESSION['state']) || $_SESSION['state']['mapId'] !== $mapId) {
-            $_SESSION['state'] = [
+        $session = $this->request->session();
+
+        if (($state = $session->get('state')) && $state['mapId'] !== $mapId) {
+            $session->set('state', [
                 'mapId' => $mapId,
                 'area' => $bounds->calculateApproximateArea(),
                 'rounds' => []
-            ];
+            ]);
         }
 
         return ['mapId' => $mapId, 'bounds' => $bounds->toArray()];

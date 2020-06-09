@@ -20,6 +20,11 @@ class Route
         return $this->id;
     }
 
+    public function getHandler(): array
+    {
+        return $this->handler;
+    }
+
     public function generateLink(array $parameters = []): string
     {
         $link = [];
@@ -49,14 +54,6 @@ class Route
         $query = count($queryParams) > 0 ? '?' . http_build_query($queryParams) : '';
 
         return implode('/', $link) . $query;
-    }
-
-    public function callController(array $parameters)
-    {
-        $controllerName = $this->handler[0];
-        $controller = new $controllerName();
-
-        return call_user_func([$controller, $this->handler[1]], $parameters);
     }
 
     public function testAgainst(array $path): ?array
