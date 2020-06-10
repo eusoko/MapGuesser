@@ -31,7 +31,9 @@
                     <p class="small justify marginTop"><?= $map['description'] ?></p>
                 </div>
                 <a class="button fullWidth" href="game/<?= $map['id']; ?>" title="Play map '<?= $map['name'] ?>'">Play this map</a>
-                <a class="button yellow fullWidth marginTop" href="admin/mapEditor/<?= $map['id']; ?>" title="Edit map '<?= $map['name'] ?>'">Edit this map</a>
+                <?php if ($isAdmin): ?>
+                    <a class="button yellow fullWidth marginTop" href="admin/mapEditor/<?= $map['id']; ?>" title="Edit map '<?= $map['name'] ?>'">Edit this map</a>
+                <?php endif; ?>
             </div>
         <?php endforeach; ?>
         <?php if (count($maps) < 4): ?>
