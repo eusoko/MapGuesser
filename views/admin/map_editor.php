@@ -62,9 +62,9 @@
 </div>
 <script>
     var tileUrl = '<?= $_ENV['LEAFLET_TILESERVER_URL'] ?>';
-    var mapId = '<?= $mapId ?>';
+    var mapId = <?= $mapId ?>;
     var mapBounds = <?= json_encode($bounds) ?>;
-    var places = <?= json_encode($places) ?>;
+    var places = <?= json_encode($places, JSON_FORCE_OBJECT) ?>;
 </script>
 <script src="/static/node_modules/leaflet/dist/leaflet.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=<?= $_ENV['GOOGLE_MAPS_JS_API_KEY'] ?>"></script>
