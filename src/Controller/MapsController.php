@@ -32,6 +32,7 @@ class MapsController
             new RawExpression('COUNT(places.id) AS num_places')
         ]);
         $select->leftJoin('places', ['places', 'map_id'], '=', ['maps', 'id']);
+        $select->groupBy(['maps', 'id']);
         $select->orderBy('name');
 
         $result = $select->execute();
