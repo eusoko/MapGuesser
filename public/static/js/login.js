@@ -11,8 +11,6 @@
         var xhr = new XMLHttpRequest();
         xhr.responseType = 'json';
         xhr.onload = function () {
-            document.getElementById('loading').style.visibility = 'hidden';
-
             if (this.response.error) {
                 var errorText;
                 switch (this.response.error) {
@@ -23,6 +21,8 @@
                         errorText = 'The given password is wrong.'
                         break;
                 }
+
+                document.getElementById('loading').style.visibility = 'hidden';
 
                 var loginFormError = document.getElementById('loginFormError');
                 loginFormError.style.display = 'block';
