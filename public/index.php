@@ -23,7 +23,7 @@ Container::$routeCollection->group('game', function (MapGuesser\Routing\RouteCol
     $routeCollection->post('guess-json', '{mapId}/guess.json', [MapGuesser\Controller\GameFlowController::class, 'evaluateGuess']);
 });
 Container::$routeCollection->group('admin', function (MapGuesser\Routing\RouteCollection $routeCollection) {
-    $routeCollection->get('admin.mapEditor', 'mapEditor/{mapId}', [MapGuesser\Controller\MapAdminController::class, 'getMapEditor']);
+    $routeCollection->get('admin.mapEditor', 'mapEditor/{mapId?}', [MapGuesser\Controller\MapAdminController::class, 'getMapEditor']);
     $routeCollection->get('admin.place', 'place.json/{placeId}', [MapGuesser\Controller\MapAdminController::class, 'getPlace']);
     $routeCollection->post('admin.saveMap', 'saveMap/{mapId}/json', [MapGuesser\Controller\MapAdminController::class, 'saveMap']);
 });
