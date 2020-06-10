@@ -83,7 +83,7 @@ class MapAdminController implements ISecured
             foreach ($_POST['added'] as $placeRaw) {
                 $placeRaw = json_decode($placeRaw, true);
 
-                $addedIds[] = ['tempId' => $placeRaw['id'], $this->placeRepository->addToMap($mapId, [
+                $addedIds[] = ['tempId' => $placeRaw['id'], 'id' => $this->placeRepository->addToMap($mapId, [
                     'lat' => (float) $placeRaw['lat'],
                     'lng' => (float) $placeRaw['lng'],
                     'pano_id_cached_timestamp' => $placeRaw['panoId'] === -1 ? (new DateTime('-1 day'))->format('Y-m-d H:i:s') : null
