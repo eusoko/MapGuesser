@@ -4,9 +4,13 @@
 
 div.mapItem {
     width: 350px;
-    background-color: #eeeeee;
-    border-radius: 3px;
     margin: 10px auto;
+}
+
+div.mapItem.new {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 div.mapItem>div.title {
@@ -27,6 +31,7 @@ div.mapItem>img {
 }
 
 div.mapItem>div.inner {
+    background-color: #eeeeee;
     padding: 10px 8px;
 }
 
@@ -41,6 +46,12 @@ div.mapItem>div.inner>div.info>p:nth-child(1) {
 
 div.mapItem>div.inner>div.info>p:nth-child(2) {
     text-align: right;
+}
+
+div.mapItem>div.buttonContainer {
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-auto-flow: column;
 }
 
 @media screen and (min-width: 1504px) {
@@ -69,6 +80,6 @@ div.mapItem>div.inner>div.info>p:nth-child(2) {
 
 @media screen and (max-width: 374px) {
     div.mapItem {
-        width: initial;
+        width: 100%;
     }
 }
