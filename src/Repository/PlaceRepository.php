@@ -34,7 +34,7 @@ class PlaceRepository
             $panoId = $this->requestPanoId($place);
 
             if ($panoId === null) {
-                $placesWithoutPano[] = $place['id'];
+                $placesWithoutPano[] = $exclude[] = $place['id'];
             }
         } while ($panoId === null);
 
