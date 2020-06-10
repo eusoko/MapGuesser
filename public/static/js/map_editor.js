@@ -351,7 +351,6 @@
     };
 
     MapEditor.map = L.map('map', {
-        attributionControl: false,
         zoomControl: false
     });
 
@@ -371,6 +370,7 @@
     var highResData = Util.getHighResData();
 
     L.tileLayer(tileUrl, {
+        attribution: tileAttribution,
         subdomains: '1234',
         ppi: highResData.ppi,
         tileSize: highResData.tileSize,

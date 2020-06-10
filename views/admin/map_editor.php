@@ -62,6 +62,7 @@
 </div>
 <script>
     var tileUrl = '<?= $_ENV['LEAFLET_TILESERVER_URL'] ?>';
+    var tileAttribution = '<?= $_ENV['LEAFLET_TILESERVER_ATTRIBUTION'] ?>';
     var mapId = <?= $mapId ?>;
     var mapBounds = <?= json_encode($bounds) ?>;
     var places = <?= json_encode($places, JSON_FORCE_OBJECT) ?>;
