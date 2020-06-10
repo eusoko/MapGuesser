@@ -1,7 +1,5 @@
 <?php namespace MapGuesser\Controller;
 
-use MapGuesser\Database\Query\Select;
-use MapGuesser\Interfaces\Database\IResultSet;
 use MapGuesser\Interfaces\Request\IRequest;
 use MapGuesser\Util\Geo\Bounds;
 use MapGuesser\Response\HtmlContent;

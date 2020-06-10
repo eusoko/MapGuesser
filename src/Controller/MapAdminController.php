@@ -17,6 +17,8 @@ use MapGuesser\Util\Geo\Position;
 
 class MapAdminController implements ISecured
 {
+    private static string $unnamedMapName = '[unnamed map]';
+
     private IRequest $request;
 
     private MapRepository $mapRepository;
@@ -41,9 +43,18 @@ class MapAdminController implements ISecured
     {
         $mapId = (int) $this->request->query('mapId');
 
-        $map = $this->mapRepository->getById($mapId);
-        $bounds = Bounds::createDirectly($map['bound_south_lat'], $map['bound_west_lng'], $map['bound_north_lat'], $map['bound_east_lng']);
-        $places = $this->getPlaces($mapId);
+        if ($mapId) {
+            $map = $this->mapRepository->getById($mapId);
+            $bounds = Bounds::createDirectly($map['bound_south_lat'], $map['bound_west_lng'], $map['bound_north_lat'], $map['bound_east_lng']);
+            $places = $this->getPlaces($mapId);
+        } else {
+            $map = [
+                'name' => self::$unnamedMapName,
+                'description' => ''
+            ];
+            $bounds = Bounds::createDirectly(-90.0, -180.0, 90.0, 180.0);
+            $places = [];
+        }
 
         $data = ['mapId' => $mapId, 'mapName' => $map['name'], 'mapDescription' => str_replace('<br>', "\n", $map['description']), 'bounds' => $bounds->toArray(), 'places' => &$places];
         return new HtmlContent('admin/map_editor', $data);
@@ -63,12 +74,16 @@ class MapAdminController implements ISecured
     {
         $mapId = (int) $this->request->query('mapId');
 
+        if (!$mapId) {
+            $mapId = $this->addNewMap();
+        }
+
         if (isset($_POST['added'])) {
             $addedIds = [];
             foreach ($_POST['added'] as $placeRaw) {
                 $placeRaw = json_decode($placeRaw, true);
 
-                $addedIds[] = ['tempId' => $placeRaw['id'], $this->placeRepository->addToMap($mapId, [
+                $addedIds[] = ['tempId' => $placeRaw['id'], 'id' => $this->placeRepository->addToMap($mapId, [
                     'lat' => (float) $placeRaw['lat'],
                     'lng' => (float) $placeRaw['lng'],
                     'pano_id_cached_timestamp' => $placeRaw['panoId'] === -1 ? (new DateTime('-1 day'))->format('Y-m-d H:i:s') : null
@@ -107,7 +122,7 @@ class MapAdminController implements ISecured
         ];
 
         if (isset($_POST['name'])) {
-            $map['name'] = $_POST['name'] ? $_POST['name'] : '[unnamed map]';
+            $map['name'] = $_POST['name'] ? $_POST['name'] : self::$unnamedMapName;
         }
         if (isset($_POST['description'])) {
             $map['description'] = str_replace(["\n", "\r\n"], '<br>', $_POST['description']);
@@ -115,7 +130,7 @@ class MapAdminController implements ISecured
 
         $this->saveMapData($mapId, $map);
 
-        $data = ['added' => $addedIds];
+        $data = ['mapId' => $mapId, 'added' => $addedIds];
         return new JsonContent($data);
     }
 
@@ -133,6 +148,18 @@ class MapAdminController implements ISecured
         }
 
         return $bounds;
+    }
+
+    private function addNewMap(): int
+    {
+        $modify = new Modify(\Container::$dbConnection, 'maps');
+        $modify->fill([
+            'name' => self::$unnamedMapName,
+            'description' => ''
+        ]);
+        $modify->save();
+
+        return $modify->getId();
     }
 
     private function saveMapData(int $mapId, array $map): void

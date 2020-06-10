@@ -291,6 +291,11 @@
 
                 MapEditor.replacePlaceIdsToReal(this.response.added);
 
+                if (mapId === 0) {
+                    mapId = this.response.mapId;
+                    window.history.replaceState(null, '', '/admin/mapEditor/' + mapId);
+                }
+
                 MapEditor.added = {};
                 MapEditor.edited = {};
                 MapEditor.deleted = {};
@@ -370,7 +375,7 @@
         ppi: highResData.ppi,
         tileSize: highResData.tileSize,
         zoomOffset: highResData.zoomOffset,
-        minZoom: 0,
+        minZoom: 2,
         maxZoom: 20
     }).addTo(MapEditor.map);
 

@@ -146,6 +146,16 @@ button.fullWidth, a.button.fullWidth {
     width: 100%;
 }
 
+button.noLeftRadius, a.button.noLeftRadius {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+button.noRightRadius, a.button.noRightRadius {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
 button.gray, a.button.gray {
     background-color: #808080;
 }
@@ -168,6 +178,14 @@ button.yellow, a.button.yellow {
 
 button.yellow:hover, button.yellow:focus, a.button.yellow:hover, a.button.yellow:focus {
     background-color: #c37713;
+}
+
+button.green, a.button.green {
+    background-color: #28a745;
+}
+
+button.green:hover, button.green:focus, a.button.green:hover, a.button.green:focus {
+    background-color: #1b7d31;
 }
 
 input, select, textarea {
@@ -291,7 +309,7 @@ div.box {
     div.header.small h1 span {
         display: none;
     }
-    button {
+    button, a.button {
         padding: 0;
         width: 100%;
     }

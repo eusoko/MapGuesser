@@ -32,6 +32,7 @@ class MapsController
             new RawExpression('COUNT(places.id) AS num_places')
         ]);
         $select->leftJoin('places', ['places', 'map_id'], '=', ['maps', 'id']);
+        $select->groupBy(['maps', 'id']);
         $select->orderBy('name');
 
         $result = $select->execute();
@@ -52,10 +53,18 @@ class MapsController
 
     private function formatMapAreaForHuman(float $area): array
     {
-        if ($area < 100000.0) {
+        if ($area < 100.0) {
             $digits = 0;
             $rounded = round($area, 0);
             $unit = 'm';
+        } elseif ($area < 100000.0) {
+            $digits = 0;
+            $rounded = round($area, -2);
+            $unit = 'm';
+        } elseif ($area < 1000000.0) {
+            $digits = 2;
+            $rounded = round($area / 1000000.0, 2);
+            $unit = 'km';
         } elseif ($area < 100000000.0) {
             $digits = 0;
             $rounded = round($area / 1000000.0, 0);

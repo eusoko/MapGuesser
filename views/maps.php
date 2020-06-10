@@ -30,14 +30,28 @@
                     </div>
                     <p class="small justify marginTop"><?= $map['description'] ?></p>
                 </div>
-                <a class="button fullWidth" href="game/<?= $map['id']; ?>" title="Play map '<?= $map['name'] ?>'">Play this map</a>
                 <?php if ($isAdmin): ?>
-                    <a class="button yellow fullWidth marginTop" href="admin/mapEditor/<?= $map['id']; ?>" title="Edit map '<?= $map['name'] ?>'">Edit this map</a>
+                    <div class="buttonContainer">
+                        <a class="button fullWidth noRightRadius" href="game/<?= $map['id']; ?>" title="Play map '<?= $map['name'] ?>'">Play this map</a>
+                        <a class="button yellow fullWidth noLeftRadius noRightRadius" href="admin/mapEditor/<?= $map['id']; ?>" title="Edit map '<?= $map['name'] ?>'">Edit</a>
+                        <button class="button red fullWidth noLeftRadius" title="Delete map '<?= $map['name'] ?>'">Delete</button>
+                    </div>
+                <?php else: ?>
+                    <a class="button fullWidth" href="game/<?= $map['id']; ?>" title="Play map '<?= $map['name'] ?>'">Play this map</a>
                 <?php endif; ?>
             </div>
         <?php endforeach; ?>
-        <?php if (count($maps) < 4): ?>
-            <?php for ($i = 0; $i < 4 - count($maps); ++$i): ?>
+        <?php if ($isAdmin): ?>
+            <div class="mapItem new">
+                <a class="button green fullWidth" href="admin/mapEditor" title="Add new map">
+                    Add new map
+                </a>
+            </div>
+        <?php else: ?>
+            <div class="mapItem"></div>
+        <?php endif; ?>
+        <?php if (count($maps) < 3): ?>
+            <?php for ($i = 0; $i < 3 - count($maps); ++$i): ?>
                 <div class="mapItem"></div>
             <?php endfor; ?>
         <?php endif; ?>
