@@ -7,6 +7,7 @@
             description: null
         },
         map: null,
+        markers: null,
         panorama: null,
         selectedMarker: null,
         added: {},
@@ -129,6 +130,8 @@
             MapEditor.panorama.setVisible(false);
 
             if (marker.placeId) {
+                MapEditor.markers.removeLayer(MapEditor.selectedMarker);
+                MapEditor.map.addLayer(MapEditor.selectedMarker);
                 marker.setIcon(IconCollection.iconBlue);
                 marker.setZIndexOffset(2000);
 
@@ -168,6 +171,8 @@
             var placeId = MapEditor.selectedMarker.placeId
 
             if (places[placeId].id && !del) {
+                MapEditor.map.removeLayer(MapEditor.selectedMarker);
+                MapEditor.markers.addLayer(MapEditor.selectedMarker);
                 MapEditor.selectedMarker.setIcon(places[placeId].noPano ? IconCollection.iconRed : IconCollection.iconGreen);
                 MapEditor.selectedMarker.setZIndexOffset(1000);
             } else {
@@ -381,6 +386,10 @@
 
     MapEditor.map.fitBounds(L.latLngBounds({ lat: mapBounds.south, lng: mapBounds.west }, { lat: mapBounds.north, lng: mapBounds.east }));
 
+    MapEditor.markers = L.markerClusterGroup({
+        maxClusterRadius: 50
+    });
+
     for (var placeId in places) {
         if (!places.hasOwnProperty(placeId)) {
             continue;
@@ -392,13 +401,15 @@
             icon: place.noPano ? IconCollection.iconRed : IconCollection.iconGreen,
             zIndexOffset: 1000
         })
-            .addTo(MapEditor.map)
+            .addTo(MapEditor.markers)
             .on('click', function () {
                 MapEditor.select(this);
             });
 
         marker.placeId = place.id;
     }
+
+    MapEditor.map.addLayer(MapEditor.markers);
 
     MapEditor.panorama = new google.maps.StreetViewPanorama(document.getElementById('panorama'), {
         // switch off fullscreenControl because positioning doesn't work
