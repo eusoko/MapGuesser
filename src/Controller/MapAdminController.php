@@ -155,7 +155,11 @@ class MapAdminController implements ISecured
         $modify = new Modify(\Container::$dbConnection, 'maps');
         $modify->fill([
             'name' => self::$unnamedMapName,
-            'description' => ''
+            'description' => '',
+            'bound_south_lat' => 0.0,
+            'bound_west_lng' => 0.0,
+            'bound_north_lat' => 0.0,
+            'bound_east_lng' => 0.0
         ]);
         $modify->save();
 
