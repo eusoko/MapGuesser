@@ -1,3 +1,13 @@
+    <?php if (isset($jsFiles)) : ?>
+        <?php foreach ($jsFiles as $jsFile) : ?>
+            <?php
+            if (!preg_match('/^http(s)?/', $jsFile)) {
+                $jsFile = $_ENV['STATIC_ROOT'] .  '/' . $jsFile . '?rev=' . REVISION;
+            }
+            ?>
+            <script src="<?= $jsFile ?>"></script>
+        <?php endforeach; ?>
+    <?php endif; ?>
     <script>
         (function () {
             var anchors = document.getElementsByTagName('a');
