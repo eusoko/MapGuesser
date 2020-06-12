@@ -1,0 +1,15 @@
+#!/bin/bash
+
+BRANCH_NAME=$(git symbolic-ref --short HEAD)
+BRANCH_PATTERN="^(bugfix|feature|hotfix)\/([A-Z]+-[0-9]+).*"
+
+if [[ "${BRANCH_NAME}" =~ $BRANCH_PATTERN ]]; then
+    TICKET_ID=$(echo $BRANCH_NAME | sed -E "s@$BRANCH_PATTERN@\\2@")
+
+    COMMIT_MESSAGE=$(head -n 1 $1)
+    COMMIT_MESSAGE_REGEX="^$TICKET_ID .*"
+
+    if [[ ! "${COMMIT_MESSAGE}" =~ $COMMIT_MESSAGE_REGEX ]]; then
+        sed -i.bak -e "1s/^/$TICKET_ID /" $1
+    fi
+fi
