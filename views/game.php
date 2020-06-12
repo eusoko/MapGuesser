@@ -1,4 +1,12 @@
-<?php $cssFiles = ['/static/css/game.css']; ?>
+<?php
+$cssFiles = [
+    'css/game.css'
+];
+$jsFiles = [
+    'https://maps.googleapis.com/maps/api/js?key=' . $_ENV['GOOGLE_MAPS_JS_API_KEY'],
+    'js/game.js',
+];
+?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
 <div class="header small">
     <div class="grid">
@@ -53,6 +61,4 @@
     var mapId = <?= $mapId ?>;
     var mapBounds = <?= json_encode($bounds) ?>;
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key=<?= $_ENV['GOOGLE_MAPS_JS_API_KEY'] ?>"></script>
-<script src="/static/js/game.js"></script>
 <?php require ROOT . '/views/templates/main_footer.php'; ?>
