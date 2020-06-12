@@ -4,9 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MapGuesser</title>
-    <link href="/static/css/mapguesser.css" rel="stylesheet">
+    <link href="<?= $_ENV['STATIC_ROOT'] ?>/css/mapguesser.css?rev=<?= REVISION ?>" rel="stylesheet">
     <?php if (isset($cssFiles)) : ?>
         <?php foreach ($cssFiles as $cssFile) : ?>
+            <?php
+            if (!preg_match('/^http(s)?/', $cssFile)) {
+                $cssFile = $_ENV['STATIC_ROOT'] .  '/' . $cssFile . '?rev=' . REVISION;
+            }
+            ?>
             <link href="<?= $cssFile ?>" rel="stylesheet">
         <?php endforeach; ?>
     <?php endif; ?>

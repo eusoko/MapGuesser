@@ -74,8 +74,7 @@ def updateAppInWorktree(worktreePath):
     subprocess.call([worktreePath + "/scripts/update.sh"], cwd=worktreePath)
 
 def updateAppVersionInWorktree(worktreePath):
-    pass
-    #subprocess.call([worktreePath + "/scripts/update-version.sh"], cwd=worktreePath)
+    subprocess.call([worktreePath + "/scripts/update-version.sh"], cwd=worktreePath)
 
 worktrees = getDataForWorktrees()
 
@@ -110,10 +109,6 @@ if developmentWorktree.revision != developmentWorktree.newRevision:
     print("MapGuesser is updated in " + developmentWorktree.path)
 elif developmentWorktree.version != developmentWorktree.newVersion:
     print("-> DEVELOPMENT " + developmentWorktree.path + "'s version info will be UPDATED")
-
-    checkoutWorktree(developmentWorktree.path, developmentWorktree.branch)
-
-    print(developmentWorktree.path + " is checked out to " + developmentWorktree.branch)
 
     updateAppVersionInWorktree(developmentWorktree.path)
 

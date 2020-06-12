@@ -1,4 +1,8 @@
-<?php $cssFiles = ['/static/css/maps.css']; ?>
+<?php
+$cssFiles = [
+    'css/maps.css'
+];
+?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
 <?php require ROOT . '/views/templates/header.php'; ?>
 <div class="main">
