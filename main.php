@@ -3,6 +3,9 @@
 require 'vendor/autoload.php';
 
 const ROOT = __DIR__;
+const VERSION = '';
+const REVISION = '';
+const REVISION_DATE = '';
 
 $dotenv = Dotenv\Dotenv::createImmutable(ROOT);
 $dotenv->load();
