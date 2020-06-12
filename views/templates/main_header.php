@@ -16,12 +16,12 @@
         <?php endforeach; ?>
     <?php endif; ?>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" sizes="192x192" href="/static/img/favicon/192x192.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="/static/img/favicon/96x96.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon/32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/static/img/favicon/16x16.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="<?= $_ENV['STATIC_ROOT'] ?>/img/favicon/192x192.png?rev=<?= REVISION ?>">
+    <link rel="icon" type="image/png" sizes="96x96" href="<?= $_ENV['STATIC_ROOT'] ?>/img/favicon/96x96.png?rev=<?= REVISION ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= $_ENV['STATIC_ROOT'] ?>/img/favicon/32x32.png?rev=<?= REVISION ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= $_ENV['STATIC_ROOT'] ?>/img/favicon/16x16.png?rev=<?= REVISION ?>">
 </head>
 <body>
     <div id="loading">
-        <img src="/static/img/loading.svg">
+        <img src="<?= $_ENV['STATIC_ROOT'] ?>/img/loading.svg?rev=<?= REVISION ?>">
     </div>

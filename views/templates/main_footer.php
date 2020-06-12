@@ -1,3 +1,7 @@
+    <script>
+        const STATIC_ROOT = '<?= $_ENV['STATIC_ROOT'] ?>';
+        const REVISION = '<?= REVISION ?>';
+    </script>
     <?php if (isset($jsFiles)) : ?>
         <?php foreach ($jsFiles as $jsFile) : ?>
             <?php

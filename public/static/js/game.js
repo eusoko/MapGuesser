@@ -229,7 +229,7 @@
                 clickable: true,
                 draggable: false,
                 icon: {
-                    url: '/static/img/markers/marker-green.svg',
+                    url: STATIC_ROOT + '/img/markers/marker-green.svg?rev=' + REVISION,
                     size: new google.maps.Size(24, 32),
                     scaledSize: new google.maps.Size(24, 32),
                     anchor: new google.maps.Point(12, 32)
@@ -248,7 +248,7 @@
                 clickable: false,
                 draggable: false,
                 icon: {
-                    url: '/static/img/markers/marker-gray-empty.svg',
+                    url: STATIC_ROOT + '/img/markers/marker-gray-empty.svg?rev=' + REVISION,
                     size: new google.maps.Size(24, 32),
                     scaledSize: new google.maps.Size(24, 32),
                     anchor: new google.maps.Point(12, 32),
@@ -319,7 +319,7 @@
                 var round = Game.rounds[i];
 
                 round.realMarker.setIcon({
-                    url: '/static/img/markers/marker-green-empty.svg',
+                    url: STATIC_ROOT + '/img/markers/marker-green-empty.svg?rev=' + REVISION,
                     size: new google.maps.Size(24, 32),
                     scaledSize: new google.maps.Size(24, 32),
                     anchor: new google.maps.Point(12, 32),
@@ -411,7 +411,7 @@
             clickable: false,
             draggable: true,
             icon: {
-                url: '/static/img/markers/marker-gray-empty.svg',
+                url: STATIC_ROOT + '/img/markers/marker-gray-empty.svg?rev=' + REVISION,
                 size: new google.maps.Size(24, 32),
                 scaledSize: new google.maps.Size(24, 32),
                 anchor: new google.maps.Point(12, 32),
