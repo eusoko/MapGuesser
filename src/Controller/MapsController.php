@@ -6,7 +6,6 @@ use MapGuesser\Interfaces\Authentication\IUser;
 use MapGuesser\Interfaces\Database\IResultSet;
 use MapGuesser\Interfaces\Request\IRequest;
 use MapGuesser\Interfaces\Response\IContent;
-use MapGuesser\Util\Geo\Bounds;
 use MapGuesser\Response\HtmlContent;
 
 class MapsController
@@ -29,6 +28,7 @@ class MapsController
             ['maps', 'bound_west_lng'],
             ['maps', 'bound_north_lat'],
             ['maps', 'bound_east_lng'],
+            ['maps', 'area'],
             new RawExpression('COUNT(places.id) AS num_places')
         ]);
         $select->leftJoin('places', ['places', 'map_id'], '=', ['maps', 'id']);
@@ -39,9 +39,7 @@ class MapsController
 
         $maps = [];
         while ($map = $result->fetch(IResultSet::FETCH_ASSOC)) {
-            $bounds = Bounds::createDirectly($map['bound_south_lat'], $map['bound_west_lng'], $map['bound_north_lat'], $map['bound_east_lng']);
-
-            $map['area'] = $this->formatMapAreaForHuman($bounds->calculateApproximateArea());
+            $map['area'] = $this->formatMapAreaForHuman($map['area']);
 
             $maps[] = $map;
         }
@@ -53,29 +51,29 @@ class MapsController
 
     private function formatMapAreaForHuman(float $area): array
     {
-        if ($area < 100.0) {
+        if ($area < 0.01) {
+            $digits = 0;
+            $rounded = round($area * 1000000.0, -2);
+            $unit = 'm';
+        } elseif ($area < 0.1) {
+            $digits = 0;
+            $rounded = round($area * 1000000.0, -3);
+            $unit = 'm';
+        } elseif ($area < 1.0) {
+            $digits = 2;
+            $rounded = round($area, 2);
+            $unit = 'km';
+        } elseif ($area < 100.0) {
             $digits = 0;
             $rounded = round($area, 0);
-            $unit = 'm';
-        } elseif ($area < 100000.0) {
+            $unit = 'km';
+        } elseif ($area < 10000.0) {
             $digits = 0;
             $rounded = round($area, -2);
-            $unit = 'm';
-        } elseif ($area < 1000000.0) {
-            $digits = 2;
-            $rounded = round($area / 1000000.0, 2);
-            $unit = 'km';
-        } elseif ($area < 100000000.0) {
-            $digits = 0;
-            $rounded = round($area / 1000000.0, 0);
-            $unit = 'km';
-        } elseif ($area < 10000000000.0) {
-            $digits = 0;
-            $rounded = round($area / 1000000.0, -2);
             $unit = 'km';
         } else {
             $digits = 0;
-            $rounded = round($area / 1000000.0, -4);
+            $rounded = round($area, -4);
             $unit = 'km';
         }
 

@@ -118,7 +118,8 @@ class MapAdminController implements ISecured
             'bound_south_lat' => $mapBounds->getSouthLat(),
             'bound_west_lng' => $mapBounds->getWestLng(),
             'bound_north_lat' => $mapBounds->getNorthLat(),
-            'bound_east_lng' => $mapBounds->getEastLng()
+            'bound_east_lng' => $mapBounds->getEastLng(),
+            'area' => $mapBounds->calculateApproximateArea(),
         ];
 
         if (isset($_POST['name'])) {

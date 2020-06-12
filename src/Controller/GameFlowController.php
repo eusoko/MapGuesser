@@ -123,7 +123,7 @@ class GameFlowController
 
     private function calculateScore(float $distance, float $area): int
     {
-        $goodness = 1.0 - ($distance / sqrt($area));
+        $goodness = 1.0 - ($distance / (sqrt($area) * 1000));
 
         return (int) round(pow(static::MAX_SCORE, $goodness));
     }
