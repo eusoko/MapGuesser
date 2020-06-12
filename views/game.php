@@ -12,7 +12,7 @@ $jsFiles = [
     <div class="grid">
         <h1>
             <a href="/maps" title="Back to playable maps">
-                <img class="inline" src="/static/img/icon.svg">
+                <img class="inline" src="<?= $_ENV['STATIC_ROOT'] ?>/img/icon.svg?rev=<?= REVISION ?>">
                 <span>MapGuesser</span>
             </a>
         </h1>

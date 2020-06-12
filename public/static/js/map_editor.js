@@ -327,17 +327,17 @@
 
     var IconCollection = {
         iconGreen: L.icon({
-            iconUrl: '/static/img/markers/marker-green.svg',
+            iconUrl: STATIC_ROOT + '/img/markers/marker-green.svg?rev' + REVISION,
             iconSize: [24, 32],
             iconAnchor: [12, 32]
         }),
         iconRed: L.icon({
-            iconUrl: '/static/img/markers/marker-red.svg',
+            iconUrl: STATIC_ROOT + '/img/markers/marker-red.svg?rev=' + REVISION,
             iconSize: [24, 32],
             iconAnchor: [12, 32]
         }),
         iconBlue: L.icon({
-            iconUrl: '/static/img/markers/marker-blue.svg',
+            iconUrl: STATIC_ROOT + '/img/markers/marker-blue.svg?rev=' + REVISION,
             iconSize: [24, 32],
             iconAnchor: [12, 32]
         }),
