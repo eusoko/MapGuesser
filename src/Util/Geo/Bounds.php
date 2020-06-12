@@ -2,7 +2,7 @@
 
 class Bounds
 {
-    const ONE_DEGREE_OF_LATITUDE_IN_METER = 111132.954;
+    const ONE_DEGREE_OF_LATITUDE_IN_KM = 111.132954;
 
     private float $southLat = 90.0;
     private float $westLng = 180.0;
@@ -84,9 +84,9 @@ class Bounds
         $dLat = $this->northLat - $this->southLat;
         $dLng = $this->eastLng - $this->westLng;
 
-        $m = $dLat * static::ONE_DEGREE_OF_LATITUDE_IN_METER;
-        $a = $dLng * static::ONE_DEGREE_OF_LATITUDE_IN_METER * cos(deg2rad($this->northLat));
-        $c = $dLng * static::ONE_DEGREE_OF_LATITUDE_IN_METER * cos(deg2rad($this->southLat));
+        $m = $dLat * static::ONE_DEGREE_OF_LATITUDE_IN_KM;
+        $a = $dLng * static::ONE_DEGREE_OF_LATITUDE_IN_KM * cos(deg2rad($this->northLat));
+        $c = $dLng * static::ONE_DEGREE_OF_LATITUDE_IN_KM * cos(deg2rad($this->southLat));
 
         return $m * ($a + $c) / 2;
     }

@@ -44,7 +44,7 @@ class GameController
         if (!($state = $session->get('state')) || $state['mapId'] !== $mapId) {
             $session->set('state', [
                 'mapId' => $mapId,
-                'area' => $bounds->calculateApproximateArea(),
+                'area' => $map['area'],
                 'rounds' => []
             ]);
         }
