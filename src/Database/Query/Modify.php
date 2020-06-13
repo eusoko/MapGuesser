@@ -16,6 +16,8 @@ class Modify
 
     private array $original = [];
 
+    private ?string $externalId = null;
+
     private bool $autoIncrement = true;
 
     public function __construct(IConnection $connection, string $table)
@@ -27,6 +29,13 @@ class Modify
     public function setIdName(string $idName): Modify
     {
         $this->idName = $idName;
+
+        return $this;
+    }
+
+    public function setExternalId($id): Modify
+    {
+        $this->externalId = $id;
 
         return $this;
     }
@@ -87,7 +96,9 @@ class Modify
 
     private function insert(): void
     {
-        if (!$this->autoIncrement) {
+        if ($this->externalId !== null) {
+            $this->attributes[$this->idName] = $this->externalId;
+        } elseif (!$this->autoIncrement) {
             $this->attributes[$this->idName] = $this->generateKey();
         }
 
