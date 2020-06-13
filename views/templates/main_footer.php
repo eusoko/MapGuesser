@@ -1,7 +1,9 @@
     <script>
         const STATIC_ROOT = '<?= $_ENV['STATIC_ROOT'] ?>';
         const REVISION = '<?= REVISION ?>';
+        const ANTI_CSRF_TOKEN = '<?= $_SESSION['anti_csrf_token'] ?>';
     </script>
+    <script src="<?= $_ENV['STATIC_ROOT'] ?>/js/mapguesser.js?rev=<?= REVISION ?>"></script>
     <?php if (isset($jsFiles)) : ?>
         <?php foreach ($jsFiles as $jsFile) : ?>
             <?php
@@ -12,18 +14,5 @@
             <script src="<?= $jsFile ?>"></script>
         <?php endforeach; ?>
     <?php endif; ?>
-    <script>
-        (function () {
-            var anchors = document.getElementsByTagName('a');
-            for (var i = 0; i < anchors.length; i++) {
-                var a = anchors[i];
-                if (a.href !== 'javascript:;' && a.target !== '_blank') {
-                    a.onclick = function () {
-                        document.getElementById('loading').style.visibility = 'visible';
-                    }
-                }
-            }
-        })();
-    </script>
 </body>
 </html>

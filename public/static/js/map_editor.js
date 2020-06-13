@@ -28,9 +28,7 @@
         },
 
         getPlace: function (placeId, marker) {
-            var xhr = new XMLHttpRequest();
-            xhr.responseType = 'json';
-            xhr.onload = function () {
+            MapGuesser.httpRequest('GET', '/admin/place.json/' + placeId, function () {
                 document.getElementById('loading').style.visibility = 'hidden';
 
                 if (!this.response.panoId) {
@@ -46,10 +44,7 @@
                 places[marker.placeId].noPano = false;
 
                 MapEditor.loadPano(this.response.panoId, places[marker.placeId].pov);
-            };
-
-            xhr.open('GET', '/admin/place.json/' + placeId, true);
-            xhr.send();
+            });
         },
 
         loadPano: function (panoId, pov) {
@@ -284,9 +279,7 @@
                 data.append('deleted[]', JSON.stringify(MapEditor.deleted[placeId]));
             }
 
-            var xhr = new XMLHttpRequest();
-            xhr.responseType = 'json';
-            xhr.onload = function () {
+            MapGuesser.httpRequest('POST', '/admin/saveMap/' + mapId + '/json', function () {
                 document.getElementById('loading').style.visibility = 'hidden';
 
                 if (this.response.error) {
@@ -310,10 +303,7 @@
                 document.getElementById('deleted').innerHTML = '0';
 
                 document.getElementById('saveButton').disabled = true;
-            };
-
-            xhr.open('POST', '/admin/saveMap/' + mapId + '/json', true);
-            xhr.send(data);
+            }, data);
         },
 
         replacePlaceIdsToReal: function (addedPlaces) {

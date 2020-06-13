@@ -8,9 +8,7 @@
 
         var formData = new FormData(form);
 
-        var xhr = new XMLHttpRequest();
-        xhr.responseType = 'json';
-        xhr.onload = function () {
+        MapGuesser.httpRequest('POST', form.action, function () {
             if (this.response.error) {
                 var errorText;
                 switch (this.response.error) {
@@ -34,9 +32,6 @@
             }
 
             window.location.replace('/');
-        };
-
-        xhr.open('POST', form.action, true);
-        xhr.send(formData);
+        }, formData);
     };
 })();

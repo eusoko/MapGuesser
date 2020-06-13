@@ -25,9 +25,7 @@
             });
             Game.map.fitBounds(mapBounds);
 
-            var xhr = new XMLHttpRequest();
-            xhr.responseType = 'json';
-            xhr.onload = function () {
+            MapGuesser.httpRequest('GET', '/game/' + mapId + '/newPlace.json', function () {
                 document.getElementById('loading').style.visibility = 'hidden';
                 document.getElementById('cover').style.visibility = 'hidden';
 
@@ -51,10 +49,7 @@
                 }
 
                 Game.startNewRound();
-            };
-
-            xhr.open('GET', '/game/' + mapId + '/newPlace.json', true);
-            xhr.send();
+            });
         },
 
         reset: function () {
@@ -127,16 +122,11 @@
         handleErrorResponse: function (error) {
             // for the time being we only handle the "no_session_found" error and reset the game
 
-            var xhr = new XMLHttpRequest();
-            xhr.responseType = 'json';
-            xhr.onload = function () {
+            MapGuesser.httpRequest('GET', '/game/' + mapId + '/json', function () {
                 mapBounds = this.response.bounds;
 
                 Game.reset();
-            };
-
-            xhr.open('GET', '/game/' + mapId + '/json', true);
-            xhr.send();
+            });
         },
 
         loadPano: function (panoId) {
@@ -168,9 +158,7 @@
             data.append('lat', String(guessPosition.lat));
             data.append('lng', String(guessPosition.lng));
 
-            var xhr = new XMLHttpRequest();
-            xhr.responseType = 'json';
-            xhr.onload = function () {
+            MapGuesser.httpRequest('POST', '/game/' + mapId + '/guess.json', function () {
                 if (this.response.error) {
                     Game.handleErrorResponse(this.response.error);
                     return;
@@ -211,10 +199,7 @@
                 }
 
                 Game.panoId = this.response.panoId;
-            };
-
-            xhr.open('POST', '/game/' + mapId + '/guess.json', true);
-            xhr.send(data);
+            }, data);
         },
 
         addRealGuessPair: function (position, guessPosition, hidden) {
