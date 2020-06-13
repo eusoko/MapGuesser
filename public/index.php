@@ -26,6 +26,12 @@ if ($match !== null) {
         $authorized = true;
     }
 
+    if ($method === 'post' && $request->post('anti_csrf_token') !== $request->session()->get('anti_csrf_token')) {
+        header('Content-Type: text/html; charset=UTF-8', true, 403);
+        echo json_encode(['error' => 'no_valid_anti_csrf_token']);
+        return;
+    }
+
     if ($authorized) {
         $response = call_user_func([$controller, $handler[1]]);
 

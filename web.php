@@ -38,3 +38,7 @@ session_start([
     'cookie_httponly' => true,
     'cookie_samesite' => 'Lax'
 ]);
+
+if (!isset($_SESSION['anti_csrf_token'])) {
+    $_SESSION['anti_csrf_token'] = hash('sha256', random_bytes(10) . microtime());
+}
