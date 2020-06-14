@@ -89,8 +89,16 @@ sub {
     margin-top: 10px;
 }
 
+.marginLeft {
+    margin-left: 10px;
+}
+
 .marginBottom {
     margin-bottom: 10px;
+}
+
+.marginRight {
+    margin-right: 10px;
 }
 
 .right {
@@ -230,6 +238,29 @@ input.big:focus, select.big:focus, textarea.big:focus {
     padding: 4px;
 }
 
+div.modal {
+    position: fixed;
+    top: 100px;
+    background-color: #ffffff;
+    border-radius: 3px;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 3;
+    visibility: hidden;
+}
+
+#cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #000000;
+    opacity: 0.5;
+    z-index: 2;
+    visibility: hidden;
+}
+
 p.formError {
     color: #7f2929;
     font-weight: 500;
@@ -313,7 +344,19 @@ div.box {
         padding: 0;
         width: 100%;
     }
+    div.modal {
+        left: 20px;
+        right: 20px;
+    }
     div.box {
         width: initial;
+    }
+}
+
+@media screen and (min-width: 600px) {
+    div.modal {
+        width: 540px;
+        left: 50%;
+        margin-left: -270px;
     }
 }

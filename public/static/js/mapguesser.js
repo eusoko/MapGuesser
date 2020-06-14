@@ -18,6 +18,75 @@ var MapGuesser = {
         } else {
             xhr.send();
         }
+    },
+
+    showModal: function (id) {
+        document.getElementById(id).style.visibility = 'visible';
+        document.getElementById('cover').style.visibility = 'visible';
+    },
+
+    showModalWithContent: function (title, body, extraButtons) {
+        if (typeof extraButtons === 'undefined') {
+            extraButtons = [];
+        }
+
+        MapGuesser.showModal('modal');
+
+        document.getElementById('modalTitle').textContent = title;
+
+        if (typeof body === 'object') {
+            document.getElementById('modalText').appendChild(body);
+        } else {
+            document.getElementById('modalText').textContent = body;
+        }
+
+        var buttons = document.getElementById('modalButtons');
+        buttons.textContent = '';
+
+        for (extraButton of extraButtons) {
+            var button = document.createElement(extraButton.type);
+
+            if (extraButton.type === 'a') {
+                button.classList.add('button');
+            }
+
+            for (className of extraButton.classNames) {
+                button.classList.add(className);
+            }
+
+            button.classList.add('marginTop');
+            button.classList.add('marginRight');
+            button.textContent = extraButton.text;
+
+            if (extraButton.type === 'a') {
+                button.href = extraButton.href;
+            } else if (extraButton.type === 'button') {
+                button.onclick = extraButton.onclick;
+            }
+
+            buttons.appendChild(button);
+        }
+
+        var closeButton = document.createElement('button');
+
+        closeButton.classList.add('gray');
+        closeButton.classList.add('marginTop');
+        closeButton.textContent = 'Cancel';
+        closeButton.onclick = function () {
+            MapGuesser.hideModal();
+        };
+
+        buttons.appendChild(closeButton);
+    },
+
+    hideModal: function () {
+        var modals = document.getElementsByClassName('modal');
+
+        for (modal of modals) {
+            modal.style.visibility = 'hidden';
+        }
+
+        document.getElementById('cover').style.visibility = 'hidden';
     }
 };
 
@@ -31,4 +100,8 @@ var MapGuesser = {
             }
         }
     }
+
+    document.getElementById('cover').onclick = function () {
+        MapGuesser.hideModal();
+    };
 })();

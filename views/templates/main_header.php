@@ -25,3 +25,9 @@
     <div id="loading">
         <img src="<?= $_ENV['STATIC_ROOT'] ?>/img/loading.svg?rev=<?= REVISION ?>">
     </div>
+    <div id="cover"></div>
+    <div id="modal" class="modal">
+        <h2 id="modalTitle"></h2>
+        <p id="modalText" class="marginTop"></p>
+        <div id="modalButtons" class="right"></div>
+    </div>
