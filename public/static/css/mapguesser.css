@@ -17,6 +17,11 @@ button::-moz-focus-inner, input::-moz-focus-inner {
     border: 0;
 }
 
+::selection {
+    background-color: #28a745;
+    color: #ffffff;
+}
+
 p, h1, h2, input, textarea, select, button, a {
     font-family: 'Roboto', sans-serif;
 }
