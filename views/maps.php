@@ -8,7 +8,7 @@ $cssFiles = [
 <div class="main">
     <h2>Playable maps</h2>
     <div id="mapContainer">
-        <?php foreach ($maps as $map) : ?>
+        <?php foreach ($maps as $map): ?>
             <div class="mapItem">
                 <div class="title">
                     <p class="title"><?= $map['name'] ?></p>
@@ -36,18 +36,18 @@ $cssFiles = [
                 </div>
                 <?php if ($isAdmin): ?>
                     <div class="buttonContainer">
-                        <a class="button fullWidth noRightRadius" href="game/<?= $map['id']; ?>" title="Play map '<?= $map['name'] ?>'">Play this map</a>
-                        <a class="button yellow fullWidth noLeftRadius noRightRadius" href="admin/mapEditor/<?= $map['id']; ?>" title="Edit map '<?= $map['name'] ?>'">Edit</a>
-                        <button class="button red fullWidth noLeftRadius" title="Delete map '<?= $map['name'] ?>'">Delete</button>
+                        <a class="button fullWidth noRightRadius" href="/game/<?= $map['id']; ?>" title="Play map '<?= $map['name'] ?>'">Play this map</a>
+                        <a class="button yellow fullWidth noLeftRadius noRightRadius" href="/admin/mapEditor/<?= $map['id']; ?>" title="Edit map '<?= $map['name'] ?>'">Edit</a>
+                        <button class="button red fullWidth noLeftRadius deleteButton" data-map-id="<?= $map['id'] ?>" data-map-name="<?= htmlspecialchars($map['name']) ?>" title="Delete map '<?= $map['name'] ?>'">Delete</button>
                     </div>
                 <?php else: ?>
-                    <a class="button fullWidth" href="game/<?= $map['id']; ?>" title="Play map '<?= $map['name'] ?>'">Play this map</a>
+                    <a class="button fullWidth" href="/game/<?= $map['id']; ?>" title="Play map '<?= $map['name'] ?>'">Play this map</a>
                 <?php endif; ?>
             </div>
         <?php endforeach; ?>
         <?php if ($isAdmin): ?>
             <div class="mapItem new">
-                <a class="button green fullWidth" href="admin/mapEditor" title="Add new map">
+                <a class="button green fullWidth" href="/admin/mapEditor" title="Add new map">
                     Add new map
                 </a>
             </div>
@@ -61,4 +61,40 @@ $cssFiles = [
         <?php endif; ?>
     </div>
 </div>
+<?php if ($isAdmin): ?>
+<script>
+    (function() {
+        Maps = {
+            deleteMap: function(mapId, mapName) {
+                MapGuesser.showModalWithContent('Delete map', 'Are you sure you want to delete map \'' + mapName + '\'?', [{
+                    type: 'button',
+                    classNames: ['red'],
+                    text: 'Delete',
+                    onclick: function () {
+                        document.getElementById('loading').style.visibility = 'visible';
+
+                        MapGuesser.httpRequest('POST', '/admin/deleteMap/' + mapId, function () {
+                            if (this.response.error) {
+                                document.getElementById('loading').style.visibility = 'hidden';
+
+                                //TODO: handle this error
+                                return;
+                            }
+
+                            window.location.reload();
+                        });
+                    }
+                }]);
+            }
+        };
+
+        var buttons = document.getElementById('mapContainer').getElementsByClassName('deleteButton');
+        for (var button of buttons) {
+            button.onclick = function() {
+                Maps.deleteMap(this.dataset.mapId, this.dataset.mapName);
+            };
+        }
+    })();
+</script>
+<?php endif; ?>
 <?php require ROOT . '/views/templates/main_footer.php'; ?>

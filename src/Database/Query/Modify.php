@@ -116,11 +116,14 @@ class Modify
 
     private function update(): void
     {
-        $diff = $this->generateDiff();
+        /*$diff = $this->generateDiff();
 
         if (count($diff) === 0) {
             return;
-        }
+        }*/
+
+        $diff = $this->attributes;
+        unset($diff[$this->idName]);
 
         $set = $this->generateColumnsWithBinding(array_keys($diff));
 

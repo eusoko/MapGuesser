@@ -16,7 +16,7 @@
 
         initialize: function () {
             document.getElementById('loading').style.visibility = 'visible';
-            document.getElementById('cover').style.visibility = 'visible';
+            document.getElementById('guessCover').style.visibility = 'visible';
             document.getElementById('currentRound').innerHTML = '1/' + String(Game.NUMBER_OF_ROUNDS);
             document.getElementById('currentScoreSum').innerHTML = '0/0';
 
@@ -27,7 +27,7 @@
 
             MapGuesser.httpRequest('GET', '/game/' + mapId + '/newPlace.json', function () {
                 document.getElementById('loading').style.visibility = 'hidden';
-                document.getElementById('cover').style.visibility = 'hidden';
+                document.getElementById('guessCover').style.visibility = 'hidden';
 
                 if (this.response.error) {
                     //TODO: handle this error
@@ -98,7 +98,7 @@
                 lastRound.line.setVisible(false);
             }
 
-            document.getElementById('cover').style.visibility = 'hidden';
+            document.getElementById('guessCover').style.visibility = 'hidden';
             document.getElementById('showGuessButton').style.visibility = null;
             document.getElementById('guess').style.visibility = null;
             document.getElementById('guess').classList.remove('result')
@@ -152,7 +152,7 @@
                 document.getElementById('guess').classList.remove('adapt');
             }
             document.getElementById('loading').style.visibility = 'visible';
-            document.getElementById('cover').style.visibility = 'visible';
+            document.getElementById('guessCover').style.visibility = 'visible';
 
             var data = new FormData();
             data.append('lat', String(guessPosition.lat));
