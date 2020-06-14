@@ -28,6 +28,6 @@
     <div id="cover"></div>
     <div id="modal" class="modal">
         <h2 id="modalTitle"></h2>
-        <p id="modalText" class="marginTop"></p>
+        <p id="modalText" class="justify marginTop"></p>
         <div id="modalButtons" class="right"></div>
     </div>

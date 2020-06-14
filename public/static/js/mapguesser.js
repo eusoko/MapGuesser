@@ -72,7 +72,7 @@ var MapGuesser = {
 
         closeButton.classList.add('gray');
         closeButton.classList.add('marginTop');
-        closeButton.textContent = 'Cancel';
+        closeButton.textContent = 'Close';
         closeButton.onclick = function () {
             MapGuesser.hideModal();
         };
