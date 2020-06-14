@@ -22,7 +22,7 @@
 
             document.getElementById('mapName').innerHTML = form.elements.name.value ? form.elements.name.value : '[unnamed map]';
 
-            document.getElementById('metadata').style.visibility = 'hidden';
+            MapGuesser.hideModal();
 
             document.getElementById('saveButton').disabled = false;
         },
@@ -109,7 +109,6 @@
                 return;
             }
 
-            document.getElementById('metadata').classList.add('selected');
             document.getElementById('map').classList.add('selected');
             document.getElementById('control').classList.add('selected');
             document.getElementById('noPano').style.visibility = 'hidden';
@@ -215,7 +214,6 @@
         },
 
         closePlace: function (del) {
-            document.getElementById('metadata').classList.remove('selected')
             document.getElementById('map').classList.remove('selected');
             document.getElementById('control').classList.remove('selected');
             document.getElementById('noPano').style.visibility = 'hidden';
@@ -413,14 +411,7 @@
     document.getElementById('mapName').onclick = function (e) {
         e.preventDefault();
 
-        var metadata = document.getElementById('metadata');
-
-        if (metadata.style.visibility === 'visible') {
-            metadata.style.visibility = 'hidden';
-        } else {
-            metadata.style.visibility = 'visible';
-            document.getElementById('metadataForm').elements.name.select();
-        }
+        MapGuesser.showModal('metadata');
     };
 
     document.getElementById('metadataForm').onsubmit = function (e) {
@@ -430,7 +421,7 @@
     };
 
     document.getElementById('closeMetadataButton').onclick = function () {
-        document.getElementById('metadata').style.visibility = 'hidden';
+        MapGuesser.hideModal();
     };
 
     document.getElementById('saveButton').onclick = function () {

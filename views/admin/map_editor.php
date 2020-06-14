@@ -22,7 +22,7 @@ $jsFiles = [
             </a>
         </h1>
         <p>
-            <span class="bold"><a href="javascript:;" id="mapName"><?= $mapName ?></a></span><!--
+            <span class="bold"><a href="javascript:;" id="mapName" title="Edit map data"><?= $mapName ?></a></span><!--
          --><span><!--
                 <?php /* Copyright (c) 2019 The Bootstrap Authors. License can be found in 'USED_SOFTWARE' in section 'Bootstrap Icons'. */ ?>
              --><svg class="inline" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -50,13 +50,14 @@ $jsFiles = [
         </p>
     </div>
 </div>
-<div id="metadata">
-    <form id="metadataForm">
+<div id="metadata" class="modal">
+    <h2>Edit map data</h2>
+    <form id="metadataForm" class="marginTop">
         <input class="fullWidth" type="text" name="name" value="<?= $mapName ?>" placeholder="Name of the map">
         <textarea  class="fullWidth marginTop" name="description" rows="4" placeholder="Description of the map"><?= $mapDescription ?></textarea>
-        <div style="text-align: right;">
-            <button id="closeMetadataButton" class="gray marginTop" type="button">Close</button>
-            <button class="marginTop" type="submit">Apply</button>
+        <div class="right">
+            <button class="marginTop marginRight" type="submit">Apply</button><!--
+         --><button id="closeMetadataButton" class="gray marginTop" type="button">Close</button>
         </div>
     </form>
 </div>
