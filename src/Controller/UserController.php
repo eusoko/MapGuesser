@@ -1,18 +1,26 @@
 <?php namespace MapGuesser\Controller;
 
 use MapGuesser\Database\Query\Modify;
+use MapGuesser\Interfaces\Authorization\ISecured;
 use MapGuesser\Interfaces\Request\IRequest;
 use MapGuesser\Interfaces\Response\IContent;
 use MapGuesser\Response\HtmlContent;
 use MapGuesser\Response\JsonContent;
 
-class UserController
+class UserController implements ISecured
 {
     private IRequest $request;
 
     public function __construct(IRequest $request)
     {
         $this->request = $request;
+    }
+
+    public function authorize(): bool
+    {
+        $user = $this->request->user();
+
+        return $user !== null;
     }
 
     public function getProfile(): IContent
