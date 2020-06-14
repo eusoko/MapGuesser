@@ -8,6 +8,7 @@ services:
             - .:/var/www/mapguesser
         links:
             - 'mariadb'
+            - 'mail'
     mariadb:
         image: mariadb:10.1
         volumes:
@@ -17,5 +18,10 @@ services:
             MYSQL_DATABASE: 'mapguesser'
             MYSQL_USER: 'mapguesser'
             MYSQL_PASSWORD: 'mapguesser'
+    mail:
+        image: marcopas/docker-mailslurper:latest
+        ports:
+            - 8080:8080
+            - 8085:8085
 volumes:
     mysql:
