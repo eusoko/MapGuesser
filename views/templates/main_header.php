@@ -23,7 +23,7 @@
 </head>
 <body>
     <div id="loading">
-        <img src="<?= $_ENV['STATIC_ROOT'] ?>/img/loading.svg?rev=<?= REVISION ?>">
+        <img src="<?= $_ENV['STATIC_ROOT'] ?>/img/loading.svg?rev=<?= REVISION ?>" width="64" height="64">
     </div>
     <div id="cover"></div>
     <div id="modal" class="modal">
