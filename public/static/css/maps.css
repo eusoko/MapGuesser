@@ -26,8 +26,15 @@ div.mapItem>div.title>p.title {
     font-size: 18px;
 }
 
-div.mapItem>img {
+div.mapItem>div.imgContainer {
     width: 100%;
+    padding-top: 50%;
+    background: #cccccc;
+}
+
+div.mapItem>div.imgContainer>img {
+    width: 100%;
+    margin-top: -50%
 }
 
 div.mapItem>div.inner {

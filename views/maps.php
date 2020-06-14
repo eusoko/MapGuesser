@@ -13,7 +13,9 @@ $cssFiles = [
                 <div class="title">
                     <p class="title"><?= $map['name'] ?></p>
                 </div>
-                <img src="https://maps.googleapis.com/maps/api/staticmap?size=350x175&visible=<?= $map['bound_south_lat'] . ',' . $map['bound_west_lng'] . '|' . $map['bound_north_lat'] . ',' . $map['bound_east_lng'] ?>&key=<?= $_ENV['GOOGLE_MAPS_JS_API_KEY'] ?>">
+                <div class="imgContainer">
+                    <img src="https://maps.googleapis.com/maps/api/staticmap?size=350x175&visible=<?= $map['bound_south_lat'] . ',' . $map['bound_west_lng'] . '|' . $map['bound_north_lat'] . ',' . $map['bound_east_lng'] ?>&key=<?= $_ENV['GOOGLE_MAPS_JS_API_KEY'] ?>" alt="Map area">
+                </div>
                 <div class="inner">
                     <div class="info">
                         <p>
