@@ -23,7 +23,7 @@ $jsFiles = [
         </p>
     </div>
 </div>
-<div id="cover"></div>
+<div id="guessCover"></div>
 <div id="panorama"></div>
 <div id="showGuessButtonContainer">
     <button id="showGuessButton" class="fullWidth">Show guess map</button>
