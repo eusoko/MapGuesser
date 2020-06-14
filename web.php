@@ -40,6 +40,8 @@ session_start([
     'cookie_samesite' => 'Lax'
 ]);
 
-if (!isset($_SESSION['anti_csrf_token'])) {
-    $_SESSION['anti_csrf_token'] = hash('sha256', random_bytes(10) . microtime());
+Container::$request = new MapGuesser\Request\Request($_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'], $_GET, $_POST, $_SESSION);
+
+if (!Container::$request->session()->has('anti_csrf_token')) {
+    Container::$request->session()->set('anti_csrf_token', hash('sha256', random_bytes(10) . microtime()));
 }

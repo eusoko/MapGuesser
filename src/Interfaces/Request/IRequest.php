@@ -4,6 +4,10 @@ use MapGuesser\Interfaces\Authentication\IUser;
 
 interface IRequest
 {
+    public function setParsedRouteParams(array &$routeParams);
+
+    public function getBase(): string;
+
     public function query(string $key);
 
     public function post(string $key);
