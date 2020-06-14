@@ -88,6 +88,14 @@ var MapGuesser = {
         }
 
         document.getElementById('cover').style.visibility = 'hidden';
+    },
+
+    toggleDisableOnChange: function (input, button) {
+        if (input.defaultValue !== input.value) {
+            button.disabled = false;
+        } else {
+            button.disabled = true;
+        }
     }
 };
 

@@ -69,6 +69,11 @@ sub {
     bottom: -0.4em;
 }
 
+hr {
+    border: solid #bbbbbb 1px;
+    margin: 10px 0;
+}
+
 .bold {
     font-weight: 500;
 }

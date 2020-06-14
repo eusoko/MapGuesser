@@ -20,6 +20,8 @@ Container::$routeCollection->post('signup-action', 'signup', [MapGuesser\Control
 Container::$routeCollection->get('signup.activate', 'signup/activate/{token}', [MapGuesser\Controller\SignupController::class, 'activate']);
 Container::$routeCollection->get('signup.cancel', 'signup/cancel/{token}', [MapGuesser\Controller\SignupController::class, 'cancel']);
 Container::$routeCollection->get('logout', 'logout', [MapGuesser\Controller\LoginController::class, 'logout']);
+Container::$routeCollection->get('profile', 'profile', [MapGuesser\Controller\UserController::class, 'getProfile']);
+Container::$routeCollection->post('profile-action', 'profile', [MapGuesser\Controller\UserController::class, 'saveProfile']);
 Container::$routeCollection->get('maps', 'maps', [MapGuesser\Controller\MapsController::class, 'getMaps']);
 Container::$routeCollection->group('game', function (MapGuesser\Routing\RouteCollection $routeCollection) {
     $routeCollection->get('game', '{mapId}', [MapGuesser\Controller\GameController::class, 'getGame']);
