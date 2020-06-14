@@ -27,7 +27,7 @@ class Mail
 
     public function setBodyFromTemplate(string $template, array $params = []): void
     {
-        $this->body = file_get_contents(ROOT . '/mail/' . $template . '.tpl');
+        $this->body = file_get_contents(ROOT . '/mail/' . $template . '.html');
 
         foreach ($params as $key => $param) {
             $this->body = str_replace('{{' . $key . '}}', $param, $this->body);
@@ -62,9 +62,8 @@ class Mail
         $mailer->addReplyTo($_ENV['MAIL_FROM'], 'MapGuesser');
 
         $mailer->Sender = !empty($_ENV['MAIL_BOUNCE']) ? $_ENV['MAIL_BOUNCE'] : $_ENV['MAIL_FROM'];
-
         $mailer->Subject = $this->subject;
-        $mailer->Body = $this->body;
+        $mailer->msgHTML($this->body);
 
         foreach ($this->recipients as $recipient) {
             $this->sendMail($mailer, $recipient);
