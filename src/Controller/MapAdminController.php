@@ -74,6 +74,8 @@ class MapAdminController implements ISecured
     {
         $mapId = (int) $this->request->query('mapId');
 
+        \Container::$dbConnection->startTransaction();
+
         if (!$mapId) {
             $mapId = $this->addNewMap();
         }
@@ -131,8 +133,42 @@ class MapAdminController implements ISecured
 
         $this->saveMapData($mapId, $map);
 
+        \Container::$dbConnection->commit();
+
         $data = ['mapId' => $mapId, 'added' => $addedIds];
         return new JsonContent($data);
+    }
+
+    public function deleteMap() {
+        $mapId = (int) $this->request->query('mapId');
+
+        \Container::$dbConnection->startTransaction();
+
+        $this->deletePlaces($mapId);
+
+        $modify = new Modify(\Container::$dbConnection, 'maps');
+        $modify->setId($mapId);
+        $modify->delete();
+
+        \Container::$dbConnection->commit();
+
+        $data = ['success' => true];
+        return new JsonContent($data);
+    }
+
+    private function deletePlaces(int $mapId): void
+    {
+        $select = new Select(\Container::$dbConnection, 'places');
+        $select->columns(['id']);
+        $select->where('map_id', '=', $mapId);
+
+        $result = $select->execute();
+
+        while ($place = $result->fetch(IResultSet::FETCH_ASSOC)) {
+            $modify = new Modify(\Container::$dbConnection, 'places');
+            $modify->setId($place['id']);
+            $modify->delete();
+        }
     }
 
     private function calculateMapBounds(int $mapId): Bounds
