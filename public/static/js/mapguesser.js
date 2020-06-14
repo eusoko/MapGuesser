@@ -43,15 +43,16 @@ var MapGuesser = {
         var buttons = document.getElementById('modalButtons');
         buttons.textContent = '';
 
-        for (extraButton of extraButtons) {
+        for (var i = 0; i < extraButtons.length; i++) {
+            var extraButton = extraButtons[i];
             var button = document.createElement(extraButton.type);
 
             if (extraButton.type === 'a') {
                 button.classList.add('button');
             }
 
-            for (className of extraButton.classNames) {
-                button.classList.add(className);
+            for (var i = 0; i < extraButton.classNames.length; i++) {
+                button.classList.add(extraButton.classNames[i]);
             }
 
             button.classList.add('marginTop');
@@ -82,8 +83,8 @@ var MapGuesser = {
     hideModal: function () {
         var modals = document.getElementsByClassName('modal');
 
-        for (modal of modals) {
-            modal.style.visibility = 'hidden';
+        for (var i = 0; i < modals.length; i++) {
+            modals[i].style.visibility = 'hidden';
         }
 
         document.getElementById('cover').style.visibility = 'hidden';
