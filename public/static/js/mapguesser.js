@@ -72,7 +72,7 @@ var MapGuesser = {
 
         closeButton.classList.add('gray');
         closeButton.classList.add('marginTop');
-        closeButton.textContent = 'Cancel';
+        closeButton.textContent = 'Close';
         closeButton.onclick = function () {
             MapGuesser.hideModal();
         };
@@ -88,6 +88,14 @@ var MapGuesser = {
         }
 
         document.getElementById('cover').style.visibility = 'hidden';
+    },
+
+    toggleDisableOnChange: function (input, button) {
+        if (input.defaultValue !== input.value) {
+            button.disabled = false;
+        } else {
+            button.disabled = true;
+        }
     }
 };
 

@@ -15,7 +15,13 @@ Container::$routeCollection = new MapGuesser\Routing\RouteCollection();
 Container::$routeCollection->get('index', '', [MapGuesser\Controller\HomeController::class, 'getIndex']);
 Container::$routeCollection->get('login', 'login', [MapGuesser\Controller\LoginController::class, 'getLoginForm']);
 Container::$routeCollection->post('login-action', 'login', [MapGuesser\Controller\LoginController::class, 'login']);
+Container::$routeCollection->get('signup', 'signup', [MapGuesser\Controller\SignupController::class, 'getSignupForm']);
+Container::$routeCollection->post('signup-action', 'signup', [MapGuesser\Controller\SignupController::class, 'signup']);
+Container::$routeCollection->get('signup.activate', 'signup/activate/{token}', [MapGuesser\Controller\SignupController::class, 'activate']);
+Container::$routeCollection->get('signup.cancel', 'signup/cancel/{token}', [MapGuesser\Controller\SignupController::class, 'cancel']);
 Container::$routeCollection->get('logout', 'logout', [MapGuesser\Controller\LoginController::class, 'logout']);
+Container::$routeCollection->get('profile', 'profile', [MapGuesser\Controller\UserController::class, 'getProfile']);
+Container::$routeCollection->post('profile-action', 'profile', [MapGuesser\Controller\UserController::class, 'saveProfile']);
 Container::$routeCollection->get('maps', 'maps', [MapGuesser\Controller\MapsController::class, 'getMaps']);
 Container::$routeCollection->group('game', function (MapGuesser\Routing\RouteCollection $routeCollection) {
     $routeCollection->get('game', '{mapId}', [MapGuesser\Controller\GameController::class, 'getGame']);
@@ -40,6 +46,8 @@ session_start([
     'cookie_samesite' => 'Lax'
 ]);
 
-if (!isset($_SESSION['anti_csrf_token'])) {
-    $_SESSION['anti_csrf_token'] = hash('sha256', random_bytes(10) . microtime());
+Container::$request = new MapGuesser\Request\Request($_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'], $_GET, $_POST, $_SESSION);
+
+if (!Container::$request->session()->has('anti_csrf_token')) {
+    Container::$request->session()->set('anti_csrf_token', hash('sha256', random_bytes(10) . microtime()));
 }

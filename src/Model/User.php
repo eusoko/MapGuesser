@@ -6,13 +6,15 @@ class User extends BaseModel implements IUser
 {
     private static array $types = ['user', 'admin'];
 
-    protected static array $fields = ['email', 'password', 'type'];
+    protected static array $fields = ['email', 'password', 'type', 'active'];
 
     private string $email;
 
     private string $password;
 
     private string $type = 'user';
+
+    private bool $active = false;
 
     public function setEmail(string $email): void
     {
@@ -36,6 +38,11 @@ class User extends BaseModel implements IUser
         }
     }
 
+    public function setActive($active): void
+    {
+        $this->active = (bool) $active;
+    }
+
     public function getEmail(): string
     {
         return $this->email;
@@ -51,6 +58,11 @@ class User extends BaseModel implements IUser
         return $this->type;
     }
 
+    public function getActive(): bool
+    {
+        return $this->active;
+    }
+
     public function hasPermission(int $permission): bool
     {
         switch ($permission) {
@@ -61,6 +73,11 @@ class User extends BaseModel implements IUser
                 return $this->type === 'admin';
                 break;
         }
+    }
+
+    public function getDisplayName(): string
+    {
+        return $this->email;
     }
 
     public function checkPassword(string $password): bool

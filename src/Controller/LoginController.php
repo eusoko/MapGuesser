@@ -53,6 +53,11 @@ class LoginController
 
         $user = new User($userData);
 
+        if (!$user->getActive()) {
+            $data = ['error' => 'user_not_active'];
+            return new JsonContent($data);
+        }
+
         if (!$user->checkPassword($this->request->post('password'))) {
             $data = ['error' => 'password_not_match'];
             return new JsonContent($data);
@@ -68,6 +73,6 @@ class LoginController
     {
         $this->request->session()->delete('user');
 
-        return new Redirect([\Container::$routeCollection->getRoute('login'), []], IRedirect::TEMPORARY);
+        return new Redirect([\Container::$routeCollection->getRoute('index'), []], IRedirect::TEMPORARY);
     }
 }

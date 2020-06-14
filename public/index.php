@@ -2,7 +2,6 @@
 
 require '../web.php';
 
-$host = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
 $method = strtolower($_SERVER['REQUEST_METHOD']);
 $url = substr($_SERVER['REQUEST_URI'], strlen('/'));
 if (($pos = strpos($url, '?')) !== false) {
@@ -15,10 +14,10 @@ $match = Container::$routeCollection->match($method, explode('/', $url));
 if ($match !== null) {
     list($route, $params) = $match;
 
-    $request = new MapGuesser\Request\Request($_GET, $params, $_POST, $_SESSION);
+    Container::$request->setParsedRouteParams($params);
 
     $handler = $route->getHandler();
-    $controller = new $handler[0]($request);
+    $controller = new $handler[0](Container::$request);
 
     if ($controller instanceof MapGuesser\Interfaces\Authorization\ISecured) {
         $authorized = $controller->authorize();
@@ -26,7 +25,7 @@ if ($match !== null) {
         $authorized = true;
     }
 
-    if ($method === 'post' && $request->post('anti_csrf_token') !== $request->session()->get('anti_csrf_token')) {
+    if ($method === 'post' && Container::$request->post('anti_csrf_token') !== Container::$request->session()->get('anti_csrf_token')) {
         header('Content-Type: text/html; charset=UTF-8', true, 403);
         echo json_encode(['error' => 'no_valid_anti_csrf_token']);
         return;
@@ -41,7 +40,7 @@ if ($match !== null) {
 
             return;
         } elseif ($response instanceof MapGuesser\Interfaces\Response\IRedirect) {
-            header('Location: ' . $host . '/' . $response->getUrl(), true, $response->getHttpCode());
+            header('Location: ' . Container::$request->getBase() . '/' . $response->getUrl(), true, $response->getHttpCode());
 
             return;
         }

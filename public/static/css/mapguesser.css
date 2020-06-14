@@ -69,8 +69,9 @@ sub {
     bottom: -0.4em;
 }
 
-.mono {
-    font-family: 'Roboto Mono', monospace;
+hr {
+    border: solid #bbbbbb 1px;
+    margin: 10px 0;
 }
 
 .bold {
@@ -261,13 +262,18 @@ div.modal {
     visibility: hidden;
 }
 
-p.formError {
+p.error, p.formError {
     color: #7f2929;
     font-weight: 500;
+}
+
+p.formError {
     display: none;
 }
 
 div.header {
+    display: grid;
+    grid-template-columns: auto auto;
     background-color: #333333;
     height: 50px;
     line-height: 50px;
@@ -275,30 +281,25 @@ div.header {
     color: white;
 }
 
-div.header>div.grid {
-    display: grid;
-    grid-template-columns: auto auto;
-}
-
 div.header.small {
     height: 40px;
     line-height: 40px;
 }
 
-div.header>div.grid>:nth-child(2) {
+div.header>p.header {
     line-height: inherit;
     text-align: right;
 }
 
-div.header>div.grid>:nth-child(2)>span {
+div.header>p.header>span {
     padding-left: 6px;
 }
 
-div.header>div.grid>:nth-child(2)>span>a:link, div.header>div.grid>:nth-child(2)>span>a:visited {
+div.header>p.header>span>a:link, div.header>p.header>span>a:visited {
     color: inherit;
 }
 
-div.header>div.grid>:nth-child(2)>span:not(:last-child) {
+div.header>p.header>span:not(:last-child) {
     border-right: solid white 1px;
     padding-right: 6px;
 }
@@ -337,7 +338,7 @@ div.box {
 }
 
 @media screen and (max-width: 599px) {
-    div.header.small h1 span {
+    div.header h1 span {
         display: none;
     }
     button, a.button {

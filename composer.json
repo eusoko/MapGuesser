@@ -5,7 +5,8 @@
   "license": "GNU GPL 3.0",
   "require": {
     "vlucas/phpdotenv": "^4.1",
-    "symfony/console": "^5.1"
+    "symfony/console": "^5.1",
+    "phpmailer/phpmailer": "^6.1"
   },
   "require-dev": {},
   "autoload": {

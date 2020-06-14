@@ -13,7 +13,10 @@
                 var errorText;
                 switch (this.response.error) {
                     case 'user_not_found':
-                        errorText = 'No user found with the given email address.';
+                        errorText = 'No user found with the given email address. You can <a href="/signup" title="Sign up">sign up here</a>!';
+                        break;
+                    case 'user_not_active':
+                        errorText = 'User found with the given email address, but the account is not activated. Please check your email and click on the activation link!';
                         break;
                     case 'password_not_match':
                         errorText = 'The given password is wrong.'

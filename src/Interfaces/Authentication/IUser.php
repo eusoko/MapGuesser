@@ -7,4 +7,6 @@ interface IUser
     const PERMISSION_ADMIN = 1;
 
     public function hasPermission(int $permission): bool;
+
+    public function getDisplayName(): string;
 }

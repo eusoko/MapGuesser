@@ -9,19 +9,17 @@ $jsFiles = [
 ?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
 <div class="header small">
-    <div class="grid">
-        <h1>
-            <a href="/maps" title="Back to playable maps">
-                <img class="inline" width="1em" height="1em" src="<?= $_ENV['STATIC_ROOT'] ?>/img/icon.svg?rev=<?= REVISION ?>">
-                <span>MapGuesser</span>
-            </a>
-        </h1>
-        <p>
-            <span id="mapName" class="bold"><?= $mapName ?></span><!--
-         --><span>Round <span id="currentRound" class="bold"></span></span><!--
-         --><span>Score <span id="currentScoreSum" class="bold"></span></span>
-        </p>
-    </div>
+    <h1>
+        <a href="/maps" title="Back to playable maps">
+            <img class="inline" width="1em" height="1em" src="<?= $_ENV['STATIC_ROOT'] ?>/img/icon.svg?rev=<?= REVISION ?>">
+            <span>MapGuesser</span>
+        </a>
+    </h1>
+    <p class="header">
+        <span id="mapName" class="bold"><?= $mapName ?></span><!--
+        --><span>Round <span id="currentRound" class="bold"></span></span><!--
+        --><span>Score <span id="currentScoreSum" class="bold"></span></span>
+    </p>
 </div>
 <div id="guessCover"></div>
 <div id="panorama"></div>

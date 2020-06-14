@@ -3,24 +3,35 @@
 use MapGuesser\Interfaces\Authentication\IUser;
 use MapGuesser\Interfaces\Request\IRequest;
 use MapGuesser\Interfaces\Request\ISession;
-use MapGuesser\Model\User;
 
 class Request implements IRequest
 {
+    private string $base;
+
     private array $get;
 
-    private array $routeParams;
+    private array $routeParams = [];
 
     private array $post;
 
     private Session $session;
 
-    public function __construct(array &$get, array &$routeParams, array &$post, array &$session)
+    public function __construct(string $base, array &$get, array &$post, array &$session)
     {
+        $this->base = $base;
         $this->get = &$get;
-        $this->routeParams = &$routeParams;
         $this->post = &$post;
         $this->session = new Session($session);
+    }
+
+    public function setParsedRouteParams(array &$routeParams)
+    {
+        $this->routeParams = &$routeParams;
+    }
+
+    public function getBase(): string
+    {
+        return $this->base;
     }
 
     public function query($key)

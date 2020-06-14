@@ -10,8 +10,6 @@ $select->columns(['id', 'bound_south_lat', 'bound_west_lng', 'bound_north_lat', 
 
 $result = $select->execute();
 
-\Container::$dbConnection->startTransaction();
-
 while ($map = $result->fetch(IResultSet::FETCH_ASSOC)) {
     $bounds = Bounds::createDirectly($map['bound_south_lat'], $map['bound_west_lng'], $map['bound_north_lat'], $map['bound_east_lng']);
 
@@ -20,5 +18,3 @@ while ($map = $result->fetch(IResultSet::FETCH_ASSOC)) {
     $modify->set('area', $bounds->calculateApproximateArea());
     $modify->save();
 }
-
-\Container::$dbConnection->commit();
