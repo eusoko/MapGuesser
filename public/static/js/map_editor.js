@@ -412,6 +412,7 @@
         e.preventDefault();
 
         MapGuesser.showModal('metadata');
+        document.getElementById('metadataForm').elements.name.select();
     };
 
     document.getElementById('metadataForm').onsubmit = function (e) {
