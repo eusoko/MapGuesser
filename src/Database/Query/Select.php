@@ -32,10 +32,13 @@ class Select
 
     private array $limit;
 
-    public function __construct(IConnection $connection, string $table)
+    public function __construct(IConnection $connection, ?string $table = null)
     {
         $this->connection = $connection;
-        $this->table = $table;
+
+        if ($table !== null) {
+            $this->table = $table;
+        }
     }
 
     public function setIdName(string $idName): Select
@@ -48,6 +51,13 @@ class Select
     public function setTableAliases(array $tableAliases): Select
     {
         $this->tableAliases = array_merge($this->tableAliases, $tableAliases);
+
+        return $this;
+    }
+
+    public function from(string $table): Select
+    {
+        $this->table = $table;
 
         return $this;
     }

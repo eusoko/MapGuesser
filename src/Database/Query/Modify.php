@@ -1,7 +1,6 @@
 <?php namespace MapGuesser\Database\Query;
 
 use MapGuesser\Interfaces\Database\IConnection;
-use MapGuesser\Interfaces\Database\IResultSet;
 use MapGuesser\Database\Utils;
 
 class Modify
@@ -13,8 +12,6 @@ class Modify
     private string $idName = 'id';
 
     private array $attributes = [];
-
-    private array $original = [];
 
     private ?string $externalId = null;
 
@@ -116,48 +113,15 @@ class Modify
 
     private function update(): void
     {
-        /*$diff = $this->generateDiff();
+        $attributes = $this->attributes;
+        unset($attributes[$this->idName]);
 
-        if (count($diff) === 0) {
-            return;
-        }*/
-
-        $diff = $this->attributes;
-        unset($diff[$this->idName]);
-
-        $set = $this->generateColumnsWithBinding(array_keys($diff));
+        $set = $this->generateColumnsWithBinding(array_keys($attributes));
 
         $query = 'UPDATE ' . Utils::backtick($this->table) . ' SET ' . $set . ' WHERE ' . Utils::backtick($this->idName) . '=?';
 
         $stmt = $this->connection->prepare($query);
-        $stmt->execute(array_merge($diff, [$this->idName => $this->attributes[$this->idName]]));
-    }
-
-    private function readFromDB(array $columns): void
-    {
-        $select = (new Select($this->connection, $this->table))
-            ->setIdName($this->idName)
-            ->whereId($this->attributes[$this->idName])
-            ->columns($columns);
-
-        $this->original = $select->execute()->fetch(IResultSet::FETCH_ASSOC);
-    }
-
-    private function generateDiff(): array
-    {
-        $this->readFromDB(array_keys($this->attributes));
-
-        $diff = [];
-
-        foreach ($this->attributes as $name => $value) {
-            $original = $this->original[$name];
-
-            if ($original != $value) {
-                $diff[$name] = $value;
-            }
-        }
-
-        return $diff;
+        $stmt->execute(array_merge($attributes, [$this->idName => $this->attributes[$this->idName]]));
     }
 
     public static function generateColumnsWithBinding(array $columns): string

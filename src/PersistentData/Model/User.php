@@ -1,10 +1,12 @@
-<?php namespace MapGuesser\Model;
+<?php namespace MapGuesser\PersistentData\Model;
 
 use MapGuesser\Interfaces\Authentication\IUser;
 
-class User extends BaseModel implements IUser
+class User extends Model implements IUser
 {
     private static array $types = ['user', 'admin'];
+
+    protected static string $table = 'users';
 
     protected static array $fields = ['email', 'password', 'type', 'active'];
 
