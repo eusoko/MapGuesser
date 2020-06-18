@@ -251,7 +251,7 @@ div.modal {
     border-radius: 3px;
     padding: 20px;
     box-sizing: border-box;
-    z-index: 3;
+    z-index: 6;
     visibility: hidden;
 }
 
@@ -263,7 +263,7 @@ div.modal {
     right: 0;
     background-color: #000000;
     opacity: 0.5;
-    z-index: 2;
+    z-index: 5;
     visibility: hidden;
 }
 
@@ -329,7 +329,7 @@ div.buttonContainer>button {
     left: 50%;
     margin-top: -32px;
     margin-left: -32px;
-    z-index: 5;
+    z-index: 7;
     visibility: hidden;
 }
 
