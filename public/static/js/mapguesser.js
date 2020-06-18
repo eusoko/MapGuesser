@@ -2,10 +2,11 @@ var MapGuesser = {
     httpRequest: function (method, url, callback, data) {
         var xhr = new XMLHttpRequest();
 
-        xhr.responseType = 'json';
         xhr.onload = callback;
 
         xhr.open(method, url, true);
+
+        xhr.responseType = 'json';
 
         if (method === 'POST') {
             if (typeof data === 'undefined') {
