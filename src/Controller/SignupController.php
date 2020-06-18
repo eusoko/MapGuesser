@@ -43,6 +43,11 @@ class SignupController
             return new JsonContent($data);
         }
 
+        if (filter_var($this->request->post('email'), FILTER_VALIDATE_EMAIL) === false) {
+            $data = ['error' => 'email_not_valid'];
+            return new JsonContent($data);
+        }
+
         $select = new Select(\Container::$dbConnection, 'users');
         $select->columns(User::getFields());
         $select->where('email', '=', $this->request->post('email'));
