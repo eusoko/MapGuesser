@@ -35,14 +35,11 @@
                 signupFormError.style.display = 'block';
                 signupFormError.innerHTML = errorText;
 
-                form.elements.email.select();
-
                 return;
             }
 
             document.getElementById('signupFormError').style.display = 'none';
             form.reset();
-            form.elements.email.focus();
 
             MapGuesser.showModalWithContent('Sign up successful', 'Sign up was successful. Please check your email and click on the activation link to activate your account!');
         }, formData);

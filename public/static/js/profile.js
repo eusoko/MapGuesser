@@ -37,15 +37,12 @@
                 profileFormError.style.display = 'block';
                 profileFormError.innerHTML = errorText;
 
-                form.elements.password_new.select();
-
                 return;
             }
 
             document.getElementById('profileFormError').style.display = 'none';
             form.reset();
             form.elements.save.disabled = true;
-            form.elements.password_new.focus();
         }, formData);
     };
 })();
