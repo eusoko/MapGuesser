@@ -11,8 +11,8 @@ $jsFiles = [
         <form id="profileForm" action="/profile" method="post">
             <?php /* TODO: disabled for the time being, email modification should be implemented */ ?>
             <input class="big fullWidth" type="email" name="email" placeholder="Email address" value="<?= $user['email'] ?>" disabled>
-            <input class="big fullWidth marginTop" type="password" name="password_new" placeholder="New password" autofocus>
-            <input class="big fullWidth marginTop" type="password" name="password_new_confirm" placeholder="New password confirmation">
+            <input class="big fullWidth marginTop" type="password" name="password_new" placeholder="New password" minlength="6" autofocus>
+            <input class="big fullWidth marginTop" type="password" name="password_new_confirm" placeholder="New password confirmation" minlength="6">
             <hr>
             <input class="big fullWidth" type="password" name="password" placeholder="Current password">
             <p id="profileFormError" class="formError justify marginTop"></p>

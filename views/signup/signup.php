@@ -9,9 +9,9 @@ $jsFiles = [
     <h2>Sign up</h2>
     <div class="box">
         <form id="signupForm" action="/signup" method="post">
-            <input class="big fullWidth" type="email" name="email" placeholder="Email address" autofocus>
-            <input class="big fullWidth marginTop" type="password" name="password" placeholder="Password">
-            <input class="big fullWidth marginTop" type="password" name="password_confirm" placeholder="Password confirmation">
+            <input class="big fullWidth" type="email" name="email" placeholder="Email address" required autofocus>
+            <input class="big fullWidth marginTop" type="password" name="password" placeholder="Password" required minlength="6">
+            <input class="big fullWidth marginTop" type="password" name="password_confirm" placeholder="Password confirmation" required minlength="6">
             <p id="signupFormError" class="formError justify marginTop"></p>
             <div class="right marginTop">
                 <button type="submit">Sign up</button>
