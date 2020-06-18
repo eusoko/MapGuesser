@@ -29,8 +29,6 @@
                 loginFormError.style.display = 'block';
                 loginFormError.innerHTML = errorText;
 
-                form.elements.email.select();
-
                 return;
             }
 
