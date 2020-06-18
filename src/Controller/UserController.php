@@ -58,6 +58,8 @@ class UserController implements ISecured
         $modify->fill($user->toArray());
         $modify->save();
 
+        $this->request->session()->set('user', $user);
+
         $data = ['success' => true];
         return new JsonContent($data);
     }
