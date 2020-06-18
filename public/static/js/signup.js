@@ -14,6 +14,9 @@
             if (this.response.error) {
                 var errorText;
                 switch (this.response.error) {
+                    case 'email_not_valid':
+                        errorText = 'The given email address is not valid.'
+                        break;
                     case 'passwords_too_short':
                         errorText = 'The given password is too short. Please choose a password that is at least 6 characters long!'
                         break;
