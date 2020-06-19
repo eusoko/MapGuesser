@@ -1,7 +1,6 @@
 <?php namespace MapGuesser\Controller;
 
 use DateTime;
-use MapGuesser\Database\Query\Modify;
 use MapGuesser\Database\Query\Select;
 use MapGuesser\Interfaces\Authentication\IUser;
 use MapGuesser\Interfaces\Authorization\ISecured;
@@ -9,6 +8,7 @@ use MapGuesser\Interfaces\Database\IResultSet;
 use MapGuesser\Interfaces\Request\IRequest;
 use MapGuesser\Interfaces\Response\IContent;
 use MapGuesser\PersistentData\Model\Map;
+use MapGuesser\PersistentData\Model\Place;
 use MapGuesser\PersistentData\PersistentDataManager;
 use MapGuesser\Repository\MapRepository;
 use MapGuesser\Repository\PlaceRepository;
@@ -50,7 +50,7 @@ class MapAdminController implements ISecured
 
         if ($mapId) {
             $map = $this->mapRepository->getById($mapId);
-            $places = $this->getPlaces($mapId);
+            $places = $this->getPlaces($map);
         } else {
             $map = new Map();
             $map->setName(self::$unnamedMapName);
@@ -65,9 +65,9 @@ class MapAdminController implements ISecured
     {
         $placeId = (int) $this->request->query('placeId');
 
-        $placeData = $this->placeRepository->getById($placeId);
+        $place = $this->placeRepository->getById($placeId);
 
-        $data = ['panoId' => $placeData['panoId']];
+        $data = ['panoId' => $place->getFreshPanoId()];
         return new JsonContent($data);
     }
 
@@ -83,7 +83,6 @@ class MapAdminController implements ISecured
             $map = new Map();
             $map->setName(self::$unnamedMapName);
             $this->pdm->saveToDb($map);
-            $mapId = $map->getId();
         }
 
         if (isset($_POST['added'])) {
@@ -91,11 +90,18 @@ class MapAdminController implements ISecured
             foreach ($_POST['added'] as $placeRaw) {
                 $placeRaw = json_decode($placeRaw, true);
 
-                $addedIds[] = ['tempId' => $placeRaw['id'], 'id' => $this->placeRepository->addToMap($mapId, [
-                    'lat' => (float) $placeRaw['lat'],
-                    'lng' => (float) $placeRaw['lng'],
-                    'pano_id_cached_timestamp' => $placeRaw['panoId'] === -1 ? (new DateTime('-1 day'))->format('Y-m-d H:i:s') : null
-                ])];
+                $place = new Place();
+                $place->setMap($map);
+                $place->setLat((float) $placeRaw['lat']);
+                $place->setLng((float) $placeRaw['lng']);
+
+                if ($placeRaw['panoId'] === -1) {
+                    $place->setPanoIdCachedTimestampDate(new DateTime('-1 day'));
+                }
+
+                $this->pdm->saveToDb($place);
+
+                $addedIds[] = ['tempId' => $placeRaw['id'], 'id' => $place->getId()];
             }
         } else {
             $addedIds = [];
@@ -105,10 +111,12 @@ class MapAdminController implements ISecured
             foreach ($_POST['edited'] as $placeRaw) {
                 $placeRaw = json_decode($placeRaw, true);
 
-                $this->placeRepository->modify((int) $placeRaw['id'], [
-                    'lat' => (float) $placeRaw['lat'],
-                    'lng' => (float) $placeRaw['lng']
-                ]);
+                $place = $this->placeRepository->getById((int) $placeRaw['id']);
+                $place->setLat((float) $placeRaw['lat']);
+                $place->setLng((float) $placeRaw['lng']);
+                $place->setPanoIdCachedTimestampDate(new DateTime('-1 day'));
+
+                $this->pdm->saveToDb($place);
             }
         }
 
@@ -116,11 +124,13 @@ class MapAdminController implements ISecured
             foreach ($_POST['deleted'] as $placeRaw) {
                 $placeRaw = json_decode($placeRaw, true);
 
-                $this->placeRepository->delete($placeRaw['id']);
+                $place = $this->placeRepository->getById((int) $placeRaw['id']);
+
+                $this->pdm->deleteFromDb($place);
             }
         }
 
-        $mapBounds = $this->calculateMapBounds($mapId);
+        $mapBounds = $this->calculateMapBounds($map);
 
         $map->setBounds($mapBounds);
         $map->setArea($mapBounds->calculateApproximateArea());
@@ -136,7 +146,7 @@ class MapAdminController implements ISecured
 
         \Container::$dbConnection->commit();
 
-        $data = ['mapId' => $mapId, 'added' => $addedIds];
+        $data = ['mapId' => $map->getId(), 'added' => $addedIds];
         return new JsonContent($data);
     }
 
@@ -147,7 +157,7 @@ class MapAdminController implements ISecured
 
         \Container::$dbConnection->startTransaction();
 
-        $this->deletePlaces($mapId);
+        $this->deletePlaces($map);
 
         $this->pdm->deleteFromDb($map);
 
@@ -157,26 +167,30 @@ class MapAdminController implements ISecured
         return new JsonContent($data);
     }
 
-    private function deletePlaces(int $mapId): void
+    private function deletePlaces(Map $map): void
     {
+        //TODO: relations?
         $select = new Select(\Container::$dbConnection, 'places');
-        $select->columns(['id']);
-        $select->where('map_id', '=', $mapId);
+        $select->columns(Place::getFields());
+        $select->where('map_id', '=', $map->getId());
 
         $result = $select->execute();
 
-        while ($place = $result->fetch(IResultSet::FETCH_ASSOC)) {
-            $modify = new Modify(\Container::$dbConnection, 'places');
-            $modify->setId($place['id']);
-            $modify->delete();
+        while ($placeData = $result->fetch(IResultSet::FETCH_ASSOC)) {
+            $place = new Place();
+
+            $this->pdm->fillWithData($placeData, $place);
+
+            $this->pdm->deleteFromDb($place);
         }
     }
 
-    private function calculateMapBounds(int $mapId): Bounds
+    private function calculateMapBounds(Map $map): Bounds
     {
+        //TODO: from repository or relations
         $select = new Select(\Container::$dbConnection, 'places');
         $select->columns(['lat', 'lng']);
-        $select->where('map_id', '=', $mapId);
+        $select->where('map_id', '=', $map->getId());
 
         $result = $select->execute();
 
@@ -188,11 +202,12 @@ class MapAdminController implements ISecured
         return $bounds;
     }
 
-    private function &getPlaces(int $mapId): array
+    private function &getPlaces(Map $map): array
     {
+        //TODO: from repository or relations
         $select = new Select(\Container::$dbConnection, 'places');
         $select->columns(['id', 'lat', 'lng', 'pano_id_cached', 'pano_id_cached_timestamp']);
-        $select->where('map_id', '=', $mapId);
+        $select->where('map_id', '=', $map->getId());
 
         $result = $select->execute();
 

@@ -4,6 +4,7 @@ use MapGuesser\Interfaces\Request\IRequest;
 use MapGuesser\Util\Geo\Position;
 use MapGuesser\Response\JsonContent;
 use MapGuesser\Interfaces\Response\IContent;
+use MapGuesser\PersistentData\Model\Place;
 use MapGuesser\Repository\PlaceRepository;
 
 class GameFlowController
@@ -33,11 +34,14 @@ class GameFlowController
         }
 
         if (count($state['rounds']) === 0) {
-            $place = $this->placeRepository->getForMapWithValidPano($mapId);
-            $state['rounds'][] = $place;
+            $placesWithoutPano = [];
+            $place = $this->placeRepository->getRandomForMapWithValidPano($mapId, [], $placesWithoutPano);
+
+            $this->addNewRoundToState($state, $place, $placesWithoutPano);
+
             $session->set('state', $state);
 
-            $data = ['panoId' => $place['panoId']];
+            $data = ['panoId' => $place->getPanoIdCached()];
         } else {
             $rounds = count($state['rounds']);
             $last = $state['rounds'][$rounds - 1];
@@ -93,17 +97,19 @@ class GameFlowController
                 $exclude = array_merge($exclude, $round['placesWithoutPano'], [$round['placeId']]);
             }
 
-            $place = $this->placeRepository->getForMapWithValidPano($mapId, $exclude);
-            $state['rounds'][] = $place;
-            $session->set('state', $state);
+            $placesWithoutPano = [];
+            $place = $this->placeRepository->getRandomForMapWithValidPano($mapId, $exclude, $placesWithoutPano);
 
-            $panoId = $place['panoId'];
+            $this->addNewRoundToState($state, $place, $placesWithoutPano);
+
+            $panoId = $place->getPanoIdCached();
         } else {
             $state['rounds'] = [];
-            $session->set('state', $state);
 
             $panoId = null;
         }
+
+        $session->set('state', $state);
 
         $data = [
             'result' => [
@@ -114,6 +120,16 @@ class GameFlowController
             'panoId' => $panoId
         ];
         return new JsonContent($data);
+    }
+
+    private function addNewRoundToState(&$state, Place $place, array $placesWithoutPano): void
+    {
+        $state['rounds'][] = [
+            'placesWithoutPano' => $placesWithoutPano,
+            'placeId' => $place->getId(),
+            'position' => $place->getPosition(),
+            'panoId' => $place->getPanoIdCached()
+        ];
     }
 
     private function calculateDistance(Position $realPosition, Position $guessPosition): float
