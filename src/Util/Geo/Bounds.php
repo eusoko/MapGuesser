@@ -59,6 +59,26 @@ class Bounds
         }
     }
 
+    public function setSouthLat(float $southLat): void
+    {
+        $this->southLat = $southLat;
+    }
+
+    public function setWestLng(float $westLng): void
+    {
+        $this->westLng = $westLng;
+    }
+
+    public function setNorthLat(float $northLat): void
+    {
+        $this->northLat = $northLat;
+    }
+
+    public function setEastLng(float $eastLng): void
+    {
+        $this->eastLng = $eastLng;
+    }
+
     public function getSouthLat(): float
     {
         return $this->southLat;
