@@ -1,14 +1,13 @@
 <?php namespace MapGuesser\Controller;
 
-use MapGuesser\Database\Query\Modify;
-use MapGuesser\Database\Query\Select;
-use MapGuesser\Interfaces\Database\IResultSet;
 use MapGuesser\Interfaces\Request\IRequest;
 use MapGuesser\Interfaces\Response\IContent;
 use MapGuesser\Interfaces\Response\IRedirect;
 use MapGuesser\Mailing\Mail;
 use MapGuesser\PersistentData\PersistentDataManager;
 use MapGuesser\PersistentData\Model\User;
+use MapGuesser\PersistentData\Model\UserConfirmation;
+use MapGuesser\Repository\UserConfirmationRepository;
 use MapGuesser\Repository\UserRepository;
 use MapGuesser\Response\HtmlContent;
 use MapGuesser\Response\JsonContent;
@@ -22,11 +21,14 @@ class SignupController
 
     private UserRepository $userRepository;
 
+    private UserConfirmationRepository $userConfirmationRepository;
+
     public function __construct(IRequest $request)
     {
         $this->request = $request;
         $this->pdm = new PersistentDataManager();
         $this->userRepository = new UserRepository();
+        $this->userConfirmationRepository = new UserConfirmationRepository();
     }
 
     public function getSignupForm()
@@ -83,10 +85,11 @@ class SignupController
 
         $token = hash('sha256', serialize($user) . random_bytes(10) . microtime());
 
-        $modify = new Modify(\Container::$dbConnection, 'user_confirmations');
-        $modify->set('user_id', $user->getId());
-        $modify->set('token', $token);
-        $modify->save();
+        $confirmation = new UserConfirmation();
+        $confirmation->setUser($user);
+        $confirmation->setToken($token);
+
+        $this->pdm->saveToDb($confirmation);
 
         \Container::$dbConnection->commit();
 
@@ -102,11 +105,7 @@ class SignupController
             return new Redirect([\Container::$routeCollection->getRoute('index'), []], IRedirect::TEMPORARY);
         }
 
-        $select = new Select(\Container::$dbConnection, 'user_confirmations');
-        $select->columns(['id', 'user_id']);
-        $select->where('token', '=', $this->request->query('token'));
-
-        $confirmation = $select->execute()->fetch(IResultSet::FETCH_ASSOC);
+        $confirmation = $this->userConfirmationRepository->getByToken($this->request->query('token'));
 
         if ($confirmation === null) {
             $data = [];
@@ -115,11 +114,9 @@ class SignupController
 
         \Container::$dbConnection->startTransaction();
 
-        $modify = new Modify(\Container::$dbConnection, 'user_confirmations');
-        $modify->setId($confirmation['id']);
-        $modify->delete();
+        $this->pdm->deleteFromDb($confirmation);
 
-        $user = $this->userRepository->getById($confirmation['user_id']);
+        $user = $this->userRepository->getById($confirmation->getUserId());
         $user->setActive(true);
 
         $this->pdm->saveToDb($user);
@@ -137,11 +134,7 @@ class SignupController
             return new Redirect([\Container::$routeCollection->getRoute('index'), []], IRedirect::TEMPORARY);
         }
 
-        $select = new Select(\Container::$dbConnection, 'user_confirmations');
-        $select->columns(['id', 'user_id']);
-        $select->where('token', '=', $this->request->query('token'));
-
-        $confirmation = $select->execute()->fetch(IResultSet::FETCH_ASSOC);
+        $confirmation = $this->userConfirmationRepository->getByToken($this->request->query('token'));
 
         if ($confirmation === null) {
             $data = ['success' => false];
@@ -150,11 +143,9 @@ class SignupController
 
         \Container::$dbConnection->startTransaction();
 
-        $modify = new Modify(\Container::$dbConnection, 'user_confirmations');
-        $modify->setId($confirmation['id']);
-        $modify->delete();
+        $this->pdm->deleteFromDb($confirmation);
 
-        $user = $this->userRepository->getById($confirmation['user_id']);
+        $user = $this->userRepository->getById($confirmation->getUserId());
 
         $this->pdm->deleteFromDb($user);
 
