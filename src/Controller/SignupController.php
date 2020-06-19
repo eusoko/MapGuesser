@@ -31,9 +31,7 @@ class SignupController
 
     public function getSignupForm()
     {
-        $session = $this->request->session();
-
-        if ($session->get('user')) {
+        if ($this->request->user() !== null) {
             return new Redirect([\Container::$routeCollection->getRoute('index'), []], IRedirect::TEMPORARY);
         }
 
@@ -43,9 +41,7 @@ class SignupController
 
     public function signup(): IContent
     {
-        $session = $this->request->session();
-
-        if ($session->get('user')) {
+        if ($this->request->user() !== null) {
             //TODO: return with some error
             $data = ['success' => true];
             return new JsonContent($data);
@@ -102,9 +98,7 @@ class SignupController
 
     public function activate()
     {
-        $session = $this->request->session();
-
-        if ($session->get('user')) {
+        if ($this->request->user() !== null) {
             return new Redirect([\Container::$routeCollection->getRoute('index'), []], IRedirect::TEMPORARY);
         }
 
@@ -132,16 +126,14 @@ class SignupController
 
         \Container::$dbConnection->commit();
 
-        $session->set('user', $user);
+        $this->request->setUser($user);
 
         return new Redirect([\Container::$routeCollection->getRoute('index'), []], IRedirect::TEMPORARY);
     }
 
     public function cancel()
     {
-        $session = $this->request->session();
-
-        if ($session->get('user')) {
+        if ($this->request->user() !== null) {
             return new Redirect([\Container::$routeCollection->getRoute('index'), []], IRedirect::TEMPORARY);
         }
 

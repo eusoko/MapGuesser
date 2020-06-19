@@ -22,9 +22,7 @@ class LoginController
 
     public function getLoginForm()
     {
-        $session = $this->request->session();
-
-        if ($session->get('user')) {
+        if ($this->request->user() !== null) {
             return new Redirect([\Container::$routeCollection->getRoute('index'), []], IRedirect::TEMPORARY);
         }
 
@@ -34,9 +32,7 @@ class LoginController
 
     public function login(): IContent
     {
-        $session = $this->request->session();
-
-        if ($session->get('user')) {
+        if ($this->request->user() !== null) {
             $data = ['success' => true];
             return new JsonContent($data);
         }
@@ -58,7 +54,7 @@ class LoginController
             return new JsonContent($data);
         }
 
-        $session->set('user', $user);
+        $this->request->setUser($user);
 
         $data = ['success' => true];
         return new JsonContent($data);
@@ -66,7 +62,7 @@ class LoginController
 
     public function logout(): IRedirect
     {
-        $this->request->session()->delete('user');
+        $this->request->setUser(null);
 
         return new Redirect([\Container::$routeCollection->getRoute('index'), []], IRedirect::TEMPORARY);
     }

@@ -77,6 +77,11 @@ class User extends Model implements IUser
         }
     }
 
+    public function getUniqueId()
+    {
+        return $this->id;
+    }
+
     public function getDisplayName(): string
     {
         return $this->email;

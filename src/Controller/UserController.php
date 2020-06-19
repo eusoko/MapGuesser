@@ -66,8 +66,6 @@ class UserController implements ISecured
 
         $this->pdm->saveToDb($user);
 
-        $this->request->session()->set('user', $user);
-
         $data = ['success' => true];
         return new JsonContent($data);
     }

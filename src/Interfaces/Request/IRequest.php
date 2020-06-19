@@ -14,5 +14,7 @@ interface IRequest
 
     public function session(): ISession;
 
+    public function setUser(?IUser $user): void;
+
     public function user(): ?IUser;
 }
