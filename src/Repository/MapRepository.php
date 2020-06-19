@@ -1,16 +1,19 @@
 <?php namespace MapGuesser\Repository;
 
-use MapGuesser\Database\Query\Select;
-use MapGuesser\Interfaces\Database\IResultSet;
+use MapGuesser\PersistentData\Model\Map;
+use MapGuesser\PersistentData\PersistentDataManager;
 
 class MapRepository
 {
-    public function getById(int $mapId)
-    {
-        $select = new Select(\Container::$dbConnection, 'maps');
-        $select->columns(['id', 'name', 'description', 'bound_south_lat', 'bound_west_lng', 'bound_north_lat', 'bound_east_lng', 'area']);
-        $select->whereId($mapId);
+    private PersistentDataManager $pdm;
 
-        return $select->execute()->fetch(IResultSet::FETCH_ASSOC);
+    public function __construct()
+    {
+        $this->pdm = new PersistentDataManager();
+    }
+
+    public function getById(int $mapId): ?Map
+    {
+        return $this->pdm->selectFromDbById($mapId, Map::class);
     }
 }

@@ -19,6 +19,7 @@ class MapsController
 
     public function getMaps(): IContent
     {
+        //TODO: from repository
         $select = new Select(\Container::$dbConnection, 'maps');
         $select->columns([
             ['maps', 'id'],

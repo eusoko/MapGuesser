@@ -1,7 +1,6 @@
 <?php namespace MapGuesser\Controller;
 
 use MapGuesser\Interfaces\Request\IRequest;
-use MapGuesser\Util\Geo\Bounds;
 use MapGuesser\Response\HtmlContent;
 use MapGuesser\Response\JsonContent;
 use MapGuesser\Interfaces\Response\IContent;
@@ -37,18 +36,16 @@ class GameController
     {
         $map = $this->mapRepository->getById($mapId);
 
-        $bounds = Bounds::createDirectly($map['bound_south_lat'], $map['bound_west_lng'], $map['bound_north_lat'], $map['bound_east_lng']);
-
         $session = $this->request->session();
 
         if (!($state = $session->get('state')) || $state['mapId'] !== $mapId) {
             $session->set('state', [
                 'mapId' => $mapId,
-                'area' => $map['area'],
+                'area' => $map->getArea(),
                 'rounds' => []
             ]);
         }
 
-        return ['mapId' => $mapId, 'mapName' => $map['name'], 'bounds' => $bounds->toArray()];
+        return ['mapId' => $mapId, 'mapName' => $map->getName(), 'bounds' => $map->getBounds()->toArray()];
     }
 }
