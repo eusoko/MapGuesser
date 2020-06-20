@@ -6,6 +6,8 @@ class UserConfirmation extends Model
 
     protected static array $fields = ['user_id', 'token'];
 
+    protected static array $relations = ['user' => User::class];
+
     private ?User $user = null;
 
     private ?int $userId = null;
