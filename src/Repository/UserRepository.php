@@ -25,4 +25,12 @@ class UserRepository
 
         return $this->pdm->selectFromDb($select, User::class);
     }
+
+    public function getByGoogleSub(string $sub): ?User
+    {
+        $select = new Select(\Container::$dbConnection);
+        $select->where('google_sub', '=', $sub);
+
+        return $this->pdm->selectFromDb($select, User::class);
+    }
 }
