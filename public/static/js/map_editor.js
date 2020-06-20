@@ -334,11 +334,11 @@
     var Util = {
         getHighResData: function () {
             if (window.devicePixelRatio >= 4) {
-                return { ppi: 320, tileSize: 128, zoomOffset: 1 };
+                return { ppi: 320, tileSize: 128, zoomOffset: 1, minZoom: 0, maxZoom: 18 };
             } else if (window.devicePixelRatio >= 2) {
-                return { ppi: 250, tileSize: 256, zoomOffset: 0 };
+                return { ppi: 250, tileSize: 256, zoomOffset: 0, minZoom: 1, maxZoom: 19 };
             } else {
-                return { ppi: 72, tileSize: 512, zoomOffset: -1 };
+                return { ppi: 72, tileSize: 512, zoomOffset: -1, minZoom: 2, maxZoom: 20 };
             }
         }
     };
@@ -368,8 +368,8 @@
         ppi: highResData.ppi,
         tileSize: highResData.tileSize,
         zoomOffset: highResData.zoomOffset,
-        minZoom: 2,
-        maxZoom: 20
+        minZoom: highResData.minZoom,
+        maxZoom: highResData.maxZoom
     }).addTo(MapEditor.map);
 
     MapEditor.map.fitBounds(L.latLngBounds({ lat: mapBounds.south, lng: mapBounds.west }, { lat: mapBounds.north, lng: mapBounds.east }));
