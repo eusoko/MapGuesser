@@ -1,20 +1,23 @@
 <?php
 $jsFiles = [
-    'js/signup.js',
+    'js/login.js',
 ];
 ?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
 <?php require ROOT . '/views/templates/header.php'; ?>
 <div class="main">
-    <h2>Sign up</h2>
+    <h2>Login</h2>
     <div class="box">
-        <form id="signupForm" action="/signup" method="post">
+        <form id="loginForm" action="/login" method="post">
             <input class="big fullWidth" type="email" name="email" placeholder="Email address" required autofocus>
             <input class="big fullWidth marginTop" type="password" name="password" placeholder="Password" required minlength="6">
-            <input class="big fullWidth marginTop" type="password" name="password_confirm" placeholder="Password confirmation" required minlength="6">
-            <p id="signupFormError" class="formError justify marginTop"></p>
+            <p id="loginFormError" class="formError justify marginTop"></p>
             <div class="right marginTop">
-                <button type="submit">Sign up</button>
+                <button type="submit">Login</button>
+            </div>
+            <hr>
+            <div class="center">
+                <a class="button yellow" href="/login/google" title="Login with Google">Login with Google</a>
             </div>
         </form>
     </div>
