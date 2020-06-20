@@ -1,9 +1,10 @@
 <?php namespace MapGuesser\Controller;
 
-use MapGuesser\Database\Query\Modify;
 use MapGuesser\Interfaces\Authorization\ISecured;
 use MapGuesser\Interfaces\Request\IRequest;
 use MapGuesser\Interfaces\Response\IContent;
+use MapGuesser\PersistentData\PersistentDataManager;
+use MapGuesser\PersistentData\Model\User;
 use MapGuesser\Response\HtmlContent;
 use MapGuesser\Response\JsonContent;
 
@@ -11,9 +12,12 @@ class UserController implements ISecured
 {
     private IRequest $request;
 
+    private PersistentDataManager $pdm;
+
     public function __construct(IRequest $request)
     {
         $this->request = $request;
+        $this->pdm = new PersistentDataManager();
     }
 
     public function authorize(): bool
@@ -25,6 +29,9 @@ class UserController implements ISecured
 
     public function getProfile(): IContent
     {
+        /**
+         * @var User $user
+         */
         $user = $this->request->user();
 
         $data = ['user' => $user->toArray()];
@@ -33,6 +40,9 @@ class UserController implements ISecured
 
     public function saveProfile(): IContent
     {
+        /**
+         * @var User $user
+         */
         $user = $this->request->user();
 
         if (!$user->checkPassword($this->request->post('password'))) {
@@ -54,11 +64,7 @@ class UserController implements ISecured
             $user->setPlainPassword($this->request->post('password_new'));
         }
 
-        $modify = new Modify(\Container::$dbConnection, 'users');
-        $modify->fill($user->toArray());
-        $modify->save();
-
-        $this->request->session()->set('user', $user);
+        $this->pdm->saveToDb($user);
 
         $data = ['success' => true];
         return new JsonContent($data);

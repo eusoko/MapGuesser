@@ -1,16 +1,18 @@
-<?php namespace MapGuesser\Model;
+<?php namespace MapGuesser\PersistentData\Model;
 
 use MapGuesser\Interfaces\Authentication\IUser;
 
-class User extends BaseModel implements IUser
+class User extends Model implements IUser
 {
-    private static array $types = ['user', 'admin'];
+    protected static string $table = 'users';
 
     protected static array $fields = ['email', 'password', 'type', 'active'];
 
-    private string $email;
+    private static array $types = ['user', 'admin'];
 
-    private string $password;
+    private string $email = '';
+
+    private string $password = '';
 
     private string $type = 'user';
 
@@ -73,6 +75,11 @@ class User extends BaseModel implements IUser
                 return $this->type === 'admin';
                 break;
         }
+    }
+
+    public function getUniqueId()
+    {
+        return $this->id;
     }
 
     public function getDisplayName(): string

@@ -8,5 +8,9 @@ interface IUser
 
     public function hasPermission(int $permission): bool;
 
+    public function getUniqueId();
+
     public function getDisplayName(): string;
+
+    public function checkPassword(string $password): bool;
 }

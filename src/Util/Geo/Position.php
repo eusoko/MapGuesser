@@ -13,6 +13,16 @@ class Position
         $this->lng = $lng;
     }
 
+    public function setLat(float $lat): void
+    {
+        $this->lat = $lat;
+    }
+
+    public function setLng(float $lng): void
+    {
+        $this->lng = $lng;
+    }
+
     public function getLat(): float
     {
         return $this->lat;

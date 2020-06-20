@@ -1,7 +1,7 @@
 <?php namespace MapGuesser\Cli;
 
-use MapGuesser\Database\Query\Modify;
-use MapGuesser\Model\User;
+use MapGuesser\PersistentData\PersistentDataManager;
+use MapGuesser\PersistentData\Model\User;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,10 +20,8 @@ class AddUserCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $user = new User([
-            'email' => $input->getArgument('email'),
-        ]);
-
+        $user = new User();
+        $user->setEmail($input->getArgument('email'));
         $user->setPlainPassword($input->getArgument('password'));
 
         if ($input->hasArgument('type')) {
@@ -31,9 +29,8 @@ class AddUserCommand extends Command
         }
 
         try {
-            $modify = new Modify(\Container::$dbConnection, 'users');
-            $modify->fill($user->toArray());
-            $modify->save();
+            $pdm = new PersistentDataManager();
+            $pdm->saveToDb($user);
         } catch (\Exception $e) {
             $output->writeln('<error>Adding user failed!</error>');
             $output->writeln('');

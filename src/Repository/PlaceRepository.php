@@ -1,95 +1,43 @@
 <?php namespace MapGuesser\Repository;
 
-use MapGuesser\Util\Geo\Position;
 use MapGuesser\Database\Query\Select;
-use MapGuesser\Database\Query\Modify;
-use MapGuesser\Http\Request;
-use MapGuesser\Interfaces\Database\IResultSet;
-use DateTime;
-use DateInterval;
+use MapGuesser\PersistentData\Model\Place;
+use MapGuesser\PersistentData\PersistentDataManager;
 
 class PlaceRepository
 {
-    public function getById(int $placeId)
+    private PersistentDataManager $pdm;
+
+    public function __construct()
     {
-        $place = $this->selectFromDbById($placeId);
-
-        $panoId = $this->requestPanoId($place);
-
-        $position = new Position($place['lat'], $place['lng']);
-
-        return [
-            'position' => $position,
-            'panoId' => $panoId
-        ];
+        $this->pdm = new PersistentDataManager();
     }
 
-    public function getForMapWithValidPano(int $mapId, array $exclude = []): array
+    public function getById(int $placeId): ?Place
+    {
+        return $this->pdm->selectFromDbById($placeId, Place::class);
+    }
+
+    public function getRandomForMapWithValidPano(int $mapId, array $exclude = [], array &$placesWithoutPano): Place
     {
         $placesWithoutPano = [];
 
         do {
-            $place = $this->selectFromDbForMap($mapId, $exclude);
+            $place = $this->selectRandomFromDbForMap($mapId, $exclude);
 
-            $panoId = $this->requestPanoId($place);
+            $panoId = $place->getFreshPanoId();
 
             if ($panoId === null) {
-                $placesWithoutPano[] = $exclude[] = $place['id'];
+                $placesWithoutPano[] = $exclude[] = $place->getId();
             }
         } while ($panoId === null);
-
-        $position = new Position($place['lat'], $place['lng']);
-
-        return [
-            'placesWithoutPano' => $placesWithoutPano,
-            'placeId' => $place['id'],
-            'position' => $position,
-            'panoId' => $panoId
-        ];
-    }
-
-    public function addToMap(int $mapId, array $place): int
-    {
-        $modify = new Modify(\Container::$dbConnection, 'places');
-        $modify->set('map_id', $mapId);
-        $modify->fill($place);
-        $modify->save();
-
-        return $modify->getId();
-    }
-
-    public function modify(int $id, array $place): void
-    {
-        $modify = new Modify(\Container::$dbConnection, 'places');
-        $modify->setId($id);
-        $modify->set('pano_id_cached', null);
-        $modify->set('pano_id_cached_timestamp', null);
-        $modify->fill($place);
-        $modify->save();
-    }
-
-    public function delete(int $id): void
-    {
-        $modify = new Modify(\Container::$dbConnection, 'places');
-        $modify->setId($id);
-        $modify->delete();
-    }
-
-    private function selectFromDbById(int $placeId): array
-    {
-        $select = new Select(\Container::$dbConnection, 'places');
-        $select->columns(['id', 'lat', 'lng', 'pano_id_cached', 'pano_id_cached_timestamp']);
-        $select->whereId($placeId);
-
-        $place = $select->execute()->fetch(IResultSet::FETCH_ASSOC);
 
         return $place;
     }
 
-    private function selectFromDbForMap(int $mapId, array $exclude): array
+    private function selectRandomFromDbForMap(int $mapId, array $exclude): ?Place
     {
         $select = new Select(\Container::$dbConnection, 'places');
-        $select->columns(['id', 'lat', 'lng', 'pano_id_cached', 'pano_id_cached_timestamp']);
         $select->where('id', 'NOT IN', $exclude);
         $select->where('map_id', '=', $mapId);
 
@@ -99,49 +47,6 @@ class PlaceRepository
         $select->orderBy('id');
         $select->limit(1, $randomOffset);
 
-        $place = $select->execute()->fetch(IResultSet::FETCH_ASSOC);
-
-        return $place;
-    }
-
-    private function requestPanoId(array $place, bool $canBeIndoor = false): ?string
-    {
-        if (
-            $place['pano_id_cached_timestamp'] &&
-            (new DateTime($place['pano_id_cached_timestamp']))->add(new DateInterval('P1D')) > new DateTime()
-        ) {
-            return $place['pano_id_cached'];
-        }
-
-        $request = new Request('https://maps.googleapis.com/maps/api/streetview/metadata', Request::HTTP_GET);
-        $request->setQuery([
-            'key' => $_ENV['GOOGLE_MAPS_SERVER_API_KEY'],
-            'location' => $place['lat'] . ',' . $place['lng'],
-            'source' => $canBeIndoor ? 'default' : 'outdoor'
-        ]);
-
-        $response = $request->send();
-
-        $panoData = json_decode($response->getBody(), true);
-
-        $panoId = $panoData['status'] === 'OK' ? $panoData['pano_id'] : null;
-
-        // enable indoor panos if no outdoor found
-        if ($panoId === null && !$canBeIndoor) {
-            return $this->requestPanoId($place, true);
-        }
-
-        $this->saveCachedPanoId($place['id'], $panoId);
-
-        return $panoId;
-    }
-
-    private function saveCachedPanoId(int $placeId, ?string $panoId): void
-    {
-        $modify = new Modify(\Container::$dbConnection, 'places');
-        $modify->setId($placeId);
-        $modify->set('pano_id_cached', $panoId);
-        $modify->set('pano_id_cached_timestamp', (new DateTime())->format('Y-m-d H:i:s'));
-        $modify->save();
+        return $this->pdm->selectFromDb($select, Place::class);
     }
 }

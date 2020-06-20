@@ -3,6 +3,9 @@
 use MapGuesser\Interfaces\Authentication\IUser;
 use MapGuesser\Interfaces\Request\IRequest;
 use MapGuesser\Interfaces\Request\ISession;
+use MapGuesser\PersistentData\Model\User;
+use MapGuesser\PersistentData\PersistentDataManager;
+use MapGuesser\Repository\UserRepository;
 
 class Request implements IRequest
 {
@@ -16,12 +19,24 @@ class Request implements IRequest
 
     private Session $session;
 
+    private UserRepository $userRepository;
+
+    private ?User $user = null;
+
     public function __construct(string $base, array &$get, array &$post, array &$session)
     {
         $this->base = $base;
         $this->get = &$get;
         $this->post = &$post;
         $this->session = new Session($session);
+
+        $this->userRepository = new UserRepository();
+
+        $userId = $this->session->get('userId');
+
+        if ($userId !== null) {
+            $this->user = $this->userRepository->getById($userId);
+        }
     }
 
     public function setParsedRouteParams(array &$routeParams)
@@ -61,8 +76,18 @@ class Request implements IRequest
         return $this->session;
     }
 
+    public function setUser(?IUser $user): void
+    {
+        if ($user === null) {
+            $this->session->delete('userId');
+            return;
+        }
+
+        $this->session->set('userId', $user->getUniqueId());
+    }
+
     public function user(): ?IUser
     {
-        return $this->session->get('user');
+        return $this->user;
     }
 }
