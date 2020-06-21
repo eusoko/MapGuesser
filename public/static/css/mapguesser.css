@@ -251,11 +251,10 @@ input.big:focus, select.big:focus, textarea.big:focus {
 
 div.modal {
     position: fixed;
-    top: 100px;
     background-color: #ffffff;
     border-radius: 3px;
-    padding: 20px;
     box-sizing: border-box;
+    overflow-y: auto;
     z-index: 6;
     visibility: hidden;
 }
@@ -378,6 +377,8 @@ div.box {
     div.modal {
         left: 20px;
         right: 20px;
+        padding-left: 15px;
+        padding-right: 15px;
     }
     div.box {
         width: initial;
@@ -399,5 +400,34 @@ div.box {
         width: 540px;
         left: 50%;
         margin-left: -270px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+@media screen and (max-height: 399px) {
+    div.modal {
+        top: 20px;
+        max-height: calc(100% - 40px);
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+}
+
+@media screen and (min-height: 400px) and (max-height: 499px) {
+    div.modal {
+        top: 50px;
+        max-height: calc(100% - 100px);
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+}
+
+@media screen and (min-height: 500px) {
+    div.modal {
+        top: 75px;
+        max-height: calc(100% - 150px);
+        padding-top: 15px;
+        padding-bottom: 15px;
     }
 }
