@@ -16,8 +16,8 @@ $jsFiles = [
 <div class="header small">
     <h1>
         <a href="/maps" title="Back to playable maps">
-            <img class="inline" width="1em" height="1em" src="<?= $_ENV['STATIC_ROOT'] ?>/img/icon.svg?rev=<?= REVISION ?>">
-            <span>MapGuesser</span>
+            <img class="inline" width="1em" height="1em" src="<?= $_ENV['STATIC_ROOT'] ?>/img/icon.svg?rev=<?= REVISION ?>"><!--
+         --><span>MapGuesser</span>
         </a>
     </h1>
     <p class="header">
@@ -28,23 +28,23 @@ $jsFiles = [
                 <path fill-rule="evenodd" d="M8 3.5a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5H4a.5.5 0 0 1 0-1h3.5V4a.5.5 0 0 1 .5-.5z"/>
                 <path fill-rule="evenodd" d="M7.5 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1H8.5V12a.5.5 0 0 1-1 0V8z"/>
                 <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-            </svg>
-            <span id="added" class="bold">0</span><!--
+            </svg><!--
+         --><span id="added" class="bold">0</span><!--
         --></span><!--
         --><span><!--
             <?php /* Copyright (c) 2019 The Bootstrap Authors. License can be found in 'USED_SOFTWARE' in section 'Bootstrap Icons'. */ ?>
             --><svg class="inline" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15.502 1.94a.5.5 0 0 1 0 .706a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>                    <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-            </svg>
-            <span id="edited" class="bold">0</span><!--
+            </svg><!--
+         --><span id="edited" class="bold">0</span><!--
         --></span><!--
         --><span><!--
             <?php /* Copyright (c) 2019 The Bootstrap Authors. License can be found in 'USED_SOFTWARE' in section 'Bootstrap Icons'. */ ?>
             --><svg class="inline" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" d="M3.5 8a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5z"/>
                 <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
-            </svg>
-            <span id="deleted" class="bold">0</span><!--
+            </svg><!--
+         --><span id="deleted" class="bold">0</span><!--
         --></span>
     </p>
 </div>

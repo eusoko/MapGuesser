@@ -11,8 +11,8 @@ $jsFiles = [
 <div class="header small">
     <h1>
         <a href="/maps" title="Back to playable maps">
-            <img class="inline" width="1em" height="1em" src="<?= $_ENV['STATIC_ROOT'] ?>/img/icon.svg?rev=<?= REVISION ?>">
-            <span>MapGuesser</span>
+            <img class="inline" width="1em" height="1em" src="<?= $_ENV['STATIC_ROOT'] ?>/img/icon.svg?rev=<?= REVISION ?>"><!--
+         --><span>MapGuesser</span>
         </a>
     </h1>
     <p class="header">
