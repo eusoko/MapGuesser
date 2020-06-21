@@ -13,9 +13,7 @@ $cssFiles = [
                 <div class="title">
                     <p class="title"><?= $map['name'] ?></p>
                 </div>
-                <div class="imgContainer">
-                    <img src="https://maps.googleapis.com/maps/api/staticmap?size=350x175&visible=<?= $map['bound_south_lat'] . ',' . $map['bound_west_lng'] . '|' . $map['bound_north_lat'] . ',' . $map['bound_east_lng'] ?>&key=<?= $_ENV['GOOGLE_MAPS_JS_API_KEY'] ?>" alt="Map area">
-                </div>
+                <div class="imgContainer" data-bound-south-lat="<?= $map['bound_south_lat'] ?>" data-bound-west-lng="<?= $map['bound_west_lng'] ?>" data-bound-north-lat="<?= $map['bound_north_lat'] ?>" data-bound-east-lng="<?= $map['bound_east_lng'] ?>"></div>
                 <div class="inner">
                     <div class="info">
                         <p>
@@ -63,9 +61,30 @@ $cssFiles = [
         <?php endif; ?>
     </div>
 </div>
+<script>
+    (function () {
+        const GOOGLE_MAPS_JS_API_KEY = '<?= $_ENV['GOOGLE_MAPS_JS_API_KEY'] ?>';
+
+        var imgContainers = document.getElementById('mapContainer').getElementsByClassName('imgContainer');
+        for (var i = 0; i < imgContainers.length; i++) {
+            var imgContainer = imgContainers[i];
+
+            var img = document.createElement('img');
+
+            img.src = 'https://maps.googleapis.com/maps/api/staticmap?size=350x175&' +
+                'scale=' + (window.devicePixelRatio >= 2 ? 2 : 1) + '&' +
+                'visible=' + imgContainer.dataset.boundSouthLat + ',' + imgContainer.dataset.boundWestLng + '|' +
+                imgContainer.dataset.boundNorthLat + ',' + imgContainer.dataset.boundEastLng +
+                '&key=' + GOOGLE_MAPS_JS_API_KEY;
+            img.alt = 'Map area';
+
+            imgContainer.appendChild(img);
+        }
+    })();
+</script>
 <?php if ($isAdmin): ?>
 <script>
-    (function() {
+    (function () {
         Maps = {
             deleteMap: function(mapId, mapName) {
                 MapGuesser.showModalWithContent('Delete map', 'Are you sure you want to delete map \'' + mapName + '\'?', [{
@@ -91,7 +110,9 @@ $cssFiles = [
         };
 
         var buttons = document.getElementById('mapContainer').getElementsByClassName('deleteButton');
-        for (var button of buttons) {
+        for (var i = 0; i < buttons.length; i++) {
+            var button = buttons[i];
+
             button.onclick = function() {
                 Maps.deleteMap(this.dataset.mapId, this.dataset.mapName);
             };
