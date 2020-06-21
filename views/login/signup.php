@@ -19,8 +19,11 @@ $jsFiles = [
                 <input class="big fullWidth marginTop" type="password" name="password_confirm" placeholder="Password confirmation" minlength="6">
             <?php endif; ?>
             <p id="signupFormError" class="formError justify marginTop"></p>
-            <div class="right marginTop">
-                <button type="submit">Sign up</button>
+            <div class="right">
+                <button class="marginTop" type="submit">Sign up</button><!--
+             --><?php if (isset($email)): ?><!--
+                 --><button id="resetSignupButton" class="gray marginTop marginLeft" type="button">Reset</button>
+                <?php endif; ?>
             </div>
             <hr>
             <div class="center">

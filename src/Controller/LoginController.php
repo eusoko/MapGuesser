@@ -291,6 +291,14 @@ class LoginController
         return new JsonContent($data);
     }
 
+    public function resetSignup(): IContent
+    {
+        $this->request->session()->delete('tmp_user_data');
+
+        $data = ['success' => true];
+        return new JsonContent($data);
+    }
+
     public function activate()
     {
         if ($this->request->user() !== null) {
