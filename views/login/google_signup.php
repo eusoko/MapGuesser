@@ -10,14 +10,15 @@
                 <p class="justify">Please confirm your sign up request. Your account will be linked to your Google account.</p>
             <?php endif; ?>
             <input class="big fullWidth marginTop" type="email" name="email" placeholder="Email address" value="<?= $email ?>" disabled>
-            <div class="right marginTop">
-                <button type="submit">
+            <div class="right">
+                <button class="marginTop marginRight" type="submit">
                     <?php if ($found): ?>
                         Link
                     <?php else: ?>
                         Sign up
                     <?php endif; ?>
-                </button>
+                </button><!--
+             --><button id="cancelGoogleSignupButton" class="gray marginTop" type="button">Cancel</button>
             </div>
         </form>
     </div>
@@ -33,6 +34,14 @@
 
             MapGuesser.httpRequest('POST', form.action, function () {
                 window.location.replace('/');
+            });
+        };
+
+        document.getElementById('cancelGoogleSignupButton').onclick = function () {
+            document.getElementById('loading').style.visibility = 'visible';
+
+            MapGuesser.httpRequest('POST', '/signup/google/reset', function () {
+                window.location.replace('/signup');
             });
         };
     })();

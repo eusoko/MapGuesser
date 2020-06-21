@@ -299,6 +299,14 @@ class LoginController
         return new JsonContent($data);
     }
 
+    public function resetGoogleSignup(): IContent
+    {
+        $this->request->session()->delete('google_user_data');
+
+        $data = ['success' => true];
+        return new JsonContent($data);
+    }
+
     public function activate()
     {
         if ($this->request->user() !== null) {

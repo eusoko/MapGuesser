@@ -22,6 +22,7 @@ Container::$routeCollection->post('signup-action', 'signup', [MapGuesser\Control
 Container::$routeCollection->get('signup-google', 'signup/google', [MapGuesser\Controller\LoginController::class, 'getSignupWithGoogleForm']);
 Container::$routeCollection->post('signup-google-action', 'signup/google', [MapGuesser\Controller\LoginController::class, 'signupWithGoogle']);
 Container::$routeCollection->post('signup.reset', 'signup/reset', [MapGuesser\Controller\LoginController::class, 'resetSignup']);
+Container::$routeCollection->post('signup-google.reset', 'signup/google/reset', [MapGuesser\Controller\LoginController::class, 'resetGoogleSignup']);
 Container::$routeCollection->get('signup.success', 'signup/success', [MapGuesser\Controller\LoginController::class, 'getSignupSuccess']);
 Container::$routeCollection->get('signup.activate', 'signup/activate/{token}', [MapGuesser\Controller\LoginController::class, 'activate']);
 Container::$routeCollection->get('signup.cancel', 'signup/cancel/{token}', [MapGuesser\Controller\LoginController::class, 'cancel']);
