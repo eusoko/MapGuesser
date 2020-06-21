@@ -10,6 +10,11 @@
 
         MapGuesser.httpRequest('POST', form.action, function () {
             if (this.response.error) {
+                if (this.response.error === 'user_found') {
+                    window.location.replace('/');
+                    return;
+                }
+
                 var errorText;
                 switch (this.response.error) {
                     case 'email_not_valid':
@@ -21,11 +26,11 @@
                     case 'passwords_not_match':
                         errorText = 'The given passwords do not match.'
                         break;
-                    case 'user_found':
-                        errorText = 'There is a user already registered with the given email address. Please <a href="/login" title="Login">login here</a>!';
-                        break;
-                    case 'not_active_user_found':
+                    case 'user_found_user_not_active':
                         errorText = 'There is a user already registered with the given email address. Please check your email and click on the activation link!';
+                        break;
+                    case 'user_found_password_not_match':
+                        errorText = 'There is a user already registered with the given email address, but the given password is wrong.'
                         break;
                 }
 

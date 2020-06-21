@@ -190,22 +190,28 @@ class LoginController
             return new JsonContent($data);
         }
 
-        if (filter_var($this->request->post('email'), FILTER_VALIDATE_EMAIL) === false) {
-            $data = ['error' => 'email_not_valid'];
-            return new JsonContent($data);
-        }
-
         $user = $this->userRepository->getByEmail($this->request->post('email'));
 
         if ($user !== null) {
             if ($user->getActive()) {
+                if (!$user->checkPassword($this->request->post('password'))) {
+                    $data = ['error' => 'user_found_password_not_match'];
+                    return new JsonContent($data);
+                }
+
+                $this->request->setUser($user);
+
                 $data = ['error' => 'user_found'];
             } else {
-                $data = ['error' => 'not_active_user_found'];
+                $data = ['error' => 'user_found_user_not_active'];
             }
             return new JsonContent($data);
         }
 
+        if (filter_var($this->request->post('email'), FILTER_VALIDATE_EMAIL) === false) {
+            $data = ['error' => 'email_not_valid'];
+            return new JsonContent($data);
+        }
 
         if ($this->request->session()->has('tmp_user_data')) {
             $tmpUserData = $this->request->session()->get('tmp_user_data');

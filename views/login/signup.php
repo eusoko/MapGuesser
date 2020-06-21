@@ -16,7 +16,7 @@ $jsFiles = [
             <?php else: ?>
                 <input class="big fullWidth" type="email" name="email" placeholder="Email address" required autofocus>
                 <input class="big fullWidth marginTop" type="password" name="password" placeholder="Password" required minlength="6">
-                <input class="big fullWidth marginTop" type="password" name="password_confirm" placeholder="Password confirmation" required minlength="6">
+                <input class="big fullWidth marginTop" type="password" name="password_confirm" placeholder="Password confirmation" minlength="6">
             <?php endif; ?>
             <p id="signupFormError" class="formError justify marginTop"></p>
             <div class="right marginTop">
