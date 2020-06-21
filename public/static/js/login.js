@@ -10,10 +10,15 @@
 
         MapGuesser.httpRequest('POST', form.action, function () {
             if (this.response.error) {
+                if (this.response.error === 'user_not_found') {
+                    window.location.replace('/signup');
+                    return;
+                }
+
                 var errorText;
                 switch (this.response.error) {
-                    case 'user_not_found':
-                        errorText = 'No user found with the given email address. You can <a href="/signup" title="Sign up">sign up here</a>!';
+                    case 'password_too_short':
+                        errorText = 'The given password is too short. Please choose a password that is at least 6 characters long!'
                         break;
                     case 'user_not_active':
                         errorText = 'User found with the given email address, but the account is not activated. Please check your email and click on the activation link!';

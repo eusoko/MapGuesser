@@ -13,15 +13,28 @@ if (!empty($_ENV['DEV'])) {
 Container::$routeCollection = new MapGuesser\Routing\RouteCollection();
 
 Container::$routeCollection->get('index', '', [MapGuesser\Controller\HomeController::class, 'getIndex']);
-Container::$routeCollection->get('login', 'login', [MapGuesser\Controller\LoginController::class, 'getLoginForm']);
-Container::$routeCollection->post('login-action', 'login', [MapGuesser\Controller\LoginController::class, 'login']);
-Container::$routeCollection->get('signup', 'signup', [MapGuesser\Controller\SignupController::class, 'getSignupForm']);
-Container::$routeCollection->post('signup-action', 'signup', [MapGuesser\Controller\SignupController::class, 'signup']);
-Container::$routeCollection->get('signup.activate', 'signup/activate/{token}', [MapGuesser\Controller\SignupController::class, 'activate']);
-Container::$routeCollection->get('signup.cancel', 'signup/cancel/{token}', [MapGuesser\Controller\SignupController::class, 'cancel']);
+Container::$routeCollection->group('login', function (MapGuesser\Routing\RouteCollection $routeCollection) {
+    $routeCollection->get('login', '', [MapGuesser\Controller\LoginController::class, 'getLoginForm']);
+    $routeCollection->post('login-action', '', [MapGuesser\Controller\LoginController::class, 'login']);
+    $routeCollection->get('login-google', 'google', [MapGuesser\Controller\LoginController::class, 'getGoogleLoginRedirect']);
+    $routeCollection->get('login-google-action', 'google/code', [MapGuesser\Controller\LoginController::class, 'loginWithGoogle']);
+});
+Container::$routeCollection->group('signup', function (MapGuesser\Routing\RouteCollection $routeCollection) {
+    $routeCollection->get('signup', '', [MapGuesser\Controller\LoginController::class, 'getSignupForm']);
+    $routeCollection->post('signup-action', '', [MapGuesser\Controller\LoginController::class, 'signup']);
+    $routeCollection->get('signup-google', 'google', [MapGuesser\Controller\LoginController::class, 'getSignupWithGoogleForm']);
+    $routeCollection->post('signup-google-action', 'google', [MapGuesser\Controller\LoginController::class, 'signupWithGoogle']);
+    $routeCollection->post('signup.reset', 'reset', [MapGuesser\Controller\LoginController::class, 'resetSignup']);
+    $routeCollection->post('signup-google.reset', 'google/reset', [MapGuesser\Controller\LoginController::class, 'resetGoogleSignup']);
+    $routeCollection->get('signup.success', 'success', [MapGuesser\Controller\LoginController::class, 'getSignupSuccess']);
+    $routeCollection->get('signup.activate', 'activate/{token}', [MapGuesser\Controller\LoginController::class, 'activate']);
+    $routeCollection->get('signup.cancel', 'cancel/{token}', [MapGuesser\Controller\LoginController::class, 'cancel']);
+});
 Container::$routeCollection->get('logout', 'logout', [MapGuesser\Controller\LoginController::class, 'logout']);
-Container::$routeCollection->get('profile', 'profile', [MapGuesser\Controller\UserController::class, 'getProfile']);
-Container::$routeCollection->post('profile-action', 'profile', [MapGuesser\Controller\UserController::class, 'saveProfile']);
+Container::$routeCollection->group('profile', function (MapGuesser\Routing\RouteCollection $routeCollection) {
+    $routeCollection->get('profile', '', [MapGuesser\Controller\UserController::class, 'getProfile']);
+    $routeCollection->post('profile-action', '', [MapGuesser\Controller\UserController::class, 'saveProfile']);
+});
 Container::$routeCollection->get('maps', 'maps', [MapGuesser\Controller\MapsController::class, 'getMaps']);
 Container::$routeCollection->group('game', function (MapGuesser\Routing\RouteCollection $routeCollection) {
     $routeCollection->get('game', '{mapId}', [MapGuesser\Controller\GameController::class, 'getGame']);

@@ -25,7 +25,7 @@
                     case 'password_not_match':
                         errorText = 'The given current password is wrong.'
                         break;
-                    case 'passwords_too_short':
+                    case 'password_too_short':
                         errorText = 'The given new password is too short. Please choose a password that is at least 6 characters long!'
                         break;
                     case 'passwords_not_match':

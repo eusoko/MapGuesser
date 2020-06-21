@@ -15,6 +15,10 @@ $jsFiles = [
             <div class="right marginTop">
                 <button type="submit">Login</button>
             </div>
+            <hr>
+            <div class="center">
+                <a class="button yellow" href="/login/google" title="Login with Google">Login with Google</a>
+            </div>
         </form>
     </div>
 </div>

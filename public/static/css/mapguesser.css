@@ -107,6 +107,10 @@ hr {
     margin-right: 10px;
 }
 
+.center {
+    text-align: center;
+}
+
 .right {
     text-align: right;
 }
@@ -349,6 +353,12 @@ div.box {
     button, a.button {
         padding: 0;
         width: 100%;
+    }
+    button.marginLeft, a.button.marginLeft {
+        margin-left: 0;
+    }
+    button.marginRight, a.button.marginRight {
+        margin-right: 0;
     }
     div.modal {
         left: 20px;

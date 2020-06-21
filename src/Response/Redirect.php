@@ -4,11 +4,11 @@ use MapGuesser\Interfaces\Response\IRedirect;
 
 class Redirect implements IRedirect
 {
-    private $target;
+    private string $target;
 
     private int $type;
 
-    public function __construct($target, int $type = IRedirect::TEMPORARY)
+    public function __construct(string $target, int $type = IRedirect::TEMPORARY)
     {
         $this->target = $target;
         $this->type = $type;
@@ -16,10 +16,10 @@ class Redirect implements IRedirect
 
     public function getUrl(): string
     {
-        if (is_array($this->target)) {
-            $link = $this->target[0]->generateLink($this->target[1]);
-        } else {
+        if (preg_match('/^http(s)?/', $this->target)) {
             $link = $this->target;
+        } else {
+            $link = \Container::$request->getBase() . '/' . $this->target;
         }
 
         return $link;

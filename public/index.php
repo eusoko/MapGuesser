@@ -9,7 +9,7 @@ if (($pos = strpos($url, '?')) !== false) {
 }
 $url = rawurldecode($url);
 
-$match = Container::$routeCollection->match($method, explode('/', $url));
+$match = Container::$routeCollection->match($method, $url == '' ? [] : explode('/', $url));
 
 if ($match !== null) {
     list($route, $params) = $match;
@@ -40,7 +40,7 @@ if ($match !== null) {
 
             return;
         } elseif ($response instanceof MapGuesser\Interfaces\Response\IRedirect) {
-            header('Location: ' . Container::$request->getBase() . '/' . $response->getUrl(), true, $response->getHttpCode());
+            header('Location: ' . $response->getUrl(), true, $response->getHttpCode());
 
             return;
         }
