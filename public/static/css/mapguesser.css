@@ -42,7 +42,7 @@ h1>a:hover, h1>a:focus {
     text-decoration: none;
 }
 
-h2, div.header.small h1 {
+h2, header.small h1 {
     font-size: 24px;
 }
 
@@ -83,7 +83,7 @@ hr {
     font-weight: 500;
 }
 
-.small {
+p.small, span.small {
     font-size: 12px;
 }
 
@@ -281,7 +281,7 @@ p.formError {
     display: none;
 }
 
-div.header {
+header {
     display: grid;
     grid-template-columns: auto auto;
     background-color: #333333;
@@ -291,31 +291,42 @@ div.header {
     color: white;
 }
 
-div.header.small {
+header.small {
     height: 40px;
     line-height: 40px;
 }
 
-div.header>p.header {
+header>p {
     line-height: inherit;
     text-align: right;
 }
 
-div.header>p.header>span {
+header>p>span {
     padding-left: 6px;
 }
 
-div.header>p.header>span>a:link, div.header>p.header>span>a:visited {
+header>p>span>a:link, header>p>span>a:visited {
     color: inherit;
 }
 
-div.header>p.header>span:not(:last-child) {
+header>p>span:not(:last-child) {
     border-right: solid white 1px;
     padding-right: 6px;
 }
 
-div.main {
+main {
     padding: 6px 12px;
+}
+
+footer {
+    background-color: #444444;
+    padding: 6px 12px;
+    color: white;
+    text-align: center;
+}
+
+footer>p {
+    font-size: 13px;
 }
 
 div.buttonContainer {
@@ -348,8 +359,11 @@ div.box {
 }
 
 @media screen and (max-width: 599px) {
-    div.header h1 span {
+    header h1 span {
         display: none;
+    }
+    footer>p:not(:first-child) {
+        margin-top: 4px;
     }
     button, a.button {
         padding: 0;
@@ -371,6 +385,16 @@ div.box {
 }
 
 @media screen and (min-width: 600px) {
+    footer>p {
+        display: inline;
+    }
+    footer>p:not(:first-child) {
+        padding-left: 6px;
+    }
+    footer>p:not(:last-child) {
+        border-right: solid white 1px;
+        padding-right: 6px;
+    }
     div.modal {
         width: 540px;
         left: 50%;
