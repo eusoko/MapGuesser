@@ -43,7 +43,7 @@ class LoginController
         return new HtmlContent('login/login', $data);
     }
 
-    public function getGoogleLoginRedirect()
+    public function getGoogleLoginRedirect(): IRedirect
     {
         $state = bin2hex(random_bytes(16));
 
@@ -72,7 +72,7 @@ class LoginController
         return new HtmlContent('login/signup', $data);
     }
 
-    public function getSignupSuccess()
+    public function getSignupSuccess(): IContent
     {
         $data = [];
         return new HtmlContent('login/signup_success', $data);
@@ -261,7 +261,7 @@ class LoginController
         return new JsonContent($data);
     }
 
-    public function signupWithGoogle()
+    public function signupWithGoogle(): IContent
     {
         if ($this->request->user() !== null) {
             $data = ['success' => true];
