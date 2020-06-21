@@ -5,7 +5,6 @@ $cssFiles = [
 ?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
 <?php require ROOT . '/views/templates/header.php'; ?>
-<div class="main">
     <h2>Playable maps</h2>
     <div id="mapContainer">
         <?php foreach ($maps as $map): ?>
@@ -60,7 +59,7 @@ $cssFiles = [
             <?php endfor; ?>
         <?php endif; ?>
     </div>
-</div>
+<?php require ROOT . '/views/templates/footer.php'; ?>
 <script>
     (function () {
         const GOOGLE_MAPS_JS_API_KEY = '<?= $_ENV['GOOGLE_MAPS_JS_API_KEY'] ?>';

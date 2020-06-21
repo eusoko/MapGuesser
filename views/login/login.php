@@ -5,7 +5,6 @@ $jsFiles = [
 ?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
 <?php require ROOT . '/views/templates/header.php'; ?>
-<div class="main">
     <h2>Login</h2>
     <div class="box">
         <form id="loginForm" action="/login" method="post">
@@ -21,5 +20,5 @@ $jsFiles = [
             </div>
         </form>
     </div>
-</div>
+<?php require ROOT . '/views/templates/footer.php'; ?>
 <?php require ROOT . '/views/templates/main_footer.php'; ?>
