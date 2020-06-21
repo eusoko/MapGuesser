@@ -9,15 +9,13 @@
         var formData = new FormData(form);
 
         MapGuesser.httpRequest('POST', form.action, function () {
-            document.getElementById('loading').style.visibility = 'hidden';
-
             if (this.response.error) {
                 var errorText;
                 switch (this.response.error) {
                     case 'email_not_valid':
                         errorText = 'The given email address is not valid.'
                         break;
-                    case 'passwords_too_short':
+                    case 'password_too_short':
                         errorText = 'The given password is too short. Please choose a password that is at least 6 characters long!'
                         break;
                     case 'passwords_not_match':
@@ -31,6 +29,8 @@
                         break;
                 }
 
+                document.getElementById('loading').style.visibility = 'hidden';
+
                 var signupFormError = document.getElementById('signupFormError');
                 signupFormError.style.display = 'block';
                 signupFormError.innerHTML = errorText;
@@ -38,10 +38,7 @@
                 return;
             }
 
-            document.getElementById('signupFormError').style.display = 'none';
-            form.reset();
-
-            MapGuesser.showModalWithContent('Sign up successful', 'Sign up was successful. Please check your email and click on the activation link to activate your account!');
+            window.location.replace('/signup/success');
         }, formData);
     };
 })();

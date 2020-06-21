@@ -61,8 +61,21 @@ class LoginController
             return new Redirect(\Container::$routeCollection->getRoute('index')->generateLink(), IRedirect::TEMPORARY);
         }
 
-        $data = [];
+        if ($this->request->session()->has('tmp_user_data')) {
+            $tmpUserData = $this->request->session()->get('tmp_user_data');
+
+            $data = ['email' => $tmpUserData['email']];
+        } else {
+            $data = [];
+        }
+
         return new HtmlContent('login/signup', $data);
+    }
+
+    public function getSignupSuccess()
+    {
+        $data = [];
+        return new HtmlContent('login/signup_success', $data);
     }
 
     public function getSignupWithGoogleForm()
@@ -93,6 +106,16 @@ class LoginController
         $user = $this->userRepository->getByEmail($this->request->post('email'));
 
         if ($user === null) {
+            if (strlen($this->request->post('password')) < 6) {
+                $data = ['error' => 'password_too_short'];
+                return new JsonContent($data);
+            }
+
+            $tmpUser = new User();
+            $tmpUser->setPlainPassword($this->request->post('password'));
+
+            $this->request->session()->set('tmp_user_data', ['email' => $this->request->post('email'), 'password_hashed' => $tmpUser->getPassword()]);
+
             $data = ['error' => 'user_not_found'];
             return new JsonContent($data);
         }
@@ -183,14 +206,27 @@ class LoginController
             return new JsonContent($data);
         }
 
-        if (strlen($this->request->post('password')) < 6) {
-            $data = ['error' => 'passwords_too_short'];
-            return new JsonContent($data);
-        }
 
-        if ($this->request->post('password') !== $this->request->post('password_confirm')) {
-            $data = ['error' => 'passwords_not_match'];
-            return new JsonContent($data);
+        if ($this->request->session()->has('tmp_user_data')) {
+            $tmpUserData = $this->request->session()->get('tmp_user_data');
+
+            $tmpUser = new User();
+            $tmpUser->setPassword($tmpUserData['password_hashed']);
+
+            if (!$tmpUser->checkPassword($this->request->post('password'))) {
+                $data = ['error' => 'passwords_not_match'];
+                return new JsonContent($data);
+            }
+        } else {
+            if (strlen($this->request->post('password')) < 6) {
+                $data = ['error' => 'password_too_short'];
+                return new JsonContent($data);
+            }
+
+            if ($this->request->post('password') !== $this->request->post('password_confirm')) {
+                $data = ['error' => 'passwords_not_match'];
+                return new JsonContent($data);
+            }
         }
 
         $user = new User();
@@ -212,6 +248,8 @@ class LoginController
         \Container::$dbConnection->commit();
 
         $this->sendConfirmationEmail($user->getEmail(), $token);
+
+        $this->request->session()->delete('tmp_user_data');
 
         $data = ['success' => true];
         return new JsonContent($data);

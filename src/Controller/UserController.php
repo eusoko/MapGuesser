@@ -52,7 +52,7 @@ class UserController implements ISecured
 
         if (strlen($this->request->post('password_new')) > 0) {
             if (strlen($this->request->post('password_new')) < 6) {
-                $data = ['error' => 'passwords_too_short'];
+                $data = ['error' => 'password_too_short'];
                 return new JsonContent($data);
             }
 
