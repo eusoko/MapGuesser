@@ -1,11 +1,11 @@
-<div class="header">
+<header>
     <h1>
         <a href="/" title="MapGuesser">
             <img class="inline" width="1em" height="1em" src="<?= $_ENV['STATIC_ROOT'] ?>/img/icon.svg?rev=<?= REVISION ?>"><!--
          --><span>MapGuesser</span>
         </a>
     </h1>
-    <p class="header">
+    <p>
         <?php if (Container::$request->user()) : ?>
             <span><a href="/profile" title="Profile">
                 <?php /* Copyright (c) 2019 The Bootstrap Authors. License can be found in 'USED_SOFTWARE' in section 'Bootstrap Icons'. */ ?>
@@ -20,4 +20,5 @@
             --><span><a href="/login" title="Login">Login</a></span>
         <?php endif; ?>
     </p>
-</div>
+</header>
+<main>

@@ -8,7 +8,7 @@ $jsFiles = [
 ];
 ?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
-<div class="header small">
+<header class="small">
     <h1>
         <a href="/maps" title="Back to playable maps">
             <img class="inline" width="1em" height="1em" src="<?= $_ENV['STATIC_ROOT'] ?>/img/icon.svg?rev=<?= REVISION ?>"><!--
@@ -20,7 +20,7 @@ $jsFiles = [
         --><span>Round <span id="currentRound" class="bold"></span></span><!--
         --><span>Score <span id="currentScoreSum" class="bold"></span></span>
     </p>
-</div>
+</header>
 <div id="guessCover"></div>
 <div id="panorama"></div>
 <div id="showGuessButtonContainer">
