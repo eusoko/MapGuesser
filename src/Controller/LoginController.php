@@ -273,8 +273,12 @@ class LoginController
         $user = $this->userRepository->getByEmail($userData['email']);
 
         if ($user === null) {
+            $sendWelcomeEmail = true;
+
             $user = new User();
             $user->setEmail($userData['email']);
+        } else {
+            $sendWelcomeEmail = false;
         }
 
         $user->setActive(true);
@@ -282,7 +286,9 @@ class LoginController
 
         $this->pdm->saveToDb($user);
 
-        $this->sendWelcomeEmail($user->getEmail());
+        if ($sendWelcomeEmail) {
+            $this->sendWelcomeEmail($user->getEmail());
+        }
 
         $this->request->session()->delete('google_user_data');
         $this->request->setUser($user);
