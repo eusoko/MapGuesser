@@ -64,7 +64,7 @@ class RouteCollection
             throw new \Exception('Route already exists: ' . $id);
         }
 
-        $pattern = array_merge($this->groupStack, explode('/', $pattern));
+        $pattern = array_merge($this->groupStack, $pattern === '' ? [] : explode('/', $pattern));
         $route = new Route($id, $pattern, $handler);
 
         $groupNumber = count($pattern);

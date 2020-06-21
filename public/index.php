@@ -9,7 +9,7 @@ if (($pos = strpos($url, '?')) !== false) {
 }
 $url = rawurldecode($url);
 
-$match = Container::$routeCollection->match($method, explode('/', $url));
+$match = Container::$routeCollection->match($method, $url == '' ? [] : explode('/', $url));
 
 if ($match !== null) {
     list($route, $params) = $match;
