@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MapGuesser</title>
+    <title><?= $_ENV['APP_NAME'] ?></title>
     <link href="<?= $_ENV['STATIC_ROOT'] ?>/css/mapguesser.css?rev=<?= REVISION ?>" rel="stylesheet">
     <?php if (isset($cssFiles)) : ?>
         <?php foreach ($cssFiles as $cssFile) : ?>

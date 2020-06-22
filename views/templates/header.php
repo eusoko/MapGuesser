@@ -1,8 +1,8 @@
 <header>
     <h1>
-        <a href="/" title="MapGuesser">
+        <a href="/" title="<?= $_ENV['APP_NAME'] ?>">
             <img class="inline" width="1em" height="1em" src="<?= $_ENV['STATIC_ROOT'] ?>/img/icon.svg?rev=<?= REVISION ?>"><!--
-         --><span>MapGuesser</span>
+         --><span><?= $_ENV['APP_NAME'] ?></span>
         </a>
     </h1>
     <p>
