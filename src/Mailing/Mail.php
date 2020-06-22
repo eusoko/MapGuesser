@@ -65,8 +65,8 @@ class Mail
             $mailer->Mailer = 'mail';
         }
 
-        $mailer->setFrom($_ENV['MAIL_FROM'], 'MapGuesser');
-        $mailer->addReplyTo($_ENV['MAIL_FROM'], 'MapGuesser');
+        $mailer->setFrom($_ENV['MAIL_FROM'], $_ENV['APP_NAME']);
+        $mailer->addReplyTo($_ENV['MAIL_FROM'], $_ENV['APP_NAME']);
 
         $mailer->Sender = !empty($_ENV['MAIL_BOUNCE']) ? $_ENV['MAIL_BOUNCE'] : $_ENV['MAIL_FROM'];
         $mailer->Subject = $this->subject;
