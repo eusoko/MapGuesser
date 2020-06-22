@@ -373,12 +373,11 @@ class LoginController
     {
         $mail = new Mail();
         $mail->addRecipient($email);
-        $mail->setSubject('Welcome to MapGuesser - Activate your account');
+        $mail->setSubject('Welcome to ' . $_ENV['APP_NAME'] . ' - Activate your account');
         $mail->setBodyFromTemplate('signup', [
             'EMAIL' => $email,
             'ACTIVATE_LINK' => $this->request->getBase() . '/'. \Container::$routeCollection->getRoute('signup.activate')->generateLink(['token' => $token]),
             'CANCEL_LINK' => $this->request->getBase() . '/' . \Container::$routeCollection->getRoute('signup.cancel')->generateLink(['token' => $token]),
-            'BASE_URL' => $this->request->getBase(),
         ]);
         $mail->send();
     }
@@ -387,10 +386,9 @@ class LoginController
     {
         $mail = new Mail();
         $mail->addRecipient($email);
-        $mail->setSubject('Welcome to MapGuesser');
+        $mail->setSubject('Welcome to ' . $_ENV['APP_NAME']);
         $mail->setBodyFromTemplate('signup-noconfirm', [
             'EMAIL' => $email,
-            'BASE_URL' => $this->request->getBase(),
         ]);
         $mail->send();
     }

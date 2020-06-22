@@ -29,6 +29,13 @@ class Mail
     {
         $this->body = file_get_contents(ROOT . '/mail/' . $template . '.html');
 
+        $baseParameters = [
+            'APP_NAME' => $_ENV['APP_NAME'],
+            'BASE_URL' => \Container::$request->getBase(),
+        ];
+
+        $params = array_merge($baseParameters, $params);
+
         foreach ($params as $key => $param) {
             $this->body = str_replace('{{' . $key . '}}', $param, $this->body);
         }
