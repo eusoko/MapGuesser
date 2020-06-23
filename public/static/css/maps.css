@@ -38,6 +38,7 @@ div.mapItem>div.imgContainer {
 div.mapItem>div.inner {
     background-color: #eeeeee;
     padding: 10px 8px;
+    box-sizing: border-box;
 }
 
 div.mapItem>div.inner>div.info {

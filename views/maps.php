@@ -63,18 +63,80 @@ $cssFiles = [
     (function () {
         const GOOGLE_MAPS_JS_API_KEY = '<?= $_ENV['GOOGLE_MAPS_JS_API_KEY'] ?>';
 
-        var imgContainers = document.getElementById('mapContainer').getElementsByClassName('imgContainer');
-        for (var i = 0; i < imgContainers.length; i++) {
-            var imgContainer = imgContainers[i];
+        var Maps = {
+            innerDivs: null,
 
-            var imgSrc = 'https://maps.googleapis.com/maps/api/staticmap?size=350x175&' +
-                'scale=' + (window.devicePixelRatio >= 2 ? 2 : 1) + '&' +
-                'visible=' + imgContainer.dataset.boundSouthLat + ',' + imgContainer.dataset.boundWestLng + '|' +
-                imgContainer.dataset.boundNorthLat + ',' + imgContainer.dataset.boundEastLng +
-                '&key=' + GOOGLE_MAPS_JS_API_KEY;
+            addStaticMaps: function () {
+                var imgContainers = document.getElementById('mapContainer').getElementsByClassName('imgContainer');
+                for (var i = 0; i < imgContainers.length; i++) {
+                    var imgContainer = imgContainers[i];
 
-            imgContainer.style.backgroundImage = 'url("' + imgSrc + '")';
-        }
+                    var imgSrc = 'https://maps.googleapis.com/maps/api/staticmap?size=350x175&' +
+                        'scale=' + (window.devicePixelRatio >= 2 ? 2 : 1) + '&' +
+                        'visible=' + imgContainer.dataset.boundSouthLat + ',' + imgContainer.dataset.boundWestLng + '|' +
+                        imgContainer.dataset.boundNorthLat + ',' + imgContainer.dataset.boundEastLng +
+                        '&key=' + GOOGLE_MAPS_JS_API_KEY;
+
+                    imgContainer.style.backgroundImage = 'url("' + imgSrc + '")';
+                }
+            },
+
+            initializeInnerDivs: function () {
+                Maps.innerDivs = document.getElementById('mapContainer').getElementsByClassName('inner');
+
+                for (var i = 0; i < Maps.innerDivs.length; i++) {
+                    var inner = Maps.innerDivs[i];
+                    var boundingClientRect = inner.getBoundingClientRect();
+
+                    inner.defaultHeight = boundingClientRect.height;
+                }
+            },
+
+            calculateInnerDivHeights: function () {
+                var currentY;
+                var rows = [];
+                for (var i = 0; i < Maps.innerDivs.length; i++) {
+                    var inner = Maps.innerDivs[i];
+                    var boundingClientRect = inner.getBoundingClientRect();
+
+                    if (currentY !== boundingClientRect.y) {
+                        rows.push([]);
+                    }
+
+                    rows[rows.length - 1].push(inner);
+
+                    currentY = boundingClientRect.y;
+                }
+
+                for (var i = 0; i < rows.length; i++) {
+                    var row = rows[i];
+
+                    var maxHeight = 0;
+                    for (var j = 0; j < row.length; j++) {
+                        var inner = row[j];
+
+                        if (inner.defaultHeight > maxHeight) {
+                            maxHeight = inner.defaultHeight;
+                        }
+                    }
+
+                    for (var j = 0; j < row.length; j++) {
+                        var inner = row[j];
+
+                        inner.style.height = maxHeight + 'px';
+                    }
+                }
+            }
+        };
+
+        Maps.addStaticMaps();
+
+        Maps.initializeInnerDivs();
+        Maps.calculateInnerDivHeights();
+
+        window.onresize = function () {
+            Maps.calculateInnerDivHeights();
+        };
     })();
 </script>
 <?php if ($isAdmin): ?>
