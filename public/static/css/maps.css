@@ -29,12 +29,10 @@ div.mapItem>div.title>p.title {
 div.mapItem>div.imgContainer {
     width: 100%;
     padding-top: 50%;
-    background: #cccccc;
-}
-
-div.mapItem>div.imgContainer>img {
-    width: 100%;
-    margin-top: -50%
+    background-color: #cccccc;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 div.mapItem>div.inner {

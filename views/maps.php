@@ -67,16 +67,13 @@ $cssFiles = [
         for (var i = 0; i < imgContainers.length; i++) {
             var imgContainer = imgContainers[i];
 
-            var img = document.createElement('img');
-
-            img.src = 'https://maps.googleapis.com/maps/api/staticmap?size=350x175&' +
+            var imgSrc = 'https://maps.googleapis.com/maps/api/staticmap?size=350x175&' +
                 'scale=' + (window.devicePixelRatio >= 2 ? 2 : 1) + '&' +
                 'visible=' + imgContainer.dataset.boundSouthLat + ',' + imgContainer.dataset.boundWestLng + '|' +
                 imgContainer.dataset.boundNorthLat + ',' + imgContainer.dataset.boundEastLng +
                 '&key=' + GOOGLE_MAPS_JS_API_KEY;
-            img.alt = 'Map area';
 
-            imgContainer.appendChild(img);
+            imgContainer.style.backgroundImage = 'url("' + imgSrc + '")';
         }
     })();
 </script>
