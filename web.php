@@ -12,7 +12,7 @@ if (!empty($_ENV['DEV'])) {
 
 Container::$routeCollection = new MapGuesser\Routing\RouteCollection();
 
-Container::$routeCollection->get('index', '', [MapGuesser\Controller\HomeController::class, 'getIndex']);
+Container::$routeCollection->get('index', '', [MapGuesser\Controller\MapsController::class, 'getMaps']);
 Container::$routeCollection->group('login', function (MapGuesser\Routing\RouteCollection $routeCollection) {
     $routeCollection->get('login', '', [MapGuesser\Controller\LoginController::class, 'getLoginForm']);
     $routeCollection->post('login-action', '', [MapGuesser\Controller\LoginController::class, 'login']);
@@ -35,7 +35,7 @@ Container::$routeCollection->group('profile', function (MapGuesser\Routing\Route
     $routeCollection->get('profile', '', [MapGuesser\Controller\UserController::class, 'getProfile']);
     $routeCollection->post('profile-action', '', [MapGuesser\Controller\UserController::class, 'saveProfile']);
 });
-Container::$routeCollection->get('maps', 'maps', [MapGuesser\Controller\MapsController::class, 'getMaps']);
+//Container::$routeCollection->get('maps', 'maps', [MapGuesser\Controller\MapsController::class, 'getMaps']);
 Container::$routeCollection->group('game', function (MapGuesser\Routing\RouteCollection $routeCollection) {
     $routeCollection->get('game', '{mapId}', [MapGuesser\Controller\GameController::class, 'getGame']);
     $routeCollection->get('game-json', '{mapId}/json', [MapGuesser\Controller\GameController::class, 'getGameJson']);
