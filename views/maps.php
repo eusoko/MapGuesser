@@ -5,7 +5,6 @@ $cssFiles = [
 ?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
 <?php require ROOT . '/views/templates/header.php'; ?>
-    <h2>Playable maps</h2>
     <div id="mapContainer">
         <?php foreach ($maps as $map): ?>
             <div class="mapItem">
