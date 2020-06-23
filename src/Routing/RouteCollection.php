@@ -45,6 +45,11 @@ class RouteCollection
     {
         $groupNumber = count($uri);
 
+        // response to HEAD request with the GET content
+        if ($method === 'head') {
+            $method = 'get';
+        }
+
         if (!isset($this->searchTable[$method][$groupNumber])) {
             return null;
         }
