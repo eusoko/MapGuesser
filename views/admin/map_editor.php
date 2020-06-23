@@ -15,7 +15,7 @@ $jsFiles = [
 <?php require ROOT . '/views/templates/main_header.php'; ?>
 <header class="small">
     <h1>
-        <a href="/maps" title="Back to playable maps">
+        <a href="/" title="<?= $_ENV['APP_NAME'] ?>">
             <img class="inline" width="1em" height="1em" src="<?= $_ENV['STATIC_ROOT'] ?>/img/icon.svg?rev=<?= REVISION ?>"><!--
          --><span><?= $_ENV['APP_NAME'] ?></span>
         </a>
