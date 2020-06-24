@@ -16,6 +16,8 @@
 
 #noPano {
     display: flex;
+    justify-content: center;
+    align-items: center;
     position: absolute;
     z-index: 2;
     visibility: hidden;
@@ -23,7 +25,7 @@
 }
 
 #noPano>p {
-    margin: auto;
+    text-align: center;
 }
 
 #control {
