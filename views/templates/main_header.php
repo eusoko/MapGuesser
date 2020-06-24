@@ -22,6 +22,14 @@
     <link rel="icon" type="image/png" sizes="16x16" href="<?= $_ENV['STATIC_ROOT'] ?>/img/favicon/16x16.png?rev=<?= REVISION ?>">
 </head>
 <body>
+    <?php if (!isset($_COOKIE['COOKIES_CONSENT'])): ?>
+        <div id="cookiesNotice">
+            <p class="small">
+                <?= $_ENV['APP_NAME'] ?> uses cookies to improve user experience. By using the app or clicking I agree, you consent to our use of cookies.
+            </p>
+            <button id="agreeCookies" class="small marginTop">I agree</button>
+        </div>
+    <?php endif; ?>
     <div id="loading">
         <img src="<?= $_ENV['STATIC_ROOT'] ?>/img/loading.svg?rev=<?= REVISION ?>" width="64" height="64">
     </div>
