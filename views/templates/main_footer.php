@@ -17,7 +17,7 @@
     <?php if (!isset($_COOKIE['COOKIES_CONSENT'])): ?>
         <script>
             (function () {
-                MapGuesser = {
+                var MapGuesser = {
                     cookiesAgreed: false,
 
                     agreeCookies: function () {
