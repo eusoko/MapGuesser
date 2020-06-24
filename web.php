@@ -49,15 +49,19 @@ Container::$routeCollection->group('admin', function (MapGuesser\Routing\RouteCo
     $routeCollection->post('admin.deleteMap', 'deleteMap/{mapId}', [MapGuesser\Controller\MapAdminController::class, 'deleteMap']);
 });
 
-Container::$sessionHandler = new MapGuesser\Session\DatabaseSessionHandler();
+if (isset($_COOKIE['COOKIES_CONSENT'])) {
+    Container::$sessionHandler = new MapGuesser\Session\DatabaseSessionHandler();
 
-session_set_save_handler(Container::$sessionHandler, true);
-session_start([
-    'gc_maxlifetime' => 604800,
-    'cookie_lifetime' => 604800,
-    'cookie_httponly' => true,
-    'cookie_samesite' => 'Lax'
-]);
+    session_set_save_handler(Container::$sessionHandler, true);
+    session_start([
+        'gc_maxlifetime' => 604800,
+        'cookie_lifetime' => 604800,
+        'cookie_httponly' => true,
+        'cookie_samesite' => 'Lax'
+    ]);
+} else {
+    $_SESSION = [];
+}
 
 Container::$request = new MapGuesser\Request\Request($_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'], $_GET, $_POST, $_SESSION);
 
