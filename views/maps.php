@@ -30,7 +30,9 @@ $cssFiles = [
                          -->~ <?= $map['area'][0] ?> <?= $map['area'][1] ?><sup>2</sup>
                         </p>
                     </div>
-                    <p class="small center marginTop"><?= $map['description'] ?></p>
+                    <div class="description marginTop">
+                        <p class="small center"><?= $map['description'] ?></p>
+                    </div>
                 </div>
                 <?php if ($isAdmin): ?>
                     <div class="buttonContainer">
@@ -64,7 +66,7 @@ $cssFiles = [
         const GOOGLE_MAPS_JS_API_KEY = '<?= $_ENV['GOOGLE_MAPS_JS_API_KEY'] ?>';
 
         var Maps = {
-            innerDivs: null,
+            descriptionDivs: null,
 
             addStaticMaps: function () {
                 var imgContainers = document.getElementById('mapContainer').getElementsByClassName('imgContainer');
@@ -81,29 +83,29 @@ $cssFiles = [
                 }
             },
 
-            initializeInnerDivs: function () {
-                Maps.innerDivs = document.getElementById('mapContainer').getElementsByClassName('inner');
+            initializeDescriptionDivs: function () {
+                Maps.descriptionDivs = document.getElementById('mapContainer').getElementsByClassName('description');
 
-                for (var i = 0; i < Maps.innerDivs.length; i++) {
-                    var inner = Maps.innerDivs[i];
-                    var boundingClientRect = inner.getBoundingClientRect();
+                for (var i = 0; i < Maps.descriptionDivs.length; i++) {
+                    var description = Maps.descriptionDivs[i];
+                    var boundingClientRect = description.getBoundingClientRect();
 
-                    inner.defaultHeight = boundingClientRect.height;
+                    description.defaultHeight = boundingClientRect.height;
                 }
             },
 
-            calculateInnerDivHeights: function () {
+            calculateDescriptionDivHeights: function () {
                 var currentY;
                 var rows = [];
-                for (var i = 0; i < Maps.innerDivs.length; i++) {
-                    var inner = Maps.innerDivs[i];
-                    var boundingClientRect = inner.getBoundingClientRect();
+                for (var i = 0; i < Maps.descriptionDivs.length; i++) {
+                    var description = Maps.descriptionDivs[i];
+                    var boundingClientRect = description.getBoundingClientRect();
 
                     if (currentY !== boundingClientRect.y) {
                         rows.push([]);
                     }
 
-                    rows[rows.length - 1].push(inner);
+                    rows[rows.length - 1].push(description);
 
                     currentY = boundingClientRect.y;
                 }
@@ -113,17 +115,17 @@ $cssFiles = [
 
                     var maxHeight = 0;
                     for (var j = 0; j < row.length; j++) {
-                        var inner = row[j];
+                        var description = row[j];
 
-                        if (inner.defaultHeight > maxHeight) {
-                            maxHeight = inner.defaultHeight;
+                        if (description.defaultHeight > maxHeight) {
+                            maxHeight = description.defaultHeight;
                         }
                     }
 
                     for (var j = 0; j < row.length; j++) {
-                        var inner = row[j];
+                        var description = row[j];
 
-                        inner.style.height = maxHeight + 'px';
+                        description.style.height = maxHeight + 'px';
                     }
                 }
             }
@@ -131,11 +133,11 @@ $cssFiles = [
 
         Maps.addStaticMaps();
 
-        Maps.initializeInnerDivs();
-        Maps.calculateInnerDivHeights();
+        Maps.initializeDescriptionDivs();
+        Maps.calculateDescriptionDivHeights();
 
         window.onresize = function () {
-            Maps.calculateInnerDivHeights();
+            Maps.calculateDescriptionDivHeights();
         };
     })();
 </script>

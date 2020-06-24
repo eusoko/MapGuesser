@@ -46,6 +46,12 @@ div.mapItem>div.inner>div.info {
     grid-template-columns: auto auto;
 }
 
+div.mapItem>div.inner>div.description {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 div.mapItem>div.inner>div.info>p:nth-child(1) {
     text-align: left;
 }
