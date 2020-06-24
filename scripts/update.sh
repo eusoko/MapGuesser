@@ -5,7 +5,7 @@ ROOT_DIR=$(dirname $(readlink -f "$0"))/..
 . ${ROOT_DIR}/.env
 
 echo "Installing Composer packages..."
-(cd ${ROOT_DIR} && composer install)
+(cd ${ROOT_DIR} && composer install --no-dev)
 
 echo "Installing Yarn packages..."
 (cd ${ROOT_DIR}/public/static && yarn install)

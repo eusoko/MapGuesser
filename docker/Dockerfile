@@ -4,8 +4,8 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Install Nginx, PHP and further necessary packages
 RUN apt update --fix-missing
-RUN apt install -y curl git mariadb-client nginx \
-    php-apcu php-xdebug php7.4-cli php7.4-curl php7.4-fpm php7.4-mbstring php7.4-mysql php7.4-zip
+RUN apt install -y curl git unzip mariadb-client nginx \
+    php-apcu php-xdebug php7.4-cli php7.4-curl php7.4-fpm php7.4-mbstring php7.4-mysql php7.4-zip php7.4-xml
 
 # Configure Nginx with PHP
 RUN mkdir -p /run/php
