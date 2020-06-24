@@ -30,7 +30,7 @@ $cssFiles = [
                          -->~ <?= $map['area'][0] ?> <?= $map['area'][1] ?><sup>2</sup>
                         </p>
                     </div>
-                    <p class="small justify marginTop"><?= $map['description'] ?></p>
+                    <p class="small center marginTop"><?= $map['description'] ?></p>
                 </div>
                 <?php if ($isAdmin): ?>
                     <div class="buttonContainer">
