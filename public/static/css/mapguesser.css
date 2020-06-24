@@ -84,7 +84,7 @@ hr {
 }
 
 p.small, span.small {
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .justify {
@@ -146,6 +146,13 @@ button, a.button {
     display: inline-block;
     text-align: center;
     line-height: 35px;
+}
+
+button.small {
+    font-size: 14px;
+    padding: 0 12px;
+    height: 32px;
+    line-height: 32px;
 }
 
 button:enabled:hover, button:enabled:focus, a.button:hover, a.button:focus {
@@ -334,6 +341,12 @@ div.buttonContainer {
 
 div.buttonContainer>button {
     margin: 0 auto;
+}
+
+#cookiesNotice {
+    background-color: #eeeeee;
+    padding: 10px;
+    text-align: center;
 }
 
 #loading {
