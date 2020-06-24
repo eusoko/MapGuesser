@@ -29,8 +29,11 @@
                         document.cookie = 'COOKIES_CONSENT=1; expires=' + expirationDate + '; path=/';
 
                         MapGuesser.cookiesAgreed = true;
-                        document.getElementById('cookiesNotice').style.display = 'none';
                     }
+                };
+
+                document.getElementById('agreeCookies').onclick = function () {
+                    document.getElementById('cookiesNotice').style.display = 'none';
                 };
 
                 window.onclick = function () {
