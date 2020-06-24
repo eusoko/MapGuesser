@@ -25,9 +25,9 @@
     <?php if (!isset($_COOKIE['COOKIES_CONSENT'])): ?>
         <div id="cookiesNotice">
             <p class="small">
-                <?= $_ENV['APP_NAME'] ?> uses cookies to improve user experience. By using the app or clicking I agree, you consent to our use of cookies.
+                <?= $_ENV['APP_NAME'] ?> uses cookies to improve user experience. By using the app or clicking 'Agree', you consent to our use of cookies.
             </p>
-            <button id="agreeCookies" class="small marginTop">I agree</button>
+            <button id="agreeCookies" class="small marginTop">Agree</button>
         </div>
     <?php endif; ?>
     <div id="loading">
