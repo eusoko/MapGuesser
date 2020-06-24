@@ -14,5 +14,30 @@
             <script src="<?= $jsFile ?>"></script>
         <?php endforeach; ?>
     <?php endif; ?>
+    <?php if (!isset($_COOKIE['COOKIES_CONSENT'])): ?>
+        <script>
+            (function () {
+                MapGuesser = {
+                    cookiesAgreed: false,
+
+                    agreeCookies: function () {
+                        if (MapGuesser.cookiesAgreed) {
+                            return;
+                        }
+
+                        var expirationDate = new Date(new Date().getTime() + 20 * 365 * 24 * 60 * 60 * 1000).toUTCString();
+                        document.cookie = 'COOKIES_CONSENT=1; expires=' + expirationDate + '; path=/';
+
+                        MapGuesser.cookiesAgreed = true;
+                        document.getElementById('cookiesNotice').style.display = 'none';
+                    }
+                };
+
+                window.onclick = function () {
+                    MapGuesser.agreeCookies();
+                };
+            })();
+        </script>
+    <?php endif; ?>
 </body>
 </html>
