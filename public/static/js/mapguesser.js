@@ -15,7 +15,7 @@ var MapGuesser = {
         document.head.appendChild(script);
 
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
         gtag('config', GOOGLE_ANALITICS_ID);
     },
@@ -63,6 +63,46 @@ var MapGuesser = {
             xhr.send(data);
         } else {
             xhr.send();
+        }
+    },
+
+    setOnsubmitForForm: function (form, redirectOnSuccess) {
+        form.onsubmit = function (e) {
+            e.preventDefault();
+
+            document.getElementById('loading').style.visibility = 'visible';
+
+            var formData = new FormData(form);
+            var formError = form.getElementsByClassName('formError')[0];
+            var pageLeaveOnSuccess = typeof redirectOnSuccess === 'string';
+
+            MapGuesser.httpRequest('POST', form.action, function () {
+                if (!pageLeaveOnSuccess) {
+                    document.getElementById('loading').style.visibility = 'hidden';
+                }
+
+                if (this.response.error) {
+                    if (pageLeaveOnSuccess) {
+                        document.getElementById('loading').style.visibility = 'hidden';
+                    }
+
+                    formError.style.display = 'block';
+                    formError.innerHTML = this.response.error.errorText;
+
+                    return;
+                }
+
+                if (!pageLeaveOnSuccess) {
+                    formError.style.display = 'none';
+                    form.reset();
+                } else {
+                    if (redirectOnSuccess === '') {
+                        window.location.reload();
+                    } else {
+                        window.location.replace(redirectOnSuccess);
+                    }
+                }
+            }, formData);
         }
     },
 
@@ -141,6 +181,30 @@ var MapGuesser = {
             button.disabled = false;
         } else {
             button.disabled = true;
+        }
+    },
+
+    toggleFormSubmitButtonDisableOnChange: function (form, observedInputs) {
+        for (var i = 0; i < observedInputs.length; i++) {
+            var input = form.elements[observedInputs[i]];
+
+            switch (input.tagName) {
+                case 'INPUT':
+                case 'TEXTAREA':
+                    input.oninput = function () {
+                        MapGuesser.toggleDisableOnChange(this, form.elements.submit);
+                    };
+                    break;
+                case 'SELECT':
+                    input.onchange = function () {
+                        MapGuesser.toggleDisableOnChange(this, form.elements.submit);
+                    };
+                    break;
+            }
+        }
+
+        form.onreset = function () {
+            form.elements.submit.disabled = true;
         }
     }
 };
