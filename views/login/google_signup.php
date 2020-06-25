@@ -1,3 +1,8 @@
+<?php
+$jsFiles = [
+    'js/login/google_signup.js',
+];
+?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
 <?php require ROOT . '/views/templates/header.php'; ?>
     <h2>Sign up</h2>
@@ -22,27 +27,4 @@
         </form>
     </div>
 <?php require ROOT . '/views/templates/footer.php'; ?>
-<script>
-    (function () {
-        var form = document.getElementById('googleSignupForm');
-
-        form.onsubmit = function (e) {
-            document.getElementById('loading').style.visibility = 'visible';
-
-            e.preventDefault();
-
-            MapGuesser.httpRequest('POST', form.action, function () {
-                window.location.replace('/');
-            });
-        };
-
-        document.getElementById('cancelGoogleSignupButton').onclick = function () {
-            document.getElementById('loading').style.visibility = 'visible';
-
-            MapGuesser.httpRequest('POST', '/signup/google/reset', function () {
-                window.location.replace('/signup');
-            });
-        };
-    })();
-</script>
 <?php require ROOT . '/views/templates/main_footer.php'; ?>

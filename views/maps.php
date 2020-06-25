@@ -2,6 +2,12 @@
 $cssFiles = [
     'css/maps.css'
 ];
+$jsFiles = [
+    'js/maps.js',
+];
+if ($isAdmin) {
+    $jsFiles[] = 'js/maps_admin.js';
+}
 ?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
 <?php require ROOT . '/views/templates/header.php'; ?>
@@ -61,122 +67,4 @@ $cssFiles = [
         <?php endif; ?>
     </div>
 <?php require ROOT . '/views/templates/footer.php'; ?>
-<script>
-    (function () {
-        const GOOGLE_MAPS_JS_API_KEY = '<?= $_ENV['GOOGLE_MAPS_JS_API_KEY'] ?>';
-
-        var Maps = {
-            descriptionDivs: null,
-
-            addStaticMaps: function () {
-                var imgContainers = document.getElementById('mapContainer').getElementsByClassName('imgContainer');
-                for (var i = 0; i < imgContainers.length; i++) {
-                    var imgContainer = imgContainers[i];
-
-                    var imgSrc = 'https://maps.googleapis.com/maps/api/staticmap?size=350x175&' +
-                        'scale=' + (window.devicePixelRatio >= 2 ? 2 : 1) + '&' +
-                        'visible=' + imgContainer.dataset.boundSouthLat + ',' + imgContainer.dataset.boundWestLng + '|' +
-                        imgContainer.dataset.boundNorthLat + ',' + imgContainer.dataset.boundEastLng +
-                        '&key=' + GOOGLE_MAPS_JS_API_KEY;
-
-                    imgContainer.style.backgroundImage = 'url("' + imgSrc + '")';
-                }
-            },
-
-            initializeDescriptionDivs: function () {
-                Maps.descriptionDivs = document.getElementById('mapContainer').getElementsByClassName('description');
-
-                for (var i = 0; i < Maps.descriptionDivs.length; i++) {
-                    var description = Maps.descriptionDivs[i];
-                    var boundingClientRect = description.getBoundingClientRect();
-
-                    description.defaultHeight = boundingClientRect.height;
-                }
-            },
-
-            calculateDescriptionDivHeights: function () {
-                var currentY;
-                var rows = [];
-                for (var i = 0; i < Maps.descriptionDivs.length; i++) {
-                    var description = Maps.descriptionDivs[i];
-                    var boundingClientRect = description.getBoundingClientRect();
-
-                    if (currentY !== boundingClientRect.y) {
-                        rows.push([]);
-                    }
-
-                    rows[rows.length - 1].push(description);
-
-                    currentY = boundingClientRect.y;
-                }
-
-                for (var i = 0; i < rows.length; i++) {
-                    var row = rows[i];
-
-                    var maxHeight = 0;
-                    for (var j = 0; j < row.length; j++) {
-                        var description = row[j];
-
-                        if (description.defaultHeight > maxHeight) {
-                            maxHeight = description.defaultHeight;
-                        }
-                    }
-
-                    for (var j = 0; j < row.length; j++) {
-                        var description = row[j];
-
-                        description.style.height = maxHeight + 'px';
-                    }
-                }
-            }
-        };
-
-        Maps.addStaticMaps();
-
-        Maps.initializeDescriptionDivs();
-        Maps.calculateDescriptionDivHeights();
-
-        window.onresize = function () {
-            Maps.calculateDescriptionDivHeights();
-        };
-    })();
-</script>
-<?php if ($isAdmin): ?>
-<script>
-    (function () {
-        Maps = {
-            deleteMap: function(mapId, mapName) {
-                MapGuesser.showModalWithContent('Delete map', 'Are you sure you want to delete map \'' + mapName + '\'?', [{
-                    type: 'button',
-                    classNames: ['red'],
-                    text: 'Delete',
-                    onclick: function () {
-                        document.getElementById('loading').style.visibility = 'visible';
-
-                        MapGuesser.httpRequest('POST', '/admin/deleteMap/' + mapId, function () {
-                            if (this.response.error) {
-                                document.getElementById('loading').style.visibility = 'hidden';
-
-                                //TODO: handle this error
-                                return;
-                            }
-
-                            window.location.reload();
-                        });
-                    }
-                }]);
-            }
-        };
-
-        var buttons = document.getElementById('mapContainer').getElementsByClassName('deleteButton');
-        for (var i = 0; i < buttons.length; i++) {
-            var button = buttons[i];
-
-            button.onclick = function() {
-                Maps.deleteMap(this.dataset.mapId, this.dataset.mapName);
-            };
-        }
-    })();
-</script>
-<?php endif; ?>
 <?php require ROOT . '/views/templates/main_footer.php'; ?>
