@@ -21,38 +21,40 @@ $jsFiles = [
         --><span>Score <span id="currentScoreSum" class="bold"></span></span>
     </p>
 </header>
-<div id="guessCover"></div>
-<div id="panorama"></div>
-<div id="showGuessButtonContainer">
-    <button id="showGuessButton" class="fullWidth">Show guess map</button>
-</div>
-<div id="guess">
-    <div id="closeGuessButtonContainer" class="buttonContainer marginBottom">
-        <button id="closeGuessButton" class="fullWidth gray">Close</button>
+<div class="full">
+    <div id="panoCover"></div>
+    <div id="panorama"></div>
+    <div id="showGuessButtonContainer">
+        <button id="showGuessButton" class="fullWidth">Show guess map</button>
     </div>
-    <div id="map"></div>
-    <div id="guessButtonContainer" class="buttonContainer marginTop">
-        <button id="guessButton" class="fullWidth" disabled>Guess</button>
-    </div>
-    <div id="resultInfo">
-        <div id="distanceInfo">
-            <p>You were <span id="distance" class="bold"></span> close.</p>
-            <p class="bold">Game finished.</p>
+    <div id="guess">
+        <div id="closeGuessButtonContainer" class="buttonContainer marginBottom">
+            <button id="closeGuessButton" class="fullWidth gray">Close</button>
         </div>
-        <div id="scoreInfo">
-            <p>You earned <span id="score" class="bold"></span> points.</p>
-            <p>You got <span id="scoreSum" class="bold"></span> points in total.</p>
+        <div id="map"></div>
+        <div id="guessButtonContainer" class="buttonContainer marginTop">
+            <button id="guessButton" class="fullWidth" disabled>Guess</button>
         </div>
-        <div>
-            <div id="scoreBarBase">
-                <div id="scoreBar"></div>
+        <div id="resultInfo">
+            <div id="distanceInfo">
+                <p>You were <span id="distance" class="bold"></span> close.</p>
+                <p class="bold">Game finished.</p>
+            </div>
+            <div id="scoreInfo">
+                <p>You earned <span id="score" class="bold"></span> points.</p>
+                <p>You got <span id="scoreSum" class="bold"></span> points in total.</p>
+            </div>
+            <div>
+                <div id="scoreBarBase">
+                    <div id="scoreBar"></div>
+                </div>
             </div>
         </div>
-    </div>
-    <div id="continueButtonContainer" class="buttonContainer marginTop">
-        <button id="continueButton" class="fullWidth">Continue</button>
-        <button id="showSummaryButton" class="fullWidth">Show summary</button>
-        <button id="startNewGameButton" class="fullWidth">Play this map again</button>
+        <div id="continueButtonContainer" class="buttonContainer marginTop">
+            <button id="continueButton" class="fullWidth">Continue</button>
+            <button id="showSummaryButton" class="fullWidth">Show summary</button>
+            <button id="startNewGameButton" class="fullWidth">Play this map again</button>
+        </div>
     </div>
 </div>
 <script>

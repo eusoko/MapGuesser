@@ -1,7 +1,10 @@
     <script>
         const STATIC_ROOT = '<?= $_ENV['STATIC_ROOT'] ?>';
         const REVISION = '<?= REVISION ?>';
-        const ANTI_CSRF_TOKEN = '<?= $_SESSION['anti_csrf_token'] ?>';
+        var ANTI_CSRF_TOKEN = '<?= \Container::$request->session()->get('anti_csrf_token') ?>';
+        <?php if (!empty($_ENV['GOOGLE_ANALITICS_ID'])): ?>
+            const GOOGLE_ANALITICS_ID = '<?= $_ENV['GOOGLE_ANALITICS_ID'] ?>';
+        <?php endif; ?>
     </script>
     <script src="<?= $_ENV['STATIC_ROOT'] ?>/js/mapguesser.js?rev=<?= REVISION ?>"></script>
     <?php if (isset($jsFiles)) : ?>
@@ -17,22 +20,14 @@
     <?php if (!isset($_COOKIE['COOKIES_CONSENT'])): ?>
         <script>
             (function () {
-                var MapGuesser = {
-                    cookiesAgreed: false,
-
-                    agreeCookies: function () {
-                        if (MapGuesser.cookiesAgreed) {
-                            return;
-                        }
-
-                        var expirationDate = new Date(new Date().getTime() + 20 * 365 * 24 * 60 * 60 * 1000).toUTCString();
-                        document.cookie = 'COOKIES_CONSENT=1; expires=' + expirationDate + '; path=/';
-
-                        MapGuesser.cookiesAgreed = true;
-                    }
+                // we don't want user to agree cookies when clicking on the notice itself
+                document.getElementById('cookiesNotice').onclick = function (e) {
+                    e.stopPropagation();
                 };
 
-                document.getElementById('agreeCookies').onclick = function () {
+                document.getElementById('agreeCookiesButton').onclick = function () {
+                    MapGuesser.agreeCookies();
+
                     document.getElementById('cookiesNotice').style.display = 'none';
                 };
 
@@ -41,6 +36,14 @@
                 };
             })();
         </script>
+    <?php else: ?>
+        <?php if (!empty($_ENV['GOOGLE_ANALITICS_ID'])): ?>
+            <script>
+                (function () {
+                    MapGuesser.initGoogleAnalitics();
+                })();
+            </script>
+        <?php endif; ?>
     <?php endif; ?>
 </body>
 </html>

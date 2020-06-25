@@ -1,4 +1,49 @@
 var MapGuesser = {
+    cookiesAgreed: false,
+    sessionAvailableHooks: {},
+
+    initGoogleAnalitics: function () {
+        if (typeof GOOGLE_ANALITICS_ID === 'undefined') {
+            return;
+        }
+
+        // Global site tag (gtag.js) - Google Analytics
+        var script = document.createElement('script');
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + GOOGLE_ANALITICS_ID;
+        script.async = true;
+
+        document.head.appendChild(script);
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', GOOGLE_ANALITICS_ID);
+    },
+
+    agreeCookies: function () {
+        if (MapGuesser.cookiesAgreed) {
+            return;
+        }
+
+        var expirationDate = new Date(new Date().getTime() + 20 * 365 * 24 * 60 * 60 * 1000).toUTCString();
+        document.cookie = 'COOKIES_CONSENT=1; expires=' + expirationDate + '; path=/';
+
+        MapGuesser.initGoogleAnalitics();
+        MapGuesser.httpRequest('GET', '/startSession.json', function () {
+            ANTI_CSRF_TOKEN = this.response.antiCsrfToken;
+
+            for (var hookId in MapGuesser.sessionAvailableHooks) {
+                if (!MapGuesser.sessionAvailableHooks.hasOwnProperty(hookId)) {
+                    continue;
+                }
+
+                MapGuesser.sessionAvailableHooks[hookId]();
+            }
+        });
+
+        MapGuesser.cookiesAgreed = true;
+    },
+
     httpRequest: function (method, url, callback, data) {
         var xhr = new XMLHttpRequest();
 

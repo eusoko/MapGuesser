@@ -27,7 +27,7 @@
             <p class="small">
                 <?= $_ENV['APP_NAME'] ?> uses cookies to improve user experience. By using the app or clicking 'Agree', you consent to our use of cookies.
             </p>
-            <button id="agreeCookies" class="small marginTop">Agree</button>
+            <button id="agreeCookiesButton" class="small marginTop">Agree</button>
         </div>
     <?php endif; ?>
     <div id="loading">
