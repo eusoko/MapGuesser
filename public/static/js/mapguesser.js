@@ -66,7 +66,7 @@ var MapGuesser = {
         }
     },
 
-    setOnsubmitForForm: function (form, redirectOnSuccess) {
+    setOnsubmitForForm: function (form) {
         form.onsubmit = function (e) {
             e.preventDefault();
 
@@ -74,7 +74,7 @@ var MapGuesser = {
 
             var formData = new FormData(form);
             var formError = form.getElementsByClassName('formError')[0];
-            var pageLeaveOnSuccess = typeof redirectOnSuccess === 'string';
+            var pageLeaveOnSuccess = form.dataset.redirectOnSuccess || form.dataset.reloadOnSuccess;
 
             MapGuesser.httpRequest('POST', form.action, function () {
                 if (!pageLeaveOnSuccess) {
@@ -92,14 +92,20 @@ var MapGuesser = {
                     return;
                 }
 
+                if (this.response.redirect) {
+                    window.location.replace(this.response.redirect.target);
+
+                    return;
+                }
+
                 if (!pageLeaveOnSuccess) {
                     formError.style.display = 'none';
                     form.reset();
                 } else {
-                    if (redirectOnSuccess === '') {
+                    if (form.dataset.redirectOnSuccess) {
+                        window.location.replace(form.dataset.redirectOnSuccess);
+                    } else if (form.dataset.reloadOnSuccess) {
                         window.location.reload();
-                    } else {
-                        window.location.replace(redirectOnSuccess);
                     }
                 }
             }, formData);
@@ -176,15 +182,15 @@ var MapGuesser = {
         document.getElementById('cover').style.visibility = 'hidden';
     },
 
-    toggleDisableOnChange: function (input, button) {
+    observeInput: function (input, buttonToToggle) {
         if (input.defaultValue !== input.value) {
-            button.disabled = false;
+            buttonToToggle.disabled = false;
         } else {
-            button.disabled = true;
+            buttonToToggle.disabled = true;
         }
     },
 
-    toggleFormSubmitButtonDisableOnChange: function (form, observedInputs) {
+    observeInputsInForm: function (form, observedInputs) {
         for (var i = 0; i < observedInputs.length; i++) {
             var input = form.elements[observedInputs[i]];
 
@@ -192,12 +198,12 @@ var MapGuesser = {
                 case 'INPUT':
                 case 'TEXTAREA':
                     input.oninput = function () {
-                        MapGuesser.toggleDisableOnChange(this, form.elements.submit);
+                        MapGuesser.observeInput(this, form.elements.submit);
                     };
                     break;
                 case 'SELECT':
                     input.onchange = function () {
-                        MapGuesser.toggleDisableOnChange(this, form.elements.submit);
+                        MapGuesser.observeInput(this, form.elements.submit);
                     };
                     break;
             }
@@ -217,6 +223,21 @@ var MapGuesser = {
             a.onclick = function () {
                 document.getElementById('loading').style.visibility = 'visible';
             }
+        }
+    }
+
+    var forms = document.getElementsByTagName('form');
+    for (var i = 0; i < forms.length; i++) {
+        var form = forms[i];
+
+        if (form.dataset.noSubmit) {
+            continue;
+        }
+
+        MapGuesser.setOnsubmitForForm(form);
+
+        if (form.dataset.observeInputs) {
+            MapGuesser.observeInputsInForm(form, form.dataset.observeInputs.split(','));
         }
     }
 
