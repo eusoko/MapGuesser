@@ -1,5 +1,6 @@
 <?php namespace MapGuesser\PersistentData;
 
+use Generator;
 use MapGuesser\Database\Query\Modify;
 use MapGuesser\Database\Query\Select;
 use MapGuesser\Interfaces\Database\IResultSet;
@@ -9,30 +10,8 @@ class PersistentDataManager
 {
     public function selectFromDb(Select $select, string $type, bool $withRelations = false): ?Model
     {
-        $table = call_user_func([$type, 'getTable']);
-        $fields = call_user_func([$type, 'getFields']);
+        $select = $this->createSelect($select, $type, $withRelations);
 
-        $select->from($table);
-
-        //TODO: only with some relations?
-        if ($withRelations) {
-            $relations = call_user_func([$type, 'getRelations']);
-
-            $columns = [];
-
-            foreach ($fields as $field) {
-                $columns[] = [$table, $field];
-            }
-
-            $columns = array_merge($columns, $this->getRelationColumns($relations));
-
-            $this->leftJoinRelations($select, $table, $relations);
-            $select->columns($columns);
-        } else {
-            $select->columns($fields);
-        }
-
-        //TODO: return with array?
         $data = $select->execute()->fetch(IResultSet::FETCH_ASSOC);
 
         if ($data === null) {
@@ -43,6 +22,18 @@ class PersistentDataManager
         $this->fillWithData($data, $model);
 
         return $model;
+    }
+
+    public function selectMultipleFromDb(Select $select, string $type, bool $withRelations = false): Generator
+    {
+        $select = $this->createSelect($select, $type, $withRelations);
+
+        while ($data = $select->execute()->fetch(IResultSet::FETCH_ASSOC)) {
+            $model = new $type();
+            $this->fillWithData($data, $model);
+
+            yield $model;
+        }
     }
 
     public function selectFromDbById($id, string $type, bool $withRelations = false): ?Model
@@ -134,6 +125,34 @@ class PersistentDataManager
 
         $model->setId(null);
         $model->resetSnapshot();
+    }
+
+    private function createSelect(Select $select, string $type, bool $withRelations = false): Select
+    {
+        $table = call_user_func([$type, 'getTable']);
+        $fields = call_user_func([$type, 'getFields']);
+
+        $select->from($table);
+
+        //TODO: only with some relations?
+        if ($withRelations) {
+            $relations = call_user_func([$type, 'getRelations']);
+
+            $columns = [];
+
+            foreach ($fields as $field) {
+                $columns[] = [$table, $field];
+            }
+
+            $columns = array_merge($columns, $this->getRelationColumns($relations));
+
+            $this->leftJoinRelations($select, $table, $relations);
+            $select->columns($columns);
+        } else {
+            $select->columns($fields);
+        }
+
+        return $select;
     }
 
     private function getRelationColumns(array $relations): array
