@@ -1,6 +1,6 @@
 <?php
 $jsFiles = [
-    'js/login.js',
+    'js/login/login.js',
 ];
 ?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
