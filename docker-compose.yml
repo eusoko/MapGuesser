@@ -11,6 +11,8 @@ services:
             - 'mail'
     mariadb:
         image: mariadb:10.3
+        ports:
+            - 3306:3306
         volumes:
             - mysql:/var/lib/mysql
         environment:
