@@ -324,6 +324,12 @@ main {
     padding: 6px 12px;
 }
 
+div.full {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 40px);
+}
+
 footer {
     background-color: #444444;
     padding: 6px 12px;

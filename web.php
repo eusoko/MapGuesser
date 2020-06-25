@@ -13,6 +13,7 @@ if (!empty($_ENV['DEV'])) {
 Container::$routeCollection = new MapGuesser\Routing\RouteCollection();
 
 Container::$routeCollection->get('index', '', [MapGuesser\Controller\MapsController::class, 'getMaps']);
+Container::$routeCollection->get('startSession', 'startSession.json', [MapGuesser\Controller\HomeController::class, 'startSession']);
 Container::$routeCollection->group('login', function (MapGuesser\Routing\RouteCollection $routeCollection) {
     $routeCollection->get('login', '', [MapGuesser\Controller\LoginController::class, 'getLoginForm']);
     $routeCollection->post('login-action', '', [MapGuesser\Controller\LoginController::class, 'login']);

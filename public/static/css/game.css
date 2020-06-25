@@ -1,12 +1,15 @@
 #panorama {
-    width: 100%;
-    height: calc(100% - 40px);
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
     z-index: 1;
 }
 
-#guessCover {
+#panoCover {
     position: absolute;
-    top: 40px;
+    top: 0;
     left: 0;
     bottom: 0;
     right: 0;
@@ -111,7 +114,7 @@
         z-index: 2;
     }
     #guess {
-        top: 50px;
+        top: 10px;
         left: 20px;
         opacity: 0.95;
         visibility: hidden;
@@ -157,7 +160,7 @@
     #guess.result {
         width: initial;
         height: initial;
-        top: 50px;
+        top: 10px;
         left: 50px;
         right: 50px;
         bottom: 50px;
@@ -167,11 +170,11 @@
     }
     @media screen and (max-height: 424px) {
         #guess {
-            top: 50px;
+            top: 10px;
             height: initial;
         }
         #guess.adapt:hover {
-            top: 50px;
+            top: 10px;
             height: initial;
         }
         #guess.result {

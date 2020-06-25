@@ -59,18 +59,20 @@ $jsFiles = [
         </div>
     </form>
 </div>
-<div id="map"></div>
-<div id="control">
-    <button id="saveButton" class="fullWidth" disabled>Save</button>
-</div>
-<div id="panorama"></div>
-<div id="noPano">
-    <p class="bold">No panorama is available for this location.</p>
-</div>
-<div id="placeControl">
-    <button id="applyButton" class="fullWidth">Apply</button>
-    <button id="closeButton" class="gray fullWidth marginTop">Close</button>
-    <button id="deleteButton" class="red fullWidth marginTop">Delete</button>
+<div class="full">
+    <div id="map"></div>
+    <div id="panorama"></div>
+    <div id="noPano">
+        <p class="bold">No panorama is available for this location.</p>
+    </div>
+    <div id="control">
+        <button id="saveButton" class="fullWidth" disabled>Save</button>
+    </div>
+    <div id="placeControl">
+        <button id="applyButton" class="fullWidth">Apply</button>
+        <button id="closeButton" class="gray fullWidth marginTop">Close</button>
+        <button id="deleteButton" class="red fullWidth marginTop">Delete</button>
+    </div>
 </div>
 <script>
     var tileUrl = '<?= $_ENV['LEAFLET_TILESERVER_URL'] ?>';
