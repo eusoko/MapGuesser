@@ -1,5 +1,5 @@
 (function () {
-    var form = document.getElementById('profileForm');
+    var form = document.getElementById('accountForm');
 
     form.elements.password_new.onkeyup = function () {
         MapGuesser.toggleDisableOnChange(this, form.elements.save);
@@ -33,14 +33,14 @@
                         break;
                 }
 
-                var profileFormError = document.getElementById('profileFormError');
-                profileFormError.style.display = 'block';
-                profileFormError.innerHTML = errorText;
+                var accountFormError = document.getElementById('accountFormError');
+                accountFormError.style.display = 'block';
+                accountFormError.innerHTML = errorText;
 
                 return;
             }
 
-            document.getElementById('profileFormError').style.display = 'none';
+            document.getElementById('accountFormError').style.display = 'none';
             form.reset();
             form.elements.save.disabled = true;
         }, formData);

@@ -27,7 +27,7 @@ class UserController implements ISecured
         return $user !== null;
     }
 
-    public function getProfile(): IContent
+    public function getAccount(): IContent
     {
         /**
          * @var User $user
@@ -35,10 +35,10 @@ class UserController implements ISecured
         $user = $this->request->user();
 
         $data = ['user' => $user->toArray()];
-        return new HtmlContent('profile', $data);
+        return new HtmlContent('account', $data);
     }
 
-    public function saveProfile(): IContent
+    public function saveAccount(): IContent
     {
         /**
          * @var User $user

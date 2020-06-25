@@ -32,9 +32,9 @@ Container::$routeCollection->group('signup', function (MapGuesser\Routing\RouteC
     $routeCollection->get('signup.cancel', 'cancel/{token}', [MapGuesser\Controller\LoginController::class, 'cancel']);
 });
 Container::$routeCollection->get('logout', 'logout', [MapGuesser\Controller\LoginController::class, 'logout']);
-Container::$routeCollection->group('profile', function (MapGuesser\Routing\RouteCollection $routeCollection) {
-    $routeCollection->get('profile', '', [MapGuesser\Controller\UserController::class, 'getProfile']);
-    $routeCollection->post('profile-action', '', [MapGuesser\Controller\UserController::class, 'saveProfile']);
+Container::$routeCollection->group('account', function (MapGuesser\Routing\RouteCollection $routeCollection) {
+    $routeCollection->get('account', '', [MapGuesser\Controller\UserController::class, 'getAccount']);
+    $routeCollection->post('account-action', '', [MapGuesser\Controller\UserController::class, 'saveAccount']);
 });
 //Container::$routeCollection->get('maps', 'maps', [MapGuesser\Controller\MapsController::class, 'getMaps']);
 Container::$routeCollection->group('game', function (MapGuesser\Routing\RouteCollection $routeCollection) {
