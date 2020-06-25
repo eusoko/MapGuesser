@@ -1,9 +1,13 @@
 #map {
-    width: 100%;
-    height: calc(100% - 40px);
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
     z-index: 1;
 }
 
+/* modify the cursor for the Leaflet map */
 .leaflet-container {
     cursor: crosshair;
 }
@@ -30,7 +34,7 @@
 
 #control {
     position: absolute;
-    top: 50px;
+    top: 10px;
     right: 10px;
     width: 125px;
     z-index: 3;
@@ -50,31 +54,34 @@
 
 @media screen and (max-width: 999px) and (min-height: 600px) {
     #map.selected {
-        height: calc(50% - 20px);
+        height: 50%;
     }
     #panorama, #noPano {
         left: 0;
         bottom: 0;
         right: 0;
-        height: calc(50% - 20px);
+        height: 50%;
     }
     #placeControl {
-        top: calc(50% + 30px);
+        top: calc(50% + 10px);
     }
 }
 
 @media screen and (min-width: 1000px), (max-height: 599px) {
     #map.selected {
+        top: 0;
+        bottom: 0;
+        left: 0;
         width: 50%;
     }
     #panorama, #noPano {
-        top: 40px;
+        top: 0;
         bottom: 0;
         right: 0;
         width: 50%;
     }
     #placeControl {
-        top: 50px;
+        top: 10px;
     }
     #modified.selected {
         right: calc(50% + 10px);
