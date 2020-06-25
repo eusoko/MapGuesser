@@ -1,11 +1,10 @@
 <?php namespace MapGuesser\Http;
 
-class Request
+use MapGuesser\Interfaces\Http\IRequest;
+use MapGuesser\Interfaces\Http\IResponse;
+
+class Request implements IRequest
 {
-    const HTTP_GET = 0;
-
-    const HTTP_POST = 1;
-
     private string $url;
 
     private int $method;
@@ -14,9 +13,19 @@ class Request
 
     private array $headers = [];
 
-    public function __construct(string $url, int $method = self::HTTP_GET)
+    public function __construct(string $url = '', int $method = self::HTTP_GET)
     {
         $this->url = $url;
+        $this->method = $method;
+    }
+
+    public function setUrl(string $url): void
+    {
+        $this->url = $url;
+    }
+
+    public function setMethod(int $method): void
+    {
         $this->method = $method;
     }
 
@@ -34,7 +43,7 @@ class Request
         $this->headers = array_merge($this->headers, $headers);
     }
 
-    public function send(): Response
+    public function send(): IResponse
     {
         $ch = curl_init();
 
