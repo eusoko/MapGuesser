@@ -16,7 +16,7 @@ $jsFiles = [
             <input class="big fullWidth marginTop" type="password" name="password_new_confirm" placeholder="New password confirmation" minlength="6">
             <p id="accountFormError" class="formError justify marginTop"></p>
             <div class="right marginTop">
-                <button type="submit" name="save" disabled>Save</button>
+                <button type="submit" name="submit" disabled>Save</button>
             </div>
         </form>
     </div>
