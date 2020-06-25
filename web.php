@@ -35,6 +35,8 @@ Container::$routeCollection->get('logout', 'logout', [MapGuesser\Controller\Logi
 Container::$routeCollection->group('account', function (MapGuesser\Routing\RouteCollection $routeCollection) {
     $routeCollection->get('account', '', [MapGuesser\Controller\UserController::class, 'getAccount']);
     $routeCollection->post('account-action', '', [MapGuesser\Controller\UserController::class, 'saveAccount']);
+    $routeCollection->get('account.delete', 'delete', [MapGuesser\Controller\UserController::class, 'getDeleteAccount']);
+    $routeCollection->post('account.delete-action', 'delete', [MapGuesser\Controller\UserController::class, 'deleteAccount']);
 });
 //Container::$routeCollection->get('maps', 'maps', [MapGuesser\Controller\MapsController::class, 'getMaps']);
 Container::$routeCollection->group('game', function (MapGuesser\Routing\RouteCollection $routeCollection) {

@@ -1,6 +1,6 @@
 <?php
 $jsFiles = [
-    'js/account.js',
+    'js/account/account.js',
 ];
 ?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
@@ -8,7 +8,7 @@ $jsFiles = [
     <h2>Account</h2>
     <div class="box">
         <form id="accountForm" action="/account" method="post">
-            <input class="big fullWidth" type="password" name="password" placeholder="Current password" autofocus>
+            <input class="big fullWidth" type="password" name="password" placeholder="Current password" required minlength="6" autofocus>
             <hr>
             <?php /* TODO: disabled for the time being, email modification should be implemented */ ?>
             <input class="big fullWidth" type="email" name="email" placeholder="Email address" value="<?= $user['email'] ?>" disabled>
@@ -17,6 +17,10 @@ $jsFiles = [
             <p id="accountFormError" class="formError justify marginTop"></p>
             <div class="right marginTop">
                 <button type="submit" name="submit" disabled>Save</button>
+            </div>
+            <hr>
+            <div class="center">
+                <a class="button red" href="/account/delete" title="Delete account">Delete account</a>
             </div>
         </form>
     </div>
