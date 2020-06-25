@@ -1,5 +1,6 @@
 <?php namespace MapGuesser\Controller;
 
+use MapGuesser\Http\Request;
 use MapGuesser\Interfaces\Request\IRequest;
 use MapGuesser\Interfaces\Response\IContent;
 use MapGuesser\Interfaces\Response\IRedirect;
@@ -49,7 +50,7 @@ class LoginController
 
         $this->request->session()->set('oauth_state', $state);
 
-        $oAuth = new GoogleOAuth();
+        $oAuth = new GoogleOAuth(new Request());
         $url = $oAuth->getDialogUrl($state, $this->request->getBase() . '/' . \Container::$routeCollection->getRoute('login-google-action')->generateLink());
 
         return new Redirect($url, IRedirect::TEMPORARY);
@@ -147,7 +148,7 @@ class LoginController
             return new HtmlContent('login/google_login', $data);
         }
 
-        $oAuth = new GoogleOAuth();
+        $oAuth = new GoogleOAuth(new Request());
         $tokenData = $oAuth->getToken($this->request->query('code'), $this->request->getBase() . '/' . \Container::$routeCollection->getRoute('login-google-action')->generateLink());
 
         if (!isset($tokenData['id_token'])) {

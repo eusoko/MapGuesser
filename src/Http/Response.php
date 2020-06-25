@@ -1,6 +1,8 @@
 <?php namespace MapGuesser\Http;
 
-class Response
+use MapGuesser\Interfaces\Http\IResponse;
+
+class Response implements IResponse
 {
     private string $body;
 

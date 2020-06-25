@@ -1,12 +1,19 @@
 <?php namespace MapGuesser\OAuth;
 
-use MapGuesser\Http\Request;
+use MapGuesser\Interfaces\Http\IRequest;
 
 class GoogleOAuth
 {
     private static $dialogUrlBase = 'https://accounts.google.com/o/oauth2/v2/auth';
 
     private static $tokenUrlBase = 'https://oauth2.googleapis.com/token';
+
+    private IRequest $request;
+
+    public function __construct(IRequest $request)
+    {
+        $this->request = $request;
+    }
 
     public function getDialogUrl(string $state, string $redirectUrl): string
     {
@@ -32,9 +39,10 @@ class GoogleOAuth
             'grant_type' => 'authorization_code',
         ];
 
-        $request = new Request(self::$tokenUrlBase, Request::HTTP_POST);
-        $request->setQuery($tokenParams);
-        $response = $request->send();
+        $this->request->setUrl(self::$tokenUrlBase);
+        $this->request->setMethod(IRequest::HTTP_POST);
+        $this->request->setQuery($tokenParams);
+        $response = $this->request->send();
 
         return json_decode($response->getBody(), true);
     }
