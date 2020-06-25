@@ -7,7 +7,7 @@ $jsFiles = [
 <?php require ROOT . '/views/templates/header.php'; ?>
     <h2>Sign up</h2>
     <div class="box">
-        <form id="googleSignupForm" action="/signup/google" method="post">
+        <form id="googleSignupForm" action="/signup/google" method="post" data-redirect-on-success="/">
             <?php if ($found): ?>
                 <p class="justify">Please confirm that you link your account to your Google account.</p>
             <?php else: ?>

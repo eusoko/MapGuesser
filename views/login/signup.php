@@ -7,7 +7,7 @@ $jsFiles = [
 <?php require ROOT . '/views/templates/header.php'; ?>
     <h2>Sign up</h2>
     <div class="box">
-        <form id="signupForm" action="/signup" method="post">
+        <form id="signupForm" action="/signup" method="post" data-redirect-on-success="/signup/success">
             <?php if (isset($email)): ?>
                 <p class="justify">No user found with the given email address. Sign up with one click!</p>
                 <input class="big fullWidth marginTop" type="email" name="email" placeholder="Email address" value="<?= $email ?>" required>

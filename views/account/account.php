@@ -1,13 +1,8 @@
-<?php
-$jsFiles = [
-    'js/account/account.js',
-];
-?>
 <?php require ROOT . '/views/templates/main_header.php'; ?>
 <?php require ROOT . '/views/templates/header.php'; ?>
     <h2>Account</h2>
     <div class="box">
-        <form id="accountForm" action="/account" method="post">
+        <form id="accountForm" action="/account" method="post" data-observe-inputs="password_new,password_new_confirm">
             <input class="big fullWidth" type="password" name="password" placeholder="Current password" required minlength="6" autofocus>
             <hr>
             <?php /* TODO: disabled for the time being, email modification should be implemented */ ?>
