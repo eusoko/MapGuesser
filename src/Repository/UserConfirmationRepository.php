@@ -1,6 +1,9 @@
 <?php namespace MapGuesser\Repository;
 
+use Generator;
 use MapGuesser\Database\Query\Select;
+use MapGuesser\Interfaces\Database\IResultSet;
+use MapGuesser\PersistentData\Model\User;
 use MapGuesser\PersistentData\Model\UserConfirmation;
 use MapGuesser\PersistentData\PersistentDataManager;
 
@@ -24,5 +27,13 @@ class UserConfirmationRepository
         $select->where('token', '=', $token);
 
         return $this->pdm->selectFromDb($select, UserConfirmation::class);
+    }
+
+    public function getByUser(User $user): Generator
+    {
+        $select = new Select(\Container::$dbConnection);
+        $select->where('user_id', '=', $user->getId());
+
+        yield from $this->pdm->selectMultipleFromDb($select, UserConfirmation::class);
     }
 }
