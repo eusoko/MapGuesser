@@ -50,7 +50,7 @@ $jsFiles = [
 </header>
 <div id="metadata" class="modal">
     <h2>Edit map data</h2>
-    <form id="metadataForm" class="marginTop">
+    <form id="metadataForm" class="marginTop" data-no-submit="true">
         <input class="fullWidth" type="text" name="name" value="<?= $mapName ?>" placeholder="Name of the map">
         <textarea  class="fullWidth marginTop" name="description" rows="4" placeholder="Description of the map"><?= $mapDescription ?></textarea>
         <div class="right">

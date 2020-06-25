@@ -2,6 +2,7 @@
         const STATIC_ROOT = '<?= $_ENV['STATIC_ROOT'] ?>';
         const REVISION = '<?= REVISION ?>';
         var ANTI_CSRF_TOKEN = '<?= \Container::$request->session()->get('anti_csrf_token') ?>';
+        const GOOGLE_MAPS_JS_API_KEY = '<?= $_ENV['GOOGLE_MAPS_JS_API_KEY'] ?>';
         <?php if (!empty($_ENV['GOOGLE_ANALITICS_ID'])): ?>
             const GOOGLE_ANALITICS_ID = '<?= $_ENV['GOOGLE_ANALITICS_ID'] ?>';
         <?php endif; ?>

@@ -107,7 +107,7 @@ class LoginController
 
         if ($user === null) {
             if (strlen($this->request->post('password')) < 6) {
-                $data = ['error' => 'password_too_short'];
+                $data = ['error' => ['errorText' => 'The given password is too short. Please choose a password that is at least 6 characters long!']];
                 return new JsonContent($data);
             }
 
@@ -116,17 +116,17 @@ class LoginController
 
             $this->request->session()->set('tmp_user_data', ['email' => $this->request->post('email'), 'password_hashed' => $tmpUser->getPassword()]);
 
-            $data = ['error' => 'user_not_found'];
+            $data = ['redirect' => ['target' => '/' . \Container::$routeCollection->getRoute('signup')->generateLink()]];
             return new JsonContent($data);
         }
 
         if (!$user->getActive()) {
-            $data = ['error' => 'user_not_active'];
+            $data = ['error' => ['errorText' => 'User found with the given email address, but the account is not activated. Please check your email and click on the activation link!']];
             return new JsonContent($data);
         }
 
         if (!$user->checkPassword($this->request->post('password'))) {
-            $data = ['error' => 'password_not_match'];
+            $data = ['error' => ['errorText' => 'The given password is wrong.']];
             return new JsonContent($data);
         }
 
@@ -186,7 +186,7 @@ class LoginController
     public function signup(): IContent
     {
         if ($this->request->user() !== null) {
-            $data = ['error' => 'logged_in'];
+            $data = ['redirect' => ['target' => '/' . \Container::$routeCollection->getRoute('home')->generateLink()]];
             return new JsonContent($data);
         }
 
@@ -195,21 +195,21 @@ class LoginController
         if ($user !== null) {
             if ($user->getActive()) {
                 if (!$user->checkPassword($this->request->post('password'))) {
-                    $data = ['error' => 'user_found_password_not_match'];
+                    $data = ['error' => ['errorText' => 'There is a user already registered with the given email address, but the given password is wrong.']];
                     return new JsonContent($data);
                 }
 
                 $this->request->setUser($user);
 
-                $data = ['error' => 'user_found'];
+                $data = ['redirect' => ['target' => '/' . \Container::$routeCollection->getRoute('index')->generateLink()]];
             } else {
-                $data = ['error' => 'user_found_user_not_active'];
+                $data = ['error' => ['errorText' => 'There is a user already registered with the given email address. Please check your email and click on the activation link!']];
             }
             return new JsonContent($data);
         }
 
         if (filter_var($this->request->post('email'), FILTER_VALIDATE_EMAIL) === false) {
-            $data = ['error' => 'email_not_valid'];
+            $data = ['error' => ['errorText' => 'The given email address is not valid.']];
             return new JsonContent($data);
         }
 
@@ -220,17 +220,17 @@ class LoginController
             $tmpUser->setPassword($tmpUserData['password_hashed']);
 
             if (!$tmpUser->checkPassword($this->request->post('password'))) {
-                $data = ['error' => 'passwords_not_match'];
+                $data = ['error' => ['errorText' => 'The given passwords do not match.']];
                 return new JsonContent($data);
             }
         } else {
             if (strlen($this->request->post('password')) < 6) {
-                $data = ['error' => 'password_too_short'];
+                $data = ['error' => ['errorText' => 'The given password is too short. Please choose a password that is at least 6 characters long!']];
                 return new JsonContent($data);
             }
 
             if ($this->request->post('password') !== $this->request->post('password_confirm')) {
-                $data = ['error' => 'passwords_not_match'];
+                $data = ['error' => ['errorText' => 'The given passwords do not match.']];
                 return new JsonContent($data);
             }
         }
